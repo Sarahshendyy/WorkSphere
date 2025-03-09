@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Istok+Web:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: "Istok Web", sans-serif;
+    padding: 0;
+    margin: 0;
+    
+}
+body{
+    background-image: url(../img/abstract-envelope.png);
+   
+}
+h1 {
+    margin: 0;
+    color: #db9600;
+}
+p{
+    color: #033043;
+}
+
+.close{
+    color:#fda521;
+    position: absolute;
+    right: 7%;
+    top: 7%;
+    font-size: large;
+}
+
+.container-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top:10%;
+}
+
+
+.otp-card {
+    position: relative;
+    padding: 10px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.741);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 10px 40px -20px black;
+    /* position: relative; */
+}
+
+
+.otp-card-inputs {
+    margin: 30px 0;
+    display: grid;
+    /* gap: 30px; */
+    justify-content: center;
+    grid-template-columns: repeat(5, auto);
+}
+
+
+.otp-card-inputs input {
+    width: 60px;
+    height: 70px;
+    font-size: 35px;
+    text-align: center;
+    border-radius: 20px;
+    border: 1px solid #db9600;
+}
+
+
+
+.otp-card-inputs input:focus {
+    outline: 2px solid black;
+    border-color: transparent;
+
+}
+
+.otp-card .verify {
+    background-color: transparent;
+    color: #033043;
+    border: solid 2px #db9600;
+    padding: 8px 70px;
+    font-size: 18px;
+    border-radius: 39px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.5s;
+
+}
+.otp-card .verify:hover{
+    background-color: #db960096;
+}
+
+.otp-card button {
+    /* opacity: .6; */
+    cursor: default;
+
+}
+
+.tany{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.resbtn {
+    /* position: absolute;   */
+    text-align: center;
+    /* top: 266px; */
+    background-color: none;
+    color: blue;
+    /* right: 10%; */
+    border: none;
+    margin-left: 10px;
+}
+
+/* error css hena */
+.info,
+.success,
+.warning,
+.error,
+.validation {
+    border: 1px solid;
+    margin: 10px 0px;
+    padding: 15px 10px 15px 8px;
+    background-repeat: no-repeat;
+    background-position: 0px center;
+
+}
+/* [type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+    cursor: pointer;
+    border: none !important;
+    background-color: transparent !important;
+    color: #db9600;
+    padding-bottom: 5% !important ;
+    padding-left: 12% !important;
+} */
+.resend{
+    cursor: pointer;
+    border: none !important;
+    background-color: transparent !important;
+    color: #db9600;
+    /* padding-bottom: 5% !important ; */
+    padding-left: 5% !important;
+    transition: all 0.5s;
+}
+.resend:hover{
+    color: #033043;
+}
+
+
+/*.warning {*/
+/*    color: #D8000C; old warning*/
+/*    background-color: #FFBABA;*/
+/*    width: 40%;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    !* margin-left: 100px; *!*/
+/*    position: relative;*/
+/*    left: 30%;*/
+
+/*}*/
+
+.warning {
+    color:white !important;
+    background-color: #ff00009e;
+    border-radius: 20px;
+    position: static;
+    width: 65%;
+    margin: 0 auto;
+    /* margin-left: 100px; */
+    border: solid 2px #ff000048;
+}
+.warning.visible {
+    display: block;
+    text-align: center;
+}
+@media(max-width:750px){
+    .otp-card{
+        width: 90%;
+        margin-top: 15%;
+    }
+    .otp-card-inputs {
+        margin: 30px 0;
+        display: grid;
+        /* gap: 30px; */
+        justify-content: center;
+        grid-template-columns: repeat(5, auto);
+        width: 137%;
+        margin-left: -17%;
+    }
+}
