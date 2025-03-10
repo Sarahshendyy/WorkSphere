@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 09, 2025 at 08:40 PM
+-- Generation Time: Mar 10, 2025 at 02:32 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +24,18 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `amenities`
+--
+
+CREATE TABLE `amenities` (
+  `amenitiy_id` int(11) NOT NULL,
+  `amenity` text NOT NULL,
+  `room_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `bookings`
 --
 
@@ -39,6 +51,15 @@ CREATE TABLE `bookings` (
   `status` varchar(255) DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bookings`
+--
+
+INSERT INTO `bookings` (`booking_id`, `user_id`, `workspace_id`, `date`, `start_time`, `end_time`, `num_people`, `total_price`, `status`, `created_at`) VALUES
+(1, 1, 1, '2025-03-06', '15:27:47', '42:27:47', 9, 9090, 'pending', '2025-03-09 23:28:48'),
+(2, 1, 1, '2025-03-06', '15:27:47', '42:27:47', 9, 9090, 'pending', '2025-03-09 23:28:48'),
+(3, 1, 2, '2025-03-06', '15:27:47', '42:27:47', 9, 9090, 'pending', '2025-03-09 23:28:48');
 
 -- --------------------------------------------------------
 
@@ -61,26 +82,14 @@ CREATE TABLE `chat` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comment`
---
-
-CREATE TABLE `comment` (
-  `comment_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `post_id` int(11) NOT NULL,
-  `text` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `community`
 --
 
 CREATE TABLE `community` (
   `post_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `description` longtext NOT NULL,
+  `company_name` varchar(255) NOT NULL,
+  `contact_info` varchar(255) NOT NULL,
   `images` longtext NOT NULL,
   `files` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -95,18 +104,6 @@ CREATE TABLE `conversation` (
   `conversation_id` int(11) NOT NULL,
   `user_1` int(11) NOT NULL,
   `user_2` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `like`
---
-
-CREATE TABLE `like` (
-  `like_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `post_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -154,6 +151,15 @@ CREATE TABLE `reviews` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`review_id`, `booking_id`, `rating`, `review_text`, `created_at`) VALUES
+(1, 1, 5, 'lkekjfofipos', '2025-03-09 23:36:58'),
+(3, 2, 3, 'lkekjfofipos', '2025-03-09 23:36:58'),
+(4, 3, 2, 'lkekjfofipos', '2025-03-09 23:36:58');
+
 -- --------------------------------------------------------
 
 --
@@ -178,6 +184,31 @@ INSERT INTO `role` (`role_id`, `role_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `rooms`
+--
+
+CREATE TABLE `rooms` (
+  `room_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL,
+  `room_name` varchar(255) DEFAULT NULL,
+  `amenity` int(11) NOT NULL,
+  `seats` int(11) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `images` longtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rooms`
+--
+
+INSERT INTO `rooms` (`room_id`, `workspace_id`, `room_name`, `amenity`, `seats`, `quantity`, `status`, `images`) VALUES
+(1, 1, '1', 0, 4, 6, 'dfdsf', ''),
+(2, 2, '1', 0, 4, 6, 'dfdsf', '');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -191,19 +222,16 @@ CREATE TABLE `users` (
   `location` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `role_id` int(11) DEFAULT NULL,
-  `last_seen` datetime NOT NULL DEFAULT current_timestamp(),
-  `company_name` varchar(100) DEFAULT NULL,
-  `company_type` varchar(100) DEFAULT NULL,
-  `contact_info` varchar(255) DEFAULT NULL
+  `last_seen` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `name`, `email`, `phone`, `password`, `image`, `location`, `created_at`, `role_id`, `last_seen`, `company_name`, `company_type`, `contact_info`) VALUES
-(1, 'sarah shendy', 'sarahshendy32@gmail.com', '01096774388', '$2y$10$7kelHHXnMdyPaKe4HFeSZux/W3EAsvK1TDala9r4qyJhfW4IONivS', 'defaultprofile.png', NULL, '2025-03-08 00:31:52', NULL, '0000-00-00 00:00:00', NULL, NULL, NULL),
-(2, 'mahmoud allam', 'malllam146@gmail.com', '01158231391', '$2y$10$EgxvCoWwljEY/ku.1iwfm.YZC/sT64aP02jSX8XTZjSjMURnPtV.2', 'defaultprofile.png', NULL, '2025-03-09 00:07:59', NULL, '0000-00-00 00:00:00', NULL, NULL, NULL);
+INSERT INTO `users` (`user_id`, `name`, `email`, `phone`, `password`, `image`, `location`, `created_at`, `role_id`, `last_seen`) VALUES
+(1, 'sarah shendy', 'sarahshendy32@gmail.com', '01096774388', '$2y$10$KJRSkmswKjYKTSepVTxwze1TSyToWngzDx.b9gDgoerfg9SFPf7HO', 'defaultprofile.png', NULL, '2025-03-08 00:31:52', NULL, '0000-00-00 00:00:00'),
+(2, 'salma', 'salmaa.mohamedd56@gmail.com', '01028970103', '$2y$10$Ze1jsWgnor4rqNM88lKM9eaRzZOsrw2YoemlxJ9BYvexYLuF2rnFy', 'default.png', NULL, '2025-03-09 21:18:27', NULL, '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -229,32 +257,27 @@ CREATE TABLE `workspaces` (
   `location` varchar(255) NOT NULL,
   `zone` varchar(255) NOT NULL,
   `description` longtext DEFAULT NULL,
-  `price_per_hour` float DEFAULT NULL,
-  `price_per_day` float DEFAULT NULL,
-  `price_per_month` float DEFAULT NULL,
+  `price/hr` float DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `workspace_img`
+-- Dumping data for table `workspaces`
 --
 
-CREATE TABLE `workspace_img` (
-  `img_id` int(11) NOT NULL,
-  `workspace_id` int(11) NOT NULL,
-  `room_name` varchar(255) DEFAULT NULL,
-  `amenities` longtext DEFAULT NULL,
-  `seats` int(11) DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  `images` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `workspaces` (`workspace_id`, `user_id`, `name`, `location`, `zone`, `description`, `price/hr`, `created_at`) VALUES
+(1, 2, 'salma\'s workspace', '6 october city', 'giza', 'jkdfhfksljflskdl', 20, '2025-03-09 22:48:46'),
+(2, 2, 'cozy hive', 'zamalek', 'cairo', 'jkdfhfksljflskdl', 50, '2025-03-09 22:48:46');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `amenities`
+--
+ALTER TABLE `amenities`
+  ADD PRIMARY KEY (`amenitiy_id`);
 
 --
 -- Indexes for table `bookings`
@@ -273,14 +296,6 @@ ALTER TABLE `chat`
   ADD KEY `to_user` (`to_user`);
 
 --
--- Indexes for table `comment`
---
-ALTER TABLE `comment`
-  ADD PRIMARY KEY (`comment_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `post_id` (`post_id`);
-
---
 -- Indexes for table `community`
 --
 ALTER TABLE `community`
@@ -294,14 +309,6 @@ ALTER TABLE `conversation`
   ADD PRIMARY KEY (`conversation_id`),
   ADD KEY `user_1` (`user_1`),
   ADD KEY `user_2` (`user_2`);
-
---
--- Indexes for table `like`
---
-ALTER TABLE `like`
-  ADD PRIMARY KEY (`like_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `post_id` (`post_id`);
 
 --
 -- Indexes for table `payments`
@@ -333,6 +340,13 @@ ALTER TABLE `role`
   ADD PRIMARY KEY (`role_id`);
 
 --
+-- Indexes for table `rooms`
+--
+ALTER TABLE `rooms`
+  ADD PRIMARY KEY (`room_id`),
+  ADD KEY `workspace_id` (`workspace_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -356,33 +370,26 @@ ALTER TABLE `workspaces`
   ADD KEY `owner_id` (`user_id`);
 
 --
--- Indexes for table `workspace_img`
---
-ALTER TABLE `workspace_img`
-  ADD PRIMARY KEY (`img_id`),
-  ADD KEY `workspace_id` (`workspace_id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `amenities`
+--
+ALTER TABLE `amenities`
+  MODIFY `amenitiy_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `chat`
 --
 ALTER TABLE `chat`
   MODIFY `chat_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `comment`
---
-ALTER TABLE `comment`
-  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `community`
@@ -395,12 +402,6 @@ ALTER TABLE `community`
 --
 ALTER TABLE `conversation`
   MODIFY `conversation_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `like`
---
-ALTER TABLE `like`
-  MODIFY `like_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -418,13 +419,19 @@ ALTER TABLE `promo_codes`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
   MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `rooms`
+--
+ALTER TABLE `rooms`
+  MODIFY `room_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -436,13 +443,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `workspaces`
 --
 ALTER TABLE `workspaces`
-  MODIFY `workspace_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `workspace_img`
---
-ALTER TABLE `workspace_img`
-  MODIFY `img_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `workspace_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -463,13 +464,6 @@ ALTER TABLE `chat`
   ADD CONSTRAINT `chat_ibfk_2` FOREIGN KEY (`to_user`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `comment`
---
-ALTER TABLE `comment`
-  ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `community` (`post_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `community`
 --
 ALTER TABLE `community`
@@ -481,13 +475,6 @@ ALTER TABLE `community`
 ALTER TABLE `conversation`
   ADD CONSTRAINT `conversation_ibfk_1` FOREIGN KEY (`user_1`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `conversation_ibfk_2` FOREIGN KEY (`user_2`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `like`
---
-ALTER TABLE `like`
-  ADD CONSTRAINT `like_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `community` (`post_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `like_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `payments`
@@ -508,6 +495,12 @@ ALTER TABLE `reviews`
   ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `rooms`
+--
+ALTER TABLE `rooms`
+  ADD CONSTRAINT `rooms_ibfk_2` FOREIGN KEY (`workspace_id`) REFERENCES `workspaces` (`workspace_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `users`
 --
 ALTER TABLE `users`
@@ -525,12 +518,6 @@ ALTER TABLE `wishlist`
 --
 ALTER TABLE `workspaces`
   ADD CONSTRAINT `workspaces_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `workspace_img`
---
-ALTER TABLE `workspace_img`
-  ADD CONSTRAINT `workspace_img_ibfk_2` FOREIGN KEY (`workspace_id`) REFERENCES `workspaces` (`workspace_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
