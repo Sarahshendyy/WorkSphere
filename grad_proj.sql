@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 10, 2025 at 02:32 AM
+-- Generation Time: Mar 10, 2025 at 09:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -57,8 +57,8 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`booking_id`, `user_id`, `workspace_id`, `date`, `start_time`, `end_time`, `num_people`, `total_price`, `status`, `created_at`) VALUES
-(1, 1, 1, '2025-03-06', '15:27:47', '42:27:47', 9, 9090, 'upcoming', '2025-03-09 23:28:48'),
-(2, 1, 1, '2025-03-06', '15:27:47', '42:27:47', 9, 9090, 'upcoming', '2025-03-09 23:28:48'),
+(1, 1, 1, '2025-03-06', '15:27:47', '42:27:47', 9, 9090, 'Canceled', '2025-03-09 23:28:48'),
+(2, 1, 1, '2025-03-06', '15:27:47', '42:27:47', 9, 9090, 'Ongoing', '2025-03-09 23:28:48'),
 (3, 1, 2, '2025-03-06', '15:27:47', '42:27:47', 9, 9090, 'upcoming', '2025-03-09 23:28:48');
 
 -- --------------------------------------------------------
@@ -126,16 +126,8 @@ CREATE TABLE `payments` (
 --
 -- Table structure for table `promo_codes`
 --
-
-CREATE TABLE `promo_codes` (
-  `promo_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `bookings_count` int(11) DEFAULT 0,
-  `promo_code` varchar(255) DEFAULT NULL,
-  `discount_percentage` int(11) DEFAULT 15,
-  `status` varchar(255) DEFAULT 'unused',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Error reading structure for table grad_proj.promo_codes: #1932 - Table &#039;grad_proj.promo_codes&#039; doesn&#039;t exist in engine
+-- Error reading data for table grad_proj.promo_codes: #1064 - You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near &#039;FROM `grad_proj`.`promo_codes`&#039; at line 1
 
 -- --------------------------------------------------------
 
@@ -194,7 +186,7 @@ CREATE TABLE `rooms` (
   `amenity` int(11) NOT NULL,
   `seats` int(11) DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
+  `room_status` varchar(255) DEFAULT NULL,
   `images` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -202,8 +194,8 @@ CREATE TABLE `rooms` (
 -- Dumping data for table `rooms`
 --
 
-INSERT INTO `rooms` (`room_id`, `workspace_id`, `room_name`, `amenity`, `seats`, `quantity`, `status`, `images`) VALUES
-(1, 1, '1', 0, 4, 6, 'dfdsf', ''),
+INSERT INTO `rooms` (`room_id`, `workspace_id`, `room_name`, `amenity`, `seats`, `quantity`, `room_status`, `images`) VALUES
+(1, 1, 'meeting', 0, 4, 6, 'dfdsf', 'default.png'),
 (2, 2, '1', 0, 4, 6, 'dfdsf', '');
 
 -- --------------------------------------------------------
@@ -319,14 +311,6 @@ ALTER TABLE `payments`
   ADD KEY `booking_id` (`booking_id`);
 
 --
--- Indexes for table `promo_codes`
---
-ALTER TABLE `promo_codes`
-  ADD PRIMARY KEY (`promo_id`),
-  ADD UNIQUE KEY `promo_code` (`promo_code`),
-  ADD KEY `user_id` (`user_id`);
-
---
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -410,12 +394,6 @@ ALTER TABLE `payments`
   MODIFY `pay_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `promo_codes`
---
-ALTER TABLE `promo_codes`
-  MODIFY `promo_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -481,12 +459,6 @@ ALTER TABLE `conversation`
 --
 ALTER TABLE `payments`
   ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `promo_codes`
---
-ALTER TABLE `promo_codes`
-  ADD CONSTRAINT `promo_codes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `reviews`
