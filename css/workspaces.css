@@ -1,0 +1,59 @@
+/* Overall Page Background */
+body {
+    background-color: #FOFOFO; /* Non-Photo Blue */
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Card Container - Flexbox to Align Horizontally */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;  /* Adds space between cards */
+    justify-content: center;
+}
+
+
+/* Card Styling */
+.workspace-card {
+    background: #565656; /* Davy's Gray */
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 280px;
+    transition: transform 0.2s ease-in-out;
+    color: #F0F0F0; /* Anti-Flash White for readability */
+}
+
+
+/* Hover Effect */
+.workspace-card:hover {
+    transform: scale(1.05);
+}
+
+/* Headings */
+.workspace-card h2 {
+    color: #FF7A1F; /* Pumpkin */
+    margin-bottom: 10px;
+}
+
+.workspace-card h3 {
+    color: #5192A4; /* Blue (Munsell) */
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+/* Price & Rating */
+.workspace-card p {
+    font-size: 18px;
+    font-weight: bold;
+}
+.rating {
+    color: #FF7A1F; /* Pumpkin */
+}
+
