@@ -48,7 +48,7 @@ CREATE TABLE `bookings` (
   `end_time` time NOT NULL,
   `num_people` int(11) NOT NULL,
   `total_price` float DEFAULT NULL,
-  `status` varchar(255) DEFAULT 'pending',
+  `status` varchar(255) DEFAULT 'upcoming',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
