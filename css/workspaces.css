@@ -1,59 +1,75 @@
 /* Overall Page Background */
 body {
-    background-color: #FOFOFO; /* Non-Photo Blue */
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    background-color: #f4f7f6; /* Light, neutral background */
+    font-family: 'Roboto', sans-serif; /* A clean, modern font */
+    padding: 20px;
+    margin: 0;
 }
 
-/* Card Container - Flexbox to Align Horizontally */
+/* Container for Cards */
 .container {
+    margin-top: 50px;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;  /* Adds space between cards */
+    gap: 20px; /* Space between cards */
     justify-content: center;
 }
 
-
 /* Card Styling */
-.workspace-card {
-    background: #565656; /* Davy's Gray */
-    padding: 20px;
-    border-radius: 10px;
-    margin: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: 280px;
-    transition: transform 0.2s ease-in-out;
-    color: #F0F0F0; /* Anti-Flash White for readability */
+.workspace-card .card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 300px;
+    transition: transform 0.3s ease;
+    background-color: #fff;
 }
 
-
-/* Hover Effect */
-.workspace-card:hover {
-    transform: scale(1.05);
+.workspace-card .card:hover {
+    transform: translateY(-5px);
 }
 
-/* Headings */
-.workspace-card h2 {
-    color: #FF7A1F; /* Pumpkin */
+/* Carousel Image Styling */
+.carousel-inner img {
+    height: 180px; /* Fixed image height */
+    object-fit: cover;
+}
+
+/* Card Body */
+.card-body {
+    padding: 15px;
+    text-align: left;
+}
+
+/* Headings and Text */
+.card-body h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.card-body h3 {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.card-body h4 {
+    font-size: 16px;
+    color: #777;
     margin-bottom: 10px;
 }
 
-.workspace-card h3 {
-    color: #5192A4; /* Blue (Munsell) */
-    font-size: 16px;
-    margin: 5px 0;
+.card-body p {
+    font-size: 14px;
+    color: #666;
 }
 
-/* Price & Rating */
-.workspace-card p {
-    font-size: 18px;
+/* Rating Styling */
+.rating {
+    color: #ff9800; /* Warm orange for ratings */
     font-weight: bold;
 }
-.rating {
-    color: #FF7A1F; /* Pumpkin */
-}
+
 
