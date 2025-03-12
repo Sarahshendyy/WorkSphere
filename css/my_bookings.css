@@ -1,260 +1,289 @@
 /* General Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
-    background-color: #f9f9f9;
-    color: #333;
-    padding: 20px;
+  background-color: #f9f9f9;
+  color: #333;
+  padding: 20px;
 }
 
 /* Booking Header */
 .booking-header {
-    display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    padding: 15px 20px;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 20px;
 }
 
 /* Navigation Menu */
 .booking-header ul {
-    display: flex;
-    list-style: none;
-    gap: 20px; /* Space between items */
-    margin: 0;
-    padding: 0;
-    justify-content: center; /* Center the items horizontally */
-
+  display: flex;
+  list-style: none;
+  gap: 20px; /* Space between items */
+  margin: 0;
+  padding: 0;
+  justify-content: center; /* Center the items horizontally */
 }
 .booking-header ul li a.active {
-    background: #007bff;
-    color: white;
-    font-weight: bold;
+  background: #007bff;
+  color: white;
+  font-weight: bold;
 }
 
 /* Navigation Items */
 .booking-header ul li {
-    font-size: 18px;
-    
+  font-size: 18px;
 }
 
 /* Navigation Links */
 .booking-header ul li a {
-    text-decoration: none;
-    color: #555;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+  text-decoration: none;
+  color: #555;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 /* Hover & Active Styles */
 .booking-header ul li a:hover,
 .booking-header ul li.active a {
-    background: #007bff;
-    color: white;
-    font-weight: bold;
+  background: #007bff;
+  color: white;
+  font-weight: bold;
 }
-
 
 /* Booking Container */
 .booking-container {
-    max-width: 800px;
-    margin: 20px auto;
+  max-width: 800px;
+  margin: 20px auto;
 }
 
 /* Booking Card */
 .booking-card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
-    position: relative;
-    transition: transform 0.3s ease-in-out;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  position: relative;
+  transition: transform 0.3s ease-in-out;
 }
 
 .booking-card:hover {
-    transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
 /* Booking Status */
 .status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 5px 12px;
-    border-radius: 20px;
-    width: fit-content;
-    position: absolute;
-    top: 20px;
-    right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 5px 12px;
+  border-radius: 20px;
+  width: fit-content;
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
 .status i {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 /* Status Colors */
 .status.upcoming {
-    color: #007bff;
-    background: #e0f0ff;
+  color: #007bff;
+  background: #e0f0ff;
 }
 
 .status.ongoing {
-    color: #ff9800;
-    background: #fff3e0;
+  color: #ff9800;
+  background: #fff3e0;
 }
 
 .status.canceled {
-    color: #dc3545;
-    background: #fde2e2;
+  color: #dc3545;
+  background: #fde2e2;
 }
 
 /* Booking Details */
 .booking-details {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    margin-top: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: 10px;
 }
 
 .room-image {
-    width: 100px;
-    height: 100px;
-    border-radius: 12px;
-    object-fit: cover;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .room-info h2 {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
 }
 
 .location {
-    font-size: 14px;
-    color: #777;
+  font-size: 14px;
+  color: #777;
 }
 
 /* Time & Price Section */
 .time-price-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 10px;
 }
 
 /* Time Section */
 .time-section {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .time-section p {
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 500;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
 }
 
 /* Dots for Time */
 .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
 .blue {
-    background: #007bff;
+  background: #007bff;
 }
 
 .red {
-    background: red;
+  background: red;
 }
+
+
+
+/* Workspace Name Link Styling */
+.cssanimation {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    display: inline-block;
+    transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Special Effect on Hover */
+.cssanimation:hover {
+    color: #007bff;
+    transform: scale(1.05);
+}
+
+
 
 /* Dashed Line */
 .dashed-line {
-    width: 2px;
-    height: 10px;
-    background: #777;
-    margin-left: 5px;
+  width: 2px;
+  height: 10px;
+  background: #777;
+  margin-left: 5px;
 }
 
 /* Price Section */
 .price-section {
-    text-align: right;
-    
-
+  text-align: right;
 }
 
 .users {
-    font-size: 14px;
-    color: #777;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  font-size: 14px;
+  color: #777;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .users i {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 .price {
-    font-size: 22px;
-    font-weight: bold;
-    color: #007bff;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #007bff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .price i {
-    font-size: 18px;
+  font-size: 18px;
 }
 
 .price span {
-    font-size: 14px;
-    color: #777;
+  font-size: 14px;
+  color: #777;
 }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .booking-container {
-        max-width: 95%;
-    }
-    
-    .booking-details {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .room-image {
-        width: 80px;
-        height: 80px;
-    }
-    
-    .time-price-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-    }
-    
-    .status {
-        justify-content: center;
-    }
+  .booking-container {
+    max-width: 95%;
+  }
+
+  .booking-details {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .room-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .time-price-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .status {
+    justify-content: center;
+  }
+}
+/* Location Styling */
+.location {
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Location Icon Styling */
+.location i {
+    color: #007bff;
+    font-size: 16px;
 }
