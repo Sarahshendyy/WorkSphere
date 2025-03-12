@@ -65,7 +65,8 @@ if(isset($_POST['submit']))
                 $mail->Body=($massage1);
                 $mail->send();
 
-                $insert="INSERT INTO `users` VALUES (NULL,'$user_name','$email','$phone','$hash_password','default.png', NULL ,'$timestamp', NULL,1)";
+                $insert="INSERT INTO `users` VALUES (NULL,'$user_name','$email','$phone','$hash_password', NULL, NULL,
+                'default.png', NULL ,'$timestamp', NULL,1,NULL,NULL,NULL,NULL)";
                 $run_insert=mysqli_query($connect,$insert);
                 $_SESSION['logCHK'] = true;
                 header("location:signup&login.php");
