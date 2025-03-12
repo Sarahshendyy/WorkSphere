@@ -100,8 +100,8 @@ CREATE TABLE `community` (
   `post_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `description` longtext NOT NULL,
-  `images` longtext NOT NULL,
-  `files` longtext NOT NULL
+  `images` longtext DEFAULT NULL,
+  `files` longtext DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
