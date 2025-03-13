@@ -1,14 +1,28 @@
+/* CSS Variables */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #555;
+  --background-color: #f8f7e5;
+  --text-color: #333;
+  --light-background: #e0f0ff;
+  --warning-color: #ff9800;
+  --warning-background: #fff3e0;
+  --danger-color: #dc3545;
+  --danger-background: #fde2e2;
+  --font-family: "Poppins", sans-serif;
+}
+
 /* General Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: var(--font-family);
 }
 
 body {
-  background-color: #f9f9f9;
-  color: #333;
+  background-color: var(--background-color);
+  color: var(--text-color);
   padding: 20px;
 }
 
@@ -30,8 +44,9 @@ body {
   padding: 0;
   justify-content: center; /* Center the items horizontally */
 }
+
 .booking-header ul li a.active {
-  background: #007bff;
+  background: var(--primary-color);
   color: white;
   font-weight: bold;
 }
@@ -44,7 +59,7 @@ body {
 /* Navigation Links */
 .booking-header ul li a {
   text-decoration: none;
-  color: #555;
+  color: var(--secondary-color);
   padding: 10px 16px;
   border-radius: 8px;
   font-weight: 500;
@@ -54,7 +69,7 @@ body {
 /* Hover & Active Styles */
 .booking-header ul li a:hover,
 .booking-header ul li.active a {
-  background: #007bff;
+  background: var(--primary-color);
   color: white;
   font-weight: bold;
 }
@@ -101,18 +116,18 @@ body {
 
 /* Status Colors */
 .status.upcoming {
-  color: #007bff;
-  background: #e0f0ff;
+  color: var(--primary-color);
+  background: var(--light-background);
 }
 
 .status.ongoing {
-  color: #ff9800;
-  background: #fff3e0;
+  color: var(--warning-color);
+  background: var(--warning-background);
 }
 
 .status.canceled {
-  color: #dc3545;
-  background: #fde2e2;
+  color: var(--danger-color);
+  background: var(--danger-background);
 }
 
 /* Booking Details */
@@ -134,12 +149,20 @@ body {
 .room-info h2 {
   font-size: 20px;
   font-weight: bold;
-  color: #333;
+  color: var(--text-color);
 }
 
 .location {
   font-size: 14px;
-  color: #777;
+  color: var(--secondary-color);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.location i {
+  color: var(--primary-color);
+  font-size: 16px;
 }
 
 /* Time & Price Section */
@@ -177,38 +200,34 @@ body {
 }
 
 .blue {
-  background: #007bff;
+  background: var(--primary-color);
 }
 
 .red {
   background: red;
 }
 
-
-
 /* Workspace Name Link Styling */
 .cssanimation {
-    font-size: 22px;
-    font-weight: 600;
-    color: #333;
-    text-decoration: none;
-    display: inline-block;
-    transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
 /* Special Effect on Hover */
 .cssanimation:hover {
-    color: #007bff;
-    transform: scale(1.05);
+  color: var(--primary-color);
+  transform: scale(1.05);
 }
-
-
 
 /* Dashed Line */
 .dashed-line {
   width: 2px;
   height: 10px;
-  background: #777;
+  background: var(--secondary-color);
   margin-left: 5px;
 }
 
@@ -219,7 +238,7 @@ body {
 
 .users {
   font-size: 14px;
-  color: #777;
+  color: var(--secondary-color);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -232,7 +251,7 @@ body {
 .price {
   font-size: 22px;
   font-weight: bold;
-  color: #007bff;
+  color: var(--primary-color);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -244,7 +263,7 @@ body {
 
 .price span {
   font-size: 14px;
-  color: #777;
+  color: var(--secondary-color);
 }
 
 /* Mobile Responsiveness */
@@ -272,18 +291,4 @@ body {
   .status {
     justify-content: center;
   }
-}
-/* Location Styling */
-.location {
-    font-size: 14px;
-    color: #555;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Location Icon Styling */
-.location i {
-    color: #007bff;
-    font-size: 16px;
 }
