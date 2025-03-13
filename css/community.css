@@ -1,8 +1,10 @@
-*{
+/* Reset and Root Variables */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 :root {
     --color1: #f8f7e5;
     --color2: #c18d52;
@@ -12,53 +14,45 @@
     --color6: #96cdb0;
 }
 
+/* General Styles */
 body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: var(--color1) !important;
+    background-color: var(--color1);
     color: #444;
     line-height: 1.6;
 }
 
+/* Container */
 .container {
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* header */
+/* Header */
 .header {
     text-align: center;
     margin-bottom: 30px;
 }
 
 .header h1 {
-    font-size: 3rem;
-    margin: 0;
-    color: #333;
+    font-size: 2.5rem;
+    color: var(--color3);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     border-bottom: 2px solid var(--color3);
     padding-bottom: 10px;
     font-family: "Lancelot", serif;
 }
-/* buttons */
 
-.buttons{
-    display: flex;
-    justify-content: flex-end;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
+/* Buttons Section */
 .buttons {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    padding: 10px;
     margin-bottom: 20px;
 }
 
-/* Buttons */
 .buttons button {
     color: var(--color1);
     padding: 10px 16px;
@@ -69,26 +63,261 @@ body {
     font-size: 16px;
     font-weight: 600;
     transition: all 0.3s ease-in-out;
-
-    gap: 8px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-
-
-/* Button Hover Effect */
 .buttons button:hover {
     transform: translateY(-3px);
     opacity: 0.9;
 }
 
-/* Button Icons */
 .buttons button i {
     font-size: 18px;
 }
 
-/* Buttons with Links */
 button a {
     color: white;
     text-decoration: none;
+}
+
+/* Profile Section */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+    margin-bottom: 10px;
+}
+
+/* Profile Image */
+.profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--color5);
+    transition: transform 0.3s ease-in-out;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Hover Effect for Image */
+.profile-image:hover {
+    transform: scale(1.1);
+}
+
+/* Profile Name */
+.profile-name a {
+    text-decoration: none;
+    color: var(--color3);
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+.profile-name h2 {
+    font-size: 18px;
+    margin: 0;
+    padding: 5px 0;
+}
+
+/* Hover Effect for Name */
+.profile-name a:hover {
+    color: var(--color5);
+}
+
+/* Post Section */
+.post-card {
+    background: var(--color1);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Post Text */
+.post-content p {
+    font-size: 16px;
+    color: var(--color3);
+    margin-bottom: 10px;
+    word-wrap: break-word;
+}
+
+/* Post Image */
+.post-content img {
+    width: 100%;
+    max-height: 450px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 10px;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Like & Comment Section */
+.post-react {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.post-react button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--color3);
+    transition: 0.3s;
+}
+
+.post-react button:hover {
+    color: var(--color2);
+}
+
+.post-react .liked {
+    color: red;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 15px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Improved Comment Textarea */
+.text {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 18px;
+    font-size: 14px;
+    outline: none;
+    resize: none;
+    background: #f9f9f9;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    transition: all 0.3s ease-in-out;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover Effect */
+.text:hover {
+    border-color: var(--color5);
+}
+
+/* Focus Effect */
+.text:focus {
+    border-color: var(--color5);
+    background: #fff;
+    box-shadow: 0 0 8px rgba(90, 143, 118, 0.3);
+}
+
+/* Placeholder Styling */
+.text::placeholder {
+    color: #888;
+    font-size: 14px;
+    font-style: italic;
+    transition: 0.3s ease-in-out;
+}
+
+/* Placeholder fade on focus */
+.text:focus::placeholder {
+    opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .text {
+        font-size: 13px;
+        padding: 10px;
+    }
+}
+
+.comments-section button {
+    margin-top: 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    background: var(--color4);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.comments-section button:hover {
+    background: var(--color5);
+}
+
+/* Comments List */
+.comments-list {
+    margin-top: 10px;
+}
+
+.comment {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.comment img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.comment p {
+    font-size: 14px;
+    color: #555;
+}
+
+.comment strong {
+    color: var(--color3);
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .profile {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .post-content img {
+        max-height: 300px;
+    }
+
+    .comments-section textarea {
+        font-size: 12px;
+    }
+
+    .post-react button {
+        font-size: 16px;
+    }
 }
