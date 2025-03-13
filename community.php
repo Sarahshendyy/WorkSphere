@@ -53,13 +53,12 @@ if (isset($_POST['comment'])) {
 }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- links -->
+     <!-- links -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lancelot&display=swap" rel="stylesheet">
@@ -69,70 +68,72 @@ if (isset($_POST['comment'])) {
 </head>
 <body>
 <div class="container">
-    <!-- header / buttons -->
+    <!-- header -->
     <header class="header">
         <h1>Our Community</h1>
     </header>
     <section class="buttons">
         <form action="" method="POST">
-            <button>
-                <a href="#">add<i class="fa-solid fa-plus"></i></a>
-            </button>
-            <button type="submit">
-                All Posts
-            </button>
-            <button name="filter" type="submit">
-                My Posts
-            </button>
+            <button><a href="#">Add <i class="fa-solid fa-plus"></i></a></button>
+            <button type="submit">All Posts</button>
+            <button name="filter" type="submit">My Posts</button>
         </form>
     </section>
-    <!-- main content -->
+        <!-- main content -->
+
     <main class="content">
-        <!-- loop -->
         <?php foreach ($community as $data) { ?>
-        <div class="profile">
-            <div class="profile-image">
-                <img src="./img/<?php echo $data['image']; ?>" alt="user profile">
+            <!-- post -->
+        <div class="post-card">
+            <!-- profile -->
+            <div class="profile">
+                <div class="profile-image">
+                    <a href="profile.php?user_id=<?php echo $data['user_id']; ?>">
+                        <img src="./img/<?php echo $data['image']; ?>" alt="user profile">
+                    </a>
+                </div>
+                <div class="profile-name">
+                    <a href="profile.php?user_id=<?php echo $data['user_id']; ?>">
+                        <h2><?php echo $data['name']; ?></h2>
+                    </a>
+                </div>
             </div>
-            <div class="profile-name">
-                <h2><?php echo $data['name']; ?></h2>
+            <!-- description -->
+            <div class="post-content">
+                <p><?php echo $data['description']; ?></p>
+                <img src="./img/<?php echo $data['images']; ?>" alt="post image">
+            </div>
+            <!-- like/comment -->
+            <div class="post-react">
+                <form action="" method="POST">
+                    <input type="hidden" name="post_id" value="<?php echo $data['post_id']; ?>">
+                    <button type="submit" name="like">
+                        <i class="fa-solid fa-heart"></i> <?php echo getLikeCount($connect, $data['post_id']); ?>
+                    </button>
+                </form>
+                <form action="" method="POST">
+                    <input type="hidden" name="post_id" value="<?php echo $data['post_id']; ?>">
+                    <textarea class="text" name="text" placeholder="Write a comment.." required></textarea>
+                    <button type="submit" name="comment"><i class="fa-solid fa-comment"></i></button>
+                </form>
             </div>
         </div>
-        <div class="post">
-            <p><?php echo $data['description']; ?></p>
-        </div>
-        <div class="post-image">
-            <img src="./img/<?php echo $data['images']; ?>" alt="post image">
-        </div>
-        <!-- like/comment -->
-        <div class="post-react">
-            <form action="" method="POST">
-                <input type="hidden" name="post_id" value="<?php echo $data['post_id']; ?>">
-                <button type="submit" name="like">
-                    <i class="fa-solid fa-heart"></i> <?php echo getLikeCount($connect, $data['post_id']); ?>
-                </button>
-            </form>
-        </div>
-         <!-- Comment Section -->
-         <div class="comments-section">
-            <form action="" method="POST">
-                <input type="hidden" name="post_id" value="<?php echo $data['post_id']; ?>">
-                <textarea name="text" placeholder="Write a comment.." required></textarea>
-                <button type="submit" name="comment"><i class="fa-solid fa-comment"></i> </button>
-            </form>
-            <div class="comments-list">
-                <?php $comments = getComments($connect, $data['post_id']); ?>
-                <?php foreach ($comments as $comment) { ?>
-                    <div class="comment">
+        <!-- list comment -->
+        <div class="comments-list">
+            <?php $comments = getComments($connect, $data['post_id']); ?>
+            <?php foreach ($comments as $comment) { ?>
+                <div class="comment">
+                    <a href="profile.php?user_id=<?php echo $comment['user_id']; ?>">
                         <img src="./img/<?php echo $comment['image']; ?>" alt="user image">
+                    </a>
+                    <a href="profile.php?user_id=<?php echo $comment['user_id']; ?>">
                         <p><strong><?php echo $comment['name']; ?>:</strong> <?php echo $comment['text']; ?></p>
-                    </div>
-                <?php } ?>
-            </div>
+                    </a>
+                </div>
+            <?php } ?>
         </div>
         <?php } ?>
     </main>
 </div>
 </body>
-
 </html>
