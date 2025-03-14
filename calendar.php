@@ -55,6 +55,9 @@ include 'connection.php';
                             alert('Error fetching booking data.');
                         }
                     });
+                },
+                eventClick: function (event) {
+                    window.location.href = 'my_bookings.php' ;
                 }
             });
         });
