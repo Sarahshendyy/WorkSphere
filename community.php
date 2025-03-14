@@ -5,22 +5,20 @@ $user_id = $_SESSION['user_id'];
 // Function to select_community
 function select_community($connect, $filter, $user_id) {
     if ($filter == 'my_posts') {
-        $query = "SELECT `community`.*, `users`.`name`, `users`.`image` FROM `community`
-                  JOIN `users` ON `community`.`user_id` = `users`.`user_id`
-                  WHERE `community`.`user_id` = '$user_id'
-                  ORDER BY `community`.`post_id` DESC";
+        $select_posts = "SELECT `community`.*, `users`.`name`, `users`.`image` FROM `community`
+                JOIN `users` ON `community`.`user_id` = `users`.`user_id`
+                WHERE `community`.`user_id` = '$user_id'
+                ORDER BY `community`.`post_id` DESC";
     } else {
-        $query = "SELECT `community`.*, `users`.`name`, `users`.`image` FROM `community`
-                  JOIN `users` ON `community`.`user_id` = `users`.`user_id`
-                  ORDER BY `community`.`post_id` DESC";
+        $select_posts = "SELECT `community`.*, `users`.`name`, `users`.`image` FROM `community`
+                JOIN `users` ON `community`.`user_id` = `users`.`user_id`
+                ORDER BY `community`.`post_id` DESC";
     }
-    $result = mysqli_query($connect, $query);
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $result_post = mysqli_query($connect, $select_posts);
+    return mysqli_fetch_all($result_post, MYSQLI_ASSOC);
 }
-// $community = select_community($connect);
 // Determine the filter
 $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all_posts';
-
 // Get the community posts based on the filter
 $community = select_community($connect, $filter, $user_id);
 
@@ -59,12 +57,12 @@ function getCommentCount($connect, $post_id) {
 // Function to get comments
 function getComments($connect, $post_id) {
     $comment_query = "SELECT `comment`.*, `users`.`name`, `users`.`image` FROM `comment`
-                      JOIN `users` ON `comment`.`user_id` = `users`.`user_id`
-                      WHERE `post_id` = $post_id ORDER BY `created_at` ASC";
+                    JOIN `users` ON `comment`.`user_id` = `users`.`user_id`
+                    WHERE `post_id` = $post_id ORDER BY `comment_id` DESC";
     $result_comment = mysqli_query($connect, $comment_query);
     return mysqli_fetch_all($result_comment, MYSQLI_ASSOC);
 }
-
+// insert comment
 if (isset($_POST['comment'])) {
     $post_id = $_POST['post_id'];
     $comment_text = mysqli_real_escape_string($connect, $_POST['text']);
@@ -79,7 +77,6 @@ if (isset($_POST['delete'])) {
     $delete_comment = "DELETE FROM `comment` WHERE `comment_id` = '$comment_id' AND `user_id` = '$user_id'";
     mysqli_query($connect, $delete_comment);
 }
-
 
 ?>
 <!DOCTYPE html>
@@ -106,7 +103,9 @@ if (isset($_POST['delete'])) {
         <!-- buttons section -->
         <section class="buttons">
             <form action="" method="POST">
-                <button><a href="add_post.php">Add <i class="fa-solid fa-plus"></i></a></button>
+                <a href="add_post.php" class="button-link">
+                    <button type="button">Add <i class="fa-solid fa-plus"></i></button>
+                </a>
                 <button type="submit" name="filter" value="all_posts">All Posts</button>
                 <button type="submit" name="filter" value="my_posts">My Posts</button>
             </form>
@@ -132,12 +131,14 @@ if (isset($_POST['delete'])) {
                 <!-- description -->
                 <div class="post-content">
                     <p><?php echo $data['description']; ?></p>
+                    <!-- file download -->
                     <?php
                     if (!empty($data['files'])) {
                         $file_name = basename($data['files']);
                         echo '<p>' . $file_name . " ".'<a href="' . $data['files'] . '" download>
                         <i class="fa-solid fa-file-export" style="color:#080a74;"></i></a>'.'</p>';
                     }
+                    //imge
                     $image_paths = explode(',', $data['images']);
                     foreach ($image_paths as $image_path) {
                         if (!empty($image_path)) {
@@ -154,6 +155,7 @@ if (isset($_POST['delete'])) {
                             <i class="fa-solid fa-heart"></i> <?php echo getLikeCount($connect, $data['post_id']); ?>
                         </button>
                     </form>
+                
                     <button class="comment-btn">
                         <i class="fa-regular fa-comment"></i><?php echo getCommentCount($connect, $data['post_id']); ?>
                     </button>
@@ -172,27 +174,31 @@ if (isset($_POST['delete'])) {
                 <div class="comments-list">
 
                     <?php $comments = getComments($connect, $data['post_id']); ?>
+                    <?php if (!empty($comments)) { ?>
                     <?php foreach ($comments as $comment) { ?>
                     <div class="comment">
                         <a href="profile.php?user_id=<?php echo $comment['user_id']; ?>">
                             <img src="./img/<?php echo $comment['image']; ?>" alt="user image">
                         </a>
                         <a href="profile.php?user_id=<?php echo $comment['user_id']; ?>">
-                            <p><strong><?php echo $comment['name']; ?>:</strong> <?php echo $comment['text']; ?></p>
-                        </a>
+                            <p><strong><?php echo $comment['name']; ?>:</strong> </a></p>
+                            <p ><?php echo $comment['text']; ?></p>
+                        
 
                         <!-- delete comment -->
                         <?php if ($comment['user_id'] == $user_id) { ?>
                             <form action="" method="POST" class="delete-comment-form">
                                 <input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>">
                                 <button type="submit" name="delete" class="delete-icon">
-                                    <i class="fa-solid fa-trash" style="color:#ff0000;"></i>
+                                    <i class="fa-solid fa-trash" ></i>
                                 </button>
                             </form>
                             <?php } ?>
 
                     </div>
                     <?php } ?>
+                    <?php } else{ ?>
+                        <?php echo "No comments yet"; }?>
                 </div>
             </article>
             <?php } ?>
@@ -200,11 +206,31 @@ if (isset($_POST['delete'])) {
     </div>
 </body>
 <script>
-document.querySelectorAll(".comment-btn").forEach(button => {
-    button.addEventListener("click", function() {
-        this.closest(".post-card").querySelector(".comment-form").style.display = "block";
+document.addEventListener("DOMContentLoaded", function () {
+    // Hide all comments lists and comment forms on page load
+    document.querySelectorAll(".comments-list, .comment-form").forEach(element => {
+        element.style.display = "none";
+    });
+
+    document.querySelectorAll(".comment-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const postCard = this.closest(".post-card");
+            const commentsList = postCard.querySelector(".comments-list");
+            const commentForm = postCard.querySelector(".comment-form");
+
+            // Toggle visibility
+            if (commentsList.style.display === "none") {
+                commentsList.style.display = "block";
+                commentForm.style.display = "block"; // Ensure text area appears
+            } else {
+                commentsList.style.display = "none";
+                commentForm.style.display = "none"; // Hide both when clicked again
+            }
+        });
     });
 });
+
+
 </script>
 
 </html>
