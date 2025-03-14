@@ -80,6 +80,17 @@ button a {
     text-decoration: none;
 }
 
+
+
+/* Button Link Styling */
+.button-link {
+    text-decoration: none;
+    display: inline-block;
+}
+
+
+
+
 /* Profile Section */
 .profile {
     display: flex;
@@ -260,35 +271,101 @@ button a {
     background: var(--color5);
 }
 
-/* Comments List */
+
+
+.hidden {
+    display: none !important;
+}
 .comments-list {
-    margin-top: 10px;
+    max-height: 200px; /* Increased height for better visibility */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding: 12px;
+    background-color: #f9f9f9; /* Softer background */
+    border-radius: 15px;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease-in-out;
 }
 
+/* Scrollbar Styling */
+.comments-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+    background-color: var(--color5); /* Themed scrollbar */
+    border-radius: 6px;
+}
+
+.comments-list::-webkit-scrollbar-track {
+    background: #e0e0e0;
+    border-radius: 6px;
+}
+
+/* Improve individual comment layout */
 .comment {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.3s ease-in-out;
 }
 
-.comment img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+.comment:last-child {
+    border-bottom: none; /* Remove last border */
 }
 
-.comment p {
-    font-size: 14px;
-    color: #555;
+.comment:hover {
+    background: rgba(90, 143, 118, 0.1); /* Subtle hover effect */
 }
 
+/* Improve username styling */
 .comment strong {
     color: var(--color3);
+    font-weight: 600;
 }
 
+/* Improve text readability */
+.comment p {
+    margin: 0;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.4;
+}
+
+/* Profile image styling */
+.comment img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color5);
+    transition: transform 0.3s ease-in-out;
+}
+
+.comment img:hover {
+    transform: scale(1.1);
+}
+.comment a{
+    text-decoration: none;
+    color: var(--color3);
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+/* Delete button enhancements */
+.delete-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-size: 14px;
+    transition: color 0.3s ease-in-out;
+}
+
+.delete-icon:hover {
+    color: red;
+}
 
 
 /* Responsive Design */
