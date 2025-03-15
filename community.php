@@ -2,7 +2,7 @@
 include 'connection.php';
 $user_id = $_SESSION['user_id'];
 
-// Function to select_community (NO CHANGES NEEDED)
+// Function to select_community 
 function select_community($connect, $filter, $user_id) {
     if ($filter == 'my_posts') {
         $select_posts = "SELECT `community`.*, `users`.`name`, `users`.`image` FROM `community`
@@ -21,10 +21,9 @@ function select_community($connect, $filter, $user_id) {
 // Determine the filter
 $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all_posts';
 
-// Get the community posts based on the filter
 $community = select_community($connect, $filter, $user_id);
 
-// Function to get like count (NO CHANGES NEEDED)
+// Function to get like count 
 function getLikeCount($connect, $post_id) {
     $like_query = "SELECT COUNT(*) as like_count FROM `like` WHERE `post_id` = $post_id";
     $result_like = mysqli_query($connect, $like_query);
@@ -32,6 +31,7 @@ function getLikeCount($connect, $post_id) {
     return $like_data['like_count'];
 }
 
+// hna 3l4an 7war el refresh f est5dmna api w ajax
 // **LIKE/UNLIKE HANDLING (API ENDPOINT)**
 if (isset($_POST['action']) && $_POST['action'] == 'like') {
     $post_id = $_POST['post_id'];
@@ -42,22 +42,22 @@ if (isset($_POST['action']) && $_POST['action'] == 'like') {
     if (mysqli_num_rows($result_check) > 0) {
         $delete_like = "DELETE FROM `like` WHERE `user_id` = '$user_id' AND `post_id` = '$post_id'";
         mysqli_query($connect, $delete_like);
-        $liked = false; // Indicates the user *unliked* the post
+        $liked = false; 
     } else {
         $insert_like = "INSERT INTO `like` (user_id, post_id) VALUES ('$user_id', '$post_id')";
         mysqli_query($connect, $insert_like);
-        $liked = true;  // Indicates the user *liked* the post
+        $liked = true; 
     }
 
-    $new_like_count = getLikeCount($connect, $post_id); // Get updated count
+    $new_like_count = getLikeCount($connect, $post_id); 
 
-    // Return a JSON response.  This is CRUCIAL for AJAX
+    // Return a JSON response for AJAX
     header('Content-Type: application/json');
     echo json_encode(['success' => true, 'like_count' => $new_like_count, 'liked' => $liked, 'post_id' => $post_id]);
-    exit; //VERY IMPORTANT:  Stop further execution after handling the AJAX request.
+    exit; 
 }
 
-// Function to get comment count (NO CHANGES NEEDED)
+// Function to get comment count 
 function getCommentCount($connect, $post_id) {
     $comment_query = "SELECT COUNT(*) as comment_count FROM `comment` WHERE `post_id` = $post_id";
     $result_comment = mysqli_query($connect, $comment_query);
@@ -65,7 +65,7 @@ function getCommentCount($connect, $post_id) {
     return $comment_data['comment_count'];
 }
 
-// Function to get comments (SLIGHT MODIFICATION FOR JSON)
+// Function to get comments 
 function getComments($connect, $post_id) {
     $comment_query = "SELECT `comment`.*, `users`.`name`, `users`.`image` FROM `comment`
                     JOIN `users` ON `comment`.`user_id` = `users`.`user_id`
@@ -73,7 +73,7 @@ function getComments($connect, $post_id) {
     $result_comment = mysqli_query($connect, $comment_query);
     return mysqli_fetch_all($result_comment, MYSQLI_ASSOC);
 }
-
+// hna 3l4an 7war el refresh f est5dmna api w ajax
 // **INSERT COMMENT HANDLING (API ENDPOINT)**
 if (isset($_POST['action']) && $_POST['action'] == 'comment') {
     $post_id = $_POST['post_id'];
@@ -100,7 +100,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'comment') {
         exit;
     }
 }
-
+// hna 3l4an 7war el refresh f est5dmna api w ajax
 // **DELETE COMMENT HANDLING (API ENDPOINT)**
 if (isset($_POST['action']) && $_POST['action'] == 'delete') {
     $comment_id = $_POST['comment_id'];
@@ -112,23 +112,17 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete') {
     echo json_encode(['success' => true, 'comment_id' => $comment_id]);
     exit;
 }
-
+// hna 3l4an 7war el refresh f est5dmna api w ajax
 // **DELETE POST HANDLING (API ENDPOINT)**
 if (isset($_POST['action']) && $_POST['action'] == 'delete_post') {
     $post_id = $_POST['post_id'];
-
-    // Verify Ownership BEFORE Deleting (CRITICAL SECURITY CHECK)
+    
     $check_ownership_query = "SELECT `user_id` FROM `community` WHERE `post_id` = '$post_id'";
     $result_ownership = mysqli_query($connect, $check_ownership_query);
-
+    // hna byms7 kol 7aga lma yms7 el post 3l4an el likes w el cooments ttms7 kman f el db 
     if ($result_ownership && mysqli_num_rows($result_ownership) > 0) {
         $post_data = mysqli_fetch_assoc($result_ownership);
         if ($post_data['user_id'] == $user_id) {
-            // User owns the post, proceed with deletion
-
-            // **IMPORTANT:  Add code here to delete associated likes, comments, and files!**
-            // **CASCADE DELETE!  Otherwise, you'll have orphaned data.**
-            // Example (adapt to your table names):
             $delete_likes = "DELETE FROM `like` WHERE `post_id` = '$post_id'";
             mysqli_query($connect, $delete_likes);
 
@@ -192,11 +186,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete_post') {
         <main class="content">
             <?php foreach ($community as $data) {
               // Check if the user has liked the post for each post
-              $post_id = $data['post_id'];  // get post id in post loop
+            $post_id = $data['post_id']; 
             $check_like_query = "SELECT * FROM `like` WHERE `user_id` = '$user_id' AND `post_id` = '$post_id'";
             $new_like_count = mysqli_query($connect, $check_like_query);
 
-            $heartColor = (mysqli_num_rows($new_like_count) > 0) ? 'red' : '';//  Determine color
+            $heartColor = (mysqli_num_rows($new_like_count) > 0) ? 'red' : '';
             ?>
             <!-- post -->
             <article class="post-card" data-post-id="<?php echo $data['post_id']; ?>">
