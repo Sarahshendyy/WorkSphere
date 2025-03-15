@@ -9,8 +9,8 @@ if (isset($_POST['submit'])) {
 
     $image_paths = [];
     $image_paths_str = null; // Initialize to null
-
-    if ($images && is_array($images['tmp_name']) && count($images['tmp_name']) > 0) {  // Check if images were actually uploaded
+    
+    if ($images && is_array($images['tmp_name']) && count($images['tmp_name']) > 0) {  
         foreach ($images['tmp_name'] as $key => $tmp_name) {
             if (!empty($tmp_name)) { 
                 $image_name = basename($images['name'][$key]);
@@ -19,7 +19,7 @@ if (isset($_POST['submit'])) {
                 $image_paths[] = $image_path;
             }
         }
-        $image_paths_str = implode(',', $image_paths);
+        $image_paths_str = !empty($image_paths) ? implode(',', $image_paths) : null;
     }
 
     $file_path = null; 
