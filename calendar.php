@@ -15,6 +15,12 @@ include 'connection.php';
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <!-- JS for full calendar -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+
+    <!-- Tooltipster CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/css/tooltipster.min.css">
+    <!-- Tooltipster JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/js/jquery.tooltipster.min.js"></script>
+
     <link rel="stylesheet" href="./css/calendar.css">
 </head>
 
@@ -24,25 +30,26 @@ include 'connection.php';
         $(document).ready(function () {
             $('#calendar').fullCalendar({
                 editable: false,
+                timezone: 'UTC',
                 events: function (start, end, timezone, callback) {
                     $.ajax({
                         url: 'display_booking.php',
                         dataType: 'json',
                         success: function (bookingData) {
                             var events = [];
-                            var currentTime = moment();
+                            var currentTime = moment().utc();
 
                             if (bookingData.status) {
                                 $.each(bookingData.data, function (i, booking) {
-                                    var startTime = moment(booking.start);
-                                    var endTime = moment(booking.end);
+                                    var startTime = moment.utc(booking.start);
+                                    var endTime = moment.utc(booking.end);
 
                                     if (endTime.isBefore(currentTime)) {
-                                        booking.color = 'green'; // Completed
+                                        booking.color = 'green';
                                     } else if (startTime.isAfter(currentTime)) {
-                                        booking.color = 'orange'; // Upcoming
+                                        booking.color = 'orange';
                                     } else {
-                                        booking.color = 'red'; // Ongoing
+                                        booking.color = 'red';
                                     }
 
                                     events.push(booking);
@@ -57,8 +64,12 @@ include 'connection.php';
                     });
                 },
                 eventClick: function (event) {
-                    window.location.href = 'my_bookings.php' ;
-                }
+                    window.location.href = 'my_bookings.php';
+                },
+                eventRender: function (event, element) {
+    element.find('.fc-time').remove(); // Remove the default time
+    element.find('.fc-title').html(event.title);
+}
             });
         });
     </script>

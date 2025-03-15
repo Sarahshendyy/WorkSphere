@@ -4,9 +4,11 @@ include 'connection.php';
 $user_id = $_SESSION['user_id'];
 
 // Fetch bookings
-$display_query = "SELECT `bookings`.*, `rooms`.`room_name`, `users`.`name` FROM `bookings` 
+$display_query = "SELECT `bookings`.*, `rooms`.`room_name`, `workspaces`.`name`
+ FROM `bookings` 
 JOIN `rooms` ON `bookings`.`room_id` = `rooms`.`room_id`
 JOIN `users` ON `bookings`.`user_id` = `users`.`user_id`
+JOIN `workspaces` ON `rooms`.`workspace_id` = `workspaces`.`workspace_id`
 WHERE `bookings`.`user_id` = $user_id";
 
 $run = mysqli_query($connect, $display_query);
@@ -17,9 +19,12 @@ if ($count > 0) {
     foreach ($run as $data_row) {
         $data_arr[] = array(
             'id' => $data_row['booking_id'],
-            'title' => "Room: " . $data_row['room_name'], '<br>',
-            'start' => $data_row['date'] . "T" . $data_row['start_time'], '<br>',
-            'end' => $data_row['date'] . "T" . $data_row['end_time'],
+            'title' =>  "Workspace:". $data_row['name']."<br>Room: " . $data_row['room_name'] . "<br>Start: " .
+$data_row['start_time'] . "<br>End: " . $data_row['end_time'],
+
+            "start" => $data_row['date'] . "T" . $data_row['start_time'], '<br>',
+            "end" => $data_row['date'] . "T" . $data_row['end_time'],
+           
             'color' => '#ff5733', // Custom color for bookings
             'textColor' => '#ffffff'
         );
