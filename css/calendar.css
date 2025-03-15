@@ -158,3 +158,13 @@ body{
   .fc-button:hover {
     background-color: #fda521;
 }  
+.tooltipster-base {
+  font-size: 12px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+
+.fc-content{
+   height: auto !important;
+}
