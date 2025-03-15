@@ -1,19 +1,6 @@
 <?php
 include "connection.php";
 
-$select_ws = "SELECT workspaces.*, 
-                     zone.zone_name, 
-                     rooms.images, 
-                     COALESCE(AVG(reviews.rating), 0) AS avg_rating
-              FROM `workspaces` 
-             LEFT JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
-              LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
-              LEFT JOIN `bookings` ON `workspaces`.`workspace_id` = `bookings`.`workspace_id`
-              LEFT JOIN `reviews` ON `bookings`.`booking_id` = `reviews`.`booking_id`
-              GROUP BY workspaces.workspace_id";
-$run_select_ws = mysqli_query($connect, $select_ws);
-
-
 $order_by = "workspaces.workspace_id"; // Default sorting
 if (!empty($_POST['sort'])) {
     $sort_option = $_POST['sort'];
@@ -27,14 +14,15 @@ if (!empty($_POST['sort'])) {
 }
 
 $select_ws = "SELECT workspaces.*, 
-                    zone.zone_name, 
-                    rooms.images, 
+                     zone.zone_name, 
+                     rooms.images, 
                      COALESCE(AVG(reviews.rating), 0) AS avg_rating
               FROM `workspaces` 
-             JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
+              JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
               LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
-              LEFT JOIN `bookings` ON `workspaces`.`workspace_id` = `bookings`.`workspace_id`
+              LEFT JOIN `bookings` ON `rooms`.`room_id` = `bookings`.`room_id`
               LEFT JOIN `reviews` ON `bookings`.`booking_id` = `reviews`.`booking_id`
+              WHERE `Availability`=2
               GROUP BY workspaces.workspace_id
               ORDER BY $order_by";
 $run_select_ws = mysqli_query($connect, $select_ws);
@@ -45,20 +33,21 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
     $select_search = "SELECT workspaces.*, 
                            zone.zone_name, 
                            rooms.images, 
-                     COALESCE(AVG(reviews.rating), 0) AS avg_rating
-              FROM `workspaces` 
-             JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
-              LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
-              LEFT JOIN `bookings` ON `workspaces`.`workspace_id` = `bookings`.`workspace_id`
-              LEFT JOIN `reviews` ON `bookings`.`booking_id` = `reviews`.`booking_id`
-                  WHERE (`workspaces`.`name` LIKE '%$text%') 
-                     OR (`workspaces`.`location` LIKE '%$text%') 
-                     OR (`zone`.`zone_name` LIKE '%$text%') 
-                  GROUP BY workspaces.workspace_id
-                  ORDER BY $order_by";
+                           COALESCE(AVG(reviews.rating), 0) AS avg_rating
+                      FROM `workspaces` 
+                      JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
+                      LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
+                      LEFT JOIN `bookings` ON `rooms`.`room_id` = `bookings`.`room_id`
+                      LEFT JOIN `reviews` ON `bookings`.`booking_id` = `reviews`.`booking_id`
+                      WHERE (`workspaces`.`name` LIKE '%$text%') 
+                         OR (`workspaces`.`location` LIKE '%$text%') 
+                         OR (`zone`.`zone_name` LIKE '%$text%') 
+                         AND `Availability`=2
+                          
+                      GROUP BY workspaces.workspace_id
+                      ORDER BY $order_by";
     $run_select_search = mysqli_query($connect, $select_search);
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -77,9 +66,7 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
             justify-content: center;
             align-items: center;
             gap: 15px;
-            /* Space between elements */
             margin: 30px auto;
-            /* Add spacing */
             max-width: 60%;
         }
 
@@ -87,7 +74,6 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
         .search-sort-container select {
             width: 100%;
             max-width: 250px;
-            /* Set a max width */
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #ccc;
@@ -152,46 +138,53 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
             foreach ($result_set as $index => $row) {
                 $carouselId = "carouselExampleIndicators" . $index; ?>
                 <div class="workspace-card">
-                    <div class="card">
-                        <?php
-                        $workspace_id = $row['workspace_id'];
-                        $img_query = "SELECT `images` FROM `rooms` WHERE `workspace_id` = '$workspace_id'";
-                        $run_img = mysqli_query($connect, $img_query); ?>
+                    <a href="workspace_details.php?ws_id=<?php echo $row["workspace_id"]; ?>">
+                        <div class="card">
+                            <?php
+                            $workspace_id = $row['workspace_id'];
+                            $img_query = "SELECT `images` FROM `rooms` WHERE `workspace_id` = '$workspace_id'";
+                            $run_img = mysqli_query($connect, $img_query);
+                            ?>
 
-                        <div id="<?php echo $carouselId; ?>" class="carousel slide">
-                            <div class="carousel-inner">
-                                <?php
-                                $first = true;
-                                while ($imag = mysqli_fetch_assoc($run_img)) {
-                                    ?>
-                                    <div class="carousel-item <?php echo $first ? 'active' : ''; ?>">
-                                        <img src="./img/<?php echo $imag['images']; ?>" class="d-block w-100">
-                                    </div>
+                            <div id="<?php echo $carouselId; ?>" class="carousel slide">
+                                <div class="carousel-inner">
                                     <?php
-                                    $first = false;
-                                }
-                                ?>
+                                    $first = true;
+                                    while ($imag = mysqli_fetch_assoc($run_img)) {
+                                        $images = explode(',', $imag['images']);
+                                        foreach ($images as $image) {
+                                            $image = trim($image); // Remove any extra spaces
+                                            ?>
+                                            <div class="carousel-item <?php echo $first ? 'active' : ''; ?>">
+                                                <img src="./img/<?php echo $image; ?>" class="d-block w-100" alt="Workspace Image">
+                                            </div>
+                                            <?php
+                                            $first = false; // Only the first image should be active
+                                        }
+                                    }
+                                    ?>
+                                </div>
+
+                                <!-- Carousel Navigation Buttons -->
+                                <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $carouselId; ?>" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $carouselId; ?>" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
                             </div>
 
-
-                            <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $carouselId; ?>"
-                                data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $carouselId; ?>"
-                                data-bs-slide="next">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
+                            <div class="card-body text-center">
+                                <h2><?php echo htmlspecialchars($row['name']); ?></h2>
+                                <h3><?php echo htmlspecialchars($row['zone_name']); ?></h3>
+                                <h4>Price/hr: <?php echo htmlspecialchars($row['price/hr']); ?> EGP</h4>
+                                <p class="rating">Rating: <?php echo number_format($row['avg_rating'], 1); ?> / 5</p>
+                            </div>
                         </div>
-                        <div class="card-body text-center">
-                            <h2><?php echo htmlspecialchars($row['name']); ?></h2>
-                            <h3><?php echo htmlspecialchars($row['zone_name']); ?></h3>
-                            <h4>Price/hr: <?php echo htmlspecialchars($row['price/hr']); ?> EGP</h4>
-                            <p class="rating">Rating: <?php echo number_format($row['avg_rating'], 1); ?> / 5</p>
-                        </div>
-                    </div>
+                    </a>
                 </div>
-            <?php }
+                <?php
+            }
         } else {
             echo "<p class='text-center'>No workspaces found.</p>";
         }
