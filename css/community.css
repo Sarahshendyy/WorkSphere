@@ -12,6 +12,9 @@
     --color4: #203b37;
     --color5: #5a8f76;
     --color6: #96cdb0;
+    --border-radius: 12px; /* Consistent border radius */
+    --box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15); /* Consistent box shadow */
+    --transition: all 0.3s ease-in-out; /* Consistent transition */
 }
 
 /* General Styles */
@@ -62,7 +65,7 @@ body {
     background: linear-gradient(135deg, var(--color4), var(--color5));
     font-size: 16px;
     font-weight: 600;
-    transition: all 0.3s ease-in-out;
+    transition: var(--transition);
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -75,21 +78,11 @@ body {
     font-size: 18px;
 }
 
-button a {
-    color: white;
-    text-decoration: none;
-}
-
-
-
-/* Button Link Styling */
 .button-link {
+    color: white;
     text-decoration: none;
     display: inline-block;
 }
-
-
-
 
 /* Profile Section */
 .profile {
@@ -97,7 +90,7 @@ button a {
     align-items: center;
     gap: 12px;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     transition: transform 0.3s ease-in-out;
     margin-bottom: 10px;
 }
@@ -119,7 +112,6 @@ button a {
     display: block;
 }
 
-/* Hover Effect for Image */
 .profile-image:hover {
     transform: scale(1.1);
 }
@@ -138,7 +130,6 @@ button a {
     padding: 5px 0;
 }
 
-/* Hover Effect for Name */
 .profile-name a:hover {
     color: var(--color5);
 }
@@ -147,10 +138,10 @@ button a {
 .post-card {
     background: var(--color1);
     padding: 15px;
-    border-radius: 12px;
+    border-radius: var(--border-radius);
     margin-bottom: 15px;
     overflow: hidden;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--box-shadow);
 }
 
 /* Post Text */
@@ -165,10 +156,35 @@ button a {
 .post-content img {
     width: 100%;
     max-height: 450px;
-    object-fit: cover;
-    border-radius: 10px;
+    object-fit: contain; /* Changed to 'contain' */
+    border-radius: var(--border-radius);
     margin-top: 10px;
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+.delete-post-btn {
+    background-color: #e74c3c; /* Reddish color for deletion */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+    float: right; /* Position it to the right */
+}
+
+.delete-post-btn:hover {
+    background-color: #c0392b; /* Darker shade on hover */
+}
+
+.delete-post-btn i {
+    margin-right: 5px; /* Space between icon and text */
+}
+/* Hover effects */
+.post-content img:hover {
+    transform: scale(1.03);
+   
 }
 .post-react {
     display: flex;
@@ -178,8 +194,8 @@ button a {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
-
-.post-react button {
+/*  Like button style */
+.like-button {
     background: none;
     border: none;
     font-size: 16px;
@@ -192,28 +208,50 @@ button a {
     padding: 8px 15px;
 }
 
-.post-react button:hover {
-    color: #5a8f76;
+.like-button:hover {
+    color: var(--color5);
 }
+
+/*  Comment button style */
+.comment-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #606770;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 8px 15px;
+}
+
+.comment-btn:hover {
+    color: var(--color5);
+}
+
 
 /* Comment Section */
 .comment-form {
-    display: none; /* Initially hidden */
+    display: none;
     padding: 10px;
 }
+
 .comment-input-container {
     position: relative;
     width: 100%;
 }
+
 .comment-input-container .text {
     width: 100%;
     padding: 12px 50px 12px 15px;
     border: 2px solid #ddd;
-    border-radius: 18px;
+    border-radius: 24px; /* More rounded */
     font-size: 14px;
     outline: none;
     resize: none;
     background: #f9f9f9;
+    transition: border-color 0.3s ease;
 }
 
 .comment-input-container .send-icon {
@@ -225,80 +263,55 @@ button a {
     color: #888;
     font-size: 18px;
     cursor: pointer;
+    transition: color 0.3s ease;
 }
+
 .comment-input-container .send-icon:hover {
-    color: #5a8f76;
-}
-/* Hover Effect */
-.text:hover {
-    border-color: var(--color5);
+    color: var(--color5);
 }
 
 /* Focus Effect */
-.text:focus {
+.comment-input-container .text:focus {
     border-color: var(--color5);
     background: #fff;
     box-shadow: 0 0 8px rgba(90, 143, 118, 0.3);
 }
 
 /* Placeholder Styling */
-.text::placeholder {
+.comment-input-container .text::placeholder {
     color: #888;
     font-size: 14px;
     font-style: italic;
-    transition: 0.3s ease-in-out;
+    transition: opacity 0.3s ease;
 }
 
-/* Placeholder fade on focus */
-.text:focus::placeholder {
+.comment-input-container .text:focus::placeholder {
     opacity: 0.5;
 }
 
-
-.comments-section button {
-    margin-top: 5px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    background: var(--color4);
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.comments-section button:hover {
-    background: var(--color5);
-}
-
-
-
-.hidden {
-    display: none !important;
-}
 .comments-list {
-    max-height: 200px; /* Increased height for better visibility */
-    overflow-y: auto; /* Enables vertical scrolling */
+    max-height: 250px;
+    overflow-y: auto;
     padding: 12px;
-    background-color: #f9f9f9; /* Softer background */
-    border-radius: 15px;
+    background-color: #f9f9f9;
+    border-radius: var(--border-radius);
     border: 1px solid #ddd;
-    transition: all 0.3s ease-in-out;
+    transition: var(--transition);
 }
 
 /* Scrollbar Styling */
 .comments-list::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 .comments-list::-webkit-scrollbar-thumb {
-    background-color: var(--color5); /* Themed scrollbar */
-    border-radius: 6px;
+    background-color: var(--color5);
+    border-radius: 8px;
 }
 
 .comments-list::-webkit-scrollbar-track {
     background: #e0e0e0;
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 /* Improve individual comment layout */
@@ -312,20 +325,20 @@ button a {
 }
 
 .comment:last-child {
-    border-bottom: none; /* Remove last border */
+    border-bottom: none;
 }
 
 .comment:hover {
-    background: rgba(90, 143, 118, 0.1); /* Subtle hover effect */
+    background: rgba(90, 143, 118, 0.1);
 }
-
-/* Improve username styling */
+.comment-content{
+    width: 100%;
+}
 .comment strong {
     color: var(--color3);
     font-weight: 600;
 }
 
-/* Improve text readability */
 .comment p {
     margin: 0;
     font-size: 14px;
@@ -346,7 +359,8 @@ button a {
 .comment img:hover {
     transform: scale(1.1);
 }
-.comment a{
+
+.comment a {
     text-decoration: none;
     color: var(--color3);
     font-weight: bold;
@@ -366,7 +380,9 @@ button a {
 .delete-icon:hover {
     color: red;
 }
-
+.no-comments{
+    text-align: center;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -399,5 +415,14 @@ button a {
     .post-react button {
         font-size: 16px;
     }
-}
+    .comment-input-container .text {
+        padding: 10px 40px 10px 12px;
+        font-size: 13px;
+    }
 
+    .comment-input-container .send-icon {
+        right: 10px;
+        bottom: 10px;
+        font-size: 16px;
+    }
+}
