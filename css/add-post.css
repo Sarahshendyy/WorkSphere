@@ -1,0 +1,138 @@
+/* Add Post */
+
+/* Reset and Root Variables */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color1: #f8f7e5;
+    --color2: #c18d52;
+    --color3: #081b1b;
+    --color4: #203b37;
+    --color5: #5a8f76;
+    --color6: #96cdb0;
+    --border-radius: 12px;
+    --box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease-in-out;
+    --image-bg: #e0f2f1;        /* Light background for image uploads */
+    --file-bg: #fff0e5;          /* Light background for file uploads */
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--color1);
+    color: #444;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+h1 {
+    text-align: center;
+    color: var(--color3);
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    line-height: 1.4;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+    border-color: var(--color5);
+    box-shadow: 0 0 8px rgba(90, 143, 118, 0.3);
+}
+
+textarea::placeholder {
+    color: #aaa;
+}
+/* Style input groups to better separate the label and input */
+.input-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--color3);
+    display: flex;          /* Use flex to align the icon and text */
+    align-items: center;   /* Vertically center the icon and text */
+    gap: 5px;              /* Add space between the icon and text */
+}
+
+/* Styling for image upload */
+.image-upload input[type="file"] {
+    padding: 10px;
+    border: 2px dashed var(--color5);  /* Use dashed border for images */
+    border-radius: var(--border-radius);
+    background-color: var(--image-bg);   /* Light green background for images */
+    color: #555;
+    font-size: 14px;
+    transition: border-color 0.3s ease, background-color 0.3s ease; /* Add background color transition */
+}
+
+.image-upload input[type="file"]:focus {
+    border-color: var(--color5);
+    outline: none;
+    box-shadow: 0 0 8px rgba(90, 143, 118, 0.3);
+    background-color: #d0e8e6;  /* Darken background on focus */
+}
+
+/* Styling for file upload */
+.file-upload input[type="file"] {
+    padding: 10px;
+    border: 2px solid #ddd;          /* Solid border for files */
+    border-radius: var(--border-radius);
+    background-color: var(--file-bg);     /* Light orange background for files */
+    color: #555;
+    font-size: 14px;
+    transition: border-color 0.3s ease, background-color 0.3s ease; /* Add background color transition */
+}
+
+.file-upload input[type="file"]:focus {
+    border-color: var(--color5);
+    outline: none;
+    box-shadow: 0 0 8px rgba(90, 143, 118, 0.3);
+    background-color: #f2e2d4;  /* Darken background on focus */
+}
+button[type="submit"] {
+    background: linear-gradient(135deg, var(--color4), var(--color5));
+    color: var(--color1);
+    padding: 12px 20px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-3px);
+    opacity: 0.9;
+}
