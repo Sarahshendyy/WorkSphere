@@ -2,7 +2,7 @@
 include 'connection.php';
 $user_id = $_SESSION['user_id'];
 
-// Function to select_community
+// Function to select_community (NO CHANGES NEEDED)
 function select_community($connect, $filter, $user_id) {
     if ($filter == 'my_posts') {
         $select_posts = "SELECT `community`.*, `users`.`name`, `users`.`image` FROM `community`
@@ -17,12 +17,14 @@ function select_community($connect, $filter, $user_id) {
     $result_post = mysqli_query($connect, $select_posts);
     return mysqli_fetch_all($result_post, MYSQLI_ASSOC);
 }
+
 // Determine the filter
 $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all_posts';
+
 // Get the community posts based on the filter
 $community = select_community($connect, $filter, $user_id);
 
-// Function to get like count
+// Function to get like count (NO CHANGES NEEDED)
 function getLikeCount($connect, $post_id) {
     $like_query = "SELECT COUNT(*) as like_count FROM `like` WHERE `post_id` = $post_id";
     $result_like = mysqli_query($connect, $like_query);
@@ -30,23 +32,32 @@ function getLikeCount($connect, $post_id) {
     return $like_data['like_count'];
 }
 
-// Handle like button click
-if (isset($_POST['like'])) {
+// **LIKE/UNLIKE HANDLING (API ENDPOINT)**
+if (isset($_POST['action']) && $_POST['action'] == 'like') {
     $post_id = $_POST['post_id'];
-    // Check if the user already liked the post
+
     $check_like = "SELECT * FROM `like` WHERE `user_id` = '$user_id' AND `post_id` = '$post_id'";
     $result_check = mysqli_query($connect, $check_like);
 
-    if (mysqli_num_rows($result_check) > 0) { 
+    if (mysqli_num_rows($result_check) > 0) {
         $delete_like = "DELETE FROM `like` WHERE `user_id` = '$user_id' AND `post_id` = '$post_id'";
         mysqli_query($connect, $delete_like);
-    } else { 
+        $liked = false; // Indicates the user *unliked* the post
+    } else {
         $insert_like = "INSERT INTO `like` (user_id, post_id) VALUES ('$user_id', '$post_id')";
         mysqli_query($connect, $insert_like);
+        $liked = true;  // Indicates the user *liked* the post
     }
+
+    $new_like_count = getLikeCount($connect, $post_id); // Get updated count
+
+    // Return a JSON response.  This is CRUCIAL for AJAX
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'like_count' => $new_like_count, 'liked' => $liked, 'post_id' => $post_id]);
+    exit; //VERY IMPORTANT:  Stop further execution after handling the AJAX request.
 }
 
-// Function to get comment count
+// Function to get comment count (NO CHANGES NEEDED)
 function getCommentCount($connect, $post_id) {
     $comment_query = "SELECT COUNT(*) as comment_count FROM `comment` WHERE `post_id` = $post_id";
     $result_comment = mysqli_query($connect, $comment_query);
@@ -54,7 +65,7 @@ function getCommentCount($connect, $post_id) {
     return $comment_data['comment_count'];
 }
 
-// Function to get comments
+// Function to get comments (SLIGHT MODIFICATION FOR JSON)
 function getComments($connect, $post_id) {
     $comment_query = "SELECT `comment`.*, `users`.`name`, `users`.`image` FROM `comment`
                     JOIN `users` ON `comment`.`user_id` = `users`.`user_id`
@@ -62,22 +73,89 @@ function getComments($connect, $post_id) {
     $result_comment = mysqli_query($connect, $comment_query);
     return mysqli_fetch_all($result_comment, MYSQLI_ASSOC);
 }
-// insert comment
-if (isset($_POST['comment'])) {
+
+// **INSERT COMMENT HANDLING (API ENDPOINT)**
+if (isset($_POST['action']) && $_POST['action'] == 'comment') {
     $post_id = $_POST['post_id'];
     $comment_text = mysqli_real_escape_string($connect, $_POST['text']);
+
     if (!empty($comment_text)) {
         $insert_comment = "INSERT INTO `comment` VALUES (NULL,'$user_id', '$post_id', '$comment_text')";
         mysqli_query($connect, $insert_comment);
+
+        // Fetch the newly added comment (along with user data)
+        $new_comment_query = "SELECT `comment`.*, `users`.`name`, `users`.`image` FROM `comment`
+                               JOIN `users` ON `comment`.`user_id` = `users`.`user_id`
+                               WHERE `comment`.`user_id` = '$user_id' AND `comment`.`post_id` = '$post_id' AND `comment`.`text` = '$comment_text'
+                               ORDER BY `comment_id` DESC LIMIT 1"; // Get the last inserted
+        $result_new_comment = mysqli_query($connect, $new_comment_query);
+        $new_comment = mysqli_fetch_assoc($result_new_comment);
+
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'comment' => $new_comment, 'post_id' => $post_id]); //Return new comment
+        exit;
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Comment text cannot be empty.']);
+        exit;
     }
 }
-//delete comments
-if (isset($_POST['delete'])) {
+
+// **DELETE COMMENT HANDLING (API ENDPOINT)**
+if (isset($_POST['action']) && $_POST['action'] == 'delete') {
     $comment_id = $_POST['comment_id'];
+
     $delete_comment = "DELETE FROM `comment` WHERE `comment_id` = '$comment_id' AND `user_id` = '$user_id'";
     mysqli_query($connect, $delete_comment);
+
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'comment_id' => $comment_id]);
+    exit;
 }
 
+// **DELETE POST HANDLING (API ENDPOINT)**
+if (isset($_POST['action']) && $_POST['action'] == 'delete_post') {
+    $post_id = $_POST['post_id'];
+
+    // Verify Ownership BEFORE Deleting (CRITICAL SECURITY CHECK)
+    $check_ownership_query = "SELECT `user_id` FROM `community` WHERE `post_id` = '$post_id'";
+    $result_ownership = mysqli_query($connect, $check_ownership_query);
+
+    if ($result_ownership && mysqli_num_rows($result_ownership) > 0) {
+        $post_data = mysqli_fetch_assoc($result_ownership);
+        if ($post_data['user_id'] == $user_id) {
+            // User owns the post, proceed with deletion
+
+            // **IMPORTANT:  Add code here to delete associated likes, comments, and files!**
+            // **CASCADE DELETE!  Otherwise, you'll have orphaned data.**
+            // Example (adapt to your table names):
+            $delete_likes = "DELETE FROM `like` WHERE `post_id` = '$post_id'";
+            mysqli_query($connect, $delete_likes);
+
+            $delete_comments = "DELETE FROM `comment` WHERE `post_id` = '$post_id'";
+            mysqli_query($connect, $delete_comments);
+
+            // Also, delete any files associated with the post from the server.
+
+            $delete_post = "DELETE FROM `community` WHERE `post_id` = '$post_id'";
+            mysqli_query($connect, $delete_post);
+
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'post_id' => $post_id]);
+            exit;
+        } else {
+            // User does not own the post
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'You do not have permission to delete this post.']);
+            exit;
+        }
+    } else {
+        // Post not found or database error
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Post not found or database error.']);
+        exit;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -112,9 +190,22 @@ if (isset($_POST['delete'])) {
         </section>
         <!-- main content -->
         <main class="content">
-            <?php foreach ($community as $data) { ?>
+            <?php foreach ($community as $data) {
+              // Check if the user has liked the post for each post
+              $post_id = $data['post_id'];  // get post id in post loop
+            $check_like_query = "SELECT * FROM `like` WHERE `user_id` = '$user_id' AND `post_id` = '$post_id'";
+            $new_like_count = mysqli_query($connect, $check_like_query);
+
+            $heartColor = (mysqli_num_rows($new_like_count) > 0) ? 'red' : '';//  Determine color
+            ?>
             <!-- post -->
-            <article class="post-card">
+            <article class="post-card" data-post-id="<?php echo $data['post_id']; ?>">
+                <!-- delete post -->
+                <?php if ($data['user_id'] == $user_id) { ?>
+                <button class="delete-post-btn" data-post-id="<?php echo $data['post_id']; ?>">
+                    <i class="fa-solid fa-trash"></i> Delete Post
+                </button>
+                <?php } ?>
                 <!-- profile -->
                 <div class="profile">
                     <div class="profile-image">
@@ -130,107 +221,83 @@ if (isset($_POST['delete'])) {
                 </div>
                 <!-- description -->
                 <div class="post-content">
-                    <p><?php echo $data['description']; ?></p>
+                    <p><?php echo htmlspecialchars($data['description']); ?></p>
                     <!-- file download -->
                     <?php
                     if (!empty($data['files'])) {
                         $file_name = basename($data['files']);
-                        echo '<p>' . $file_name . " ".'<a href="' . $data['files'] . '" download>
+                        echo '<p>' . htmlspecialchars($file_name) . " ".'<a href="' . htmlspecialchars($data['files']) . '" download>
                         <i class="fa-solid fa-file-export" style="color:#080a74;"></i></a>'.'</p>';
                     }
                     //imge
                     $image_paths = explode(',', $data['images']);
                     foreach ($image_paths as $image_path) {
                         if (!empty($image_path)) {
-                            echo '<img src="' . $image_path . '" alt="post image">';
+                            echo '<img src="' . htmlspecialchars($image_path) . '" alt="post image">';
                         }
                     }
                     ?>
                 </div>
                 <!-- like/comment -->
                 <div class="post-react">
-                    <form action="" method="POST" class="reaction-form">
-                        <input type="hidden" name="post_id" value="<?php echo $data['post_id']; ?>">
-                        <button type="submit" name="like">
-                            <i class="fa-solid fa-heart"></i> <?php echo getLikeCount($connect, $data['post_id']); ?>
-                        </button>
-                    </form>
-                
+
+
+                    <button class="like-button">
+                        <i class="fa-solid fa-heart" style="color: <?php echo $heartColor; ?>;"></i>
+                        <span class="like-count"><?php echo getLikeCount($connect, $data['post_id']); ?></span>
+                    </button>
+
+
                     <button class="comment-btn">
-                        <i class="fa-regular fa-comment"></i><?php echo getCommentCount($connect, $data['post_id']); ?>
+                        <i class="fa-regular fa-comment"></i><span
+                            class="comment-count"><?php echo getCommentCount($connect, $data['post_id']); ?></span>
                     </button>
                 </div>
                 <!-- Comment Section (Hidden Initially) -->
-                <form action="" method="POST" class="comment-form">
-                    <input type="hidden" name="post_id" value="<?php echo $data['post_id']; ?>">
+                <div class="comment-form">
                     <div class="comment-input-container">
                         <textarea class="text" name="text" placeholder="Write a comment.." required></textarea>
-                        <button type="submit" name="comment" class="send-icon">
+                        <button class="send-icon comment-submit" data-post-id="<?php echo $data['post_id']; ?>">
                             <i class="fa-solid fa-paper-plane"></i>
                         </button>
                     </div>
-                </form>
+                </div>
+
                 <!-- list comment -->
                 <div class="comments-list">
-
                     <?php $comments = getComments($connect, $data['post_id']); ?>
                     <?php if (!empty($comments)) { ?>
                     <?php foreach ($comments as $comment) { ?>
-                    <div class="comment">
+                    <div class="comment" data-comment-id="<?php echo $comment['comment_id']; ?>">
                         <a href="profile.php?user_id=<?php echo $comment['user_id']; ?>">
-                            <img src="./img/<?php echo $comment['image']; ?>" alt="user image">
+                            <img src="./img/<?php echo htmlspecialchars($comment['image']); ?>" alt="user image">
                         </a>
-                        <a href="profile.php?user_id=<?php echo $comment['user_id']; ?>">
-                            <p><strong><?php echo $comment['name']; ?>:</strong> </a></p>
-                            <p ><?php echo $comment['text']; ?></p>
-                        
+                        <div class="comment-content">
+                            <a href="profile.php?user_id=<?php echo $comment['user_id']; ?>">
+                                <p><strong><?php echo htmlspecialchars($comment['name']); ?>:</strong></p>
+                            </a>
+                            <p><?php echo htmlspecialchars($comment['text']); ?></p>
+                        </div>
 
                         <!-- delete comment -->
                         <?php if ($comment['user_id'] == $user_id) { ?>
-                            <form action="" method="POST" class="delete-comment-form">
-                                <input type="hidden" name="comment_id" value="<?php echo $comment['comment_id']; ?>">
-                                <button type="submit" name="delete" class="delete-icon">
-                                    <i class="fa-solid fa-trash" ></i>
-                                </button>
-                            </form>
-                            <?php } ?>
-
+                        <button class="delete-icon delete-comment-btn"
+                            data-comment-id="<?php echo $comment['comment_id']; ?>">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <?php } ?>
                     </div>
                     <?php } ?>
-                    <?php } else{ ?>
-                        <?php echo "No comments yet"; }?>
+                    <?php } else { ?>
+                    <p class="no-comments">No comments yet</p>
+                    <?php } ?>
                 </div>
+
             </article>
             <?php } ?>
         </main>
     </div>
 </body>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Hide all comments lists and comment forms on page load
-    document.querySelectorAll(".comments-list, .comment-form").forEach(element => {
-        element.style.display = "none";
-    });
-
-    document.querySelectorAll(".comment-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            const postCard = this.closest(".post-card");
-            const commentsList = postCard.querySelector(".comments-list");
-            const commentForm = postCard.querySelector(".comment-form");
-
-            // Toggle visibility
-            if (commentsList.style.display === "none") {
-                commentsList.style.display = "block";
-                commentForm.style.display = "block"; // Ensure text area appears
-            } else {
-                commentsList.style.display = "none";
-                commentForm.style.display = "none"; // Hide both when clicked again
-            }
-        });
-    });
-});
-
-
-</script>
+<script src="./js/community.js"></script>
 
 </html>
