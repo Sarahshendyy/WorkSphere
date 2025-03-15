@@ -2,6 +2,8 @@
 
 include 'mail.php';
 $Smsg = '';
+
+
 if (isset($_POST['sign-btn']))
 {
   if(isset($_GET['LC']))
@@ -12,7 +14,7 @@ if (isset($_POST['sign-btn']))
   $comfirm_password = mysqli_real_escape_string($connect, $_POST['confirm_password']);
   $phone_number = mysqli_real_escape_string($connect, $_POST['phone_number']);
   $hash_password = password_hash($password, PASSWORD_DEFAULT);
-  $select = "SELECT * FROM `users` WHERE `email`='$email'";
+  $select = "SELECT * FROM users WHERE email='$email'";
   $run_select = mysqli_query($connect, $select);
 
   $uppercase = preg_match('@[A-Z]@', $password);
@@ -74,13 +76,14 @@ if (isset($_POST['sign-btn']))
   }
 }
 
-
-
 $Lmsg = "";
 $loginError = false;
+$remember = "";
+
 if (isset($_POST['login'])){
-  $email = mysqli_real_escape_string($connect, $_POST['log-email']); // badr
-  $password = mysqli_real_escape_string($connect, $_POST['log-password']); // badr
+  $email = mysqli_real_escape_string($connect, $_POST['log-email']);
+  $password = mysqli_real_escape_string($connect, $_POST['log-password']);
+  $remember = isset($_POST['remember']) ? $_POST['remember'] : ''; // Correctly handle the checkbox
 
   if (empty($email)){
       $Lmsg = "Email can't be left empty"; // FRONT SPECIAL styling - just in case someone disabled REQUIRED
@@ -95,7 +98,7 @@ if (isset($_POST['login'])){
       $loginError = true;
   }
   else{
-    $FindEmailstmt = "SELECT * FROM `users` WHERE `email` = '$email'";
+    $FindEmailstmt = "SELECT * FROM users WHERE email = '$email'";
     $ExecFindEmail = mysqli_query($connect, $FindEmailstmt);
 
     if ($ExecFindEmail)
@@ -109,7 +112,20 @@ if (isset($_POST['login'])){
           $_SESSION['user_id'] = $data['user_id'];
           $_SESSION['role_id'] = $data['role_id'];
           $_SESSION['name'] = $data['name'];
+
+          if ($remember) {
+              setcookie("remember_email", $email, time() + 3600 * 24 * 365);
+              setcookie("remember_password", $password, time() + 3600 * 24 * 365);
+              setcookie("remember", $remember, time() + 3600 * 24 * 365);
+          } else {
+              // If 'Remember Me' is not checked, delete cookies
+              setcookie("remember_email", "", time() - 3600);
+              setcookie("remember_password", "", time() - 3600);
+              setcookie("remember", "", time() - 3600);
+          }
+
           header("Location: indexx.php");
+          exit(); // Always exit after a header redirect
         }
         else{
           $Lmsg = "Incorrect Password"; // FRONT SPECIAL styling
@@ -124,66 +140,65 @@ if (isset($_POST['login'])){
     }
   }
 }
+
+// Load cookies on page load. This should be done *before* the HTML is rendered.
+$remember_email = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'] : '';
+$remember_password = isset($_COOKIE['remember_password']) ? $_COOKIE['remember_password'] : '';
+$remember_checked = isset($_COOKIE['remember']) ? 'checked' : '';
+
+
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Login - Signup</title>
+    <title>Login - Signup</title>
     <link rel="icon" type="image/x-icon" href="./img/keklogo.png">
-	<link rel="stylesheet" type="" href="css/login.css">
+    <link rel="stylesheet" type="" href="css/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
-    <style>
-      .warning
-      {
-          display: none; color: red;
-          position: static;
-          width: 65%;
-          margin: -13% auto -1%;
-          font-size: 1vw;
-      }
-      .warning.visible {display: block}
-      #s-btn {margin-top: 20px}
-    </style>
 </head>
 <body>
-	<div class="main">  	
-		<input type="checkbox" id="chk" aria-hidden="true" <?php if (($loginError) || isset($_SESSION['logCHK']) || (isset($_GET['LC'])) && $_GET['LC'] == 1 )echo 'checked'; ?>>
+    <div class="main">
+        <input type="checkbox" id="chk" aria-hidden="true" <?php if (($loginError) || isset($_SESSION['logCHK']) || (isset($_GET['LC'])) && $_GET['LC'] == 1 )echo 'checked'; ?>>
 
-			<div class="signup">
-				<form method="post">
-					<label for="chk" aria-hidden="true">Sign up</label>
+            <div class="signup">
+                <form method="post">
+                    <label for="chk" aria-hidden="true">Sign up</label>
                     <div class="warning <?php if(!empty($Smsg)) echo 'visible' ?>">
                         <?php if (!empty($Smsg)) echo $Smsg ?>
                     </div>
-					<input type="text" name="name" placeholder="User Name" required value="<?php echo isset($_POST['name']) ? $_POST['name'] : ''?>">
+                    <input type="text" name="name" placeholder="User Name" required value="<?php echo isset($_POST['name']) ? $_POST['name'] : ''?>">
                     <input type="email" name="sign-email" placeholder="Email" required value="<?php echo isset($_POST['sign-email']) ? $_POST['sign-email'] : ''?>">
-					<input type="password" name="sign-password" placeholder="Password" required value="<?php echo isset($_POST['sign-password']) ? $_POST['sign-password'] : ''?>">
+                    <input type="password" name="sign-password" placeholder="Password" required value="<?php echo isset($_POST['sign-password']) ? $_POST['sign-password'] : ''?>">
                     <input type="password" name="confirm_password" placeholder="Confirm Password" required value="<?php echo isset($_POST['confirm_password']) ? $_POST['confirm_password'] : ''?>">
-					<input type="text" name="phone_number" placeholder="Phone Number" required value="<?php echo isset($_POST['phone_number']) ? $_POST['phone_number'] : ''; ?>">
-					<button type="submit" name="sign-btn" id="s-btn">Sign up</button>
-				</form>
-			</div>
+                    <input type="text" name="phone_number" placeholder="Phone Number" required value="<?php echo isset($_POST['phone_number']) ? $_POST['phone_number'] : ''; ?>">
+                    <button type="submit" name="sign-btn" id="s-btn">Sign up</button>
+                </form>
+            </div>
 
-			<div class="login">
-				<form class="form" method="post">
-					<label for="chk" aria-hidden="true">Login</label>
+            <div class="login">
+                <form class="form" method="post">
+                    <label for="chk" aria-hidden="true">Login</label>
                     <div class="warning <?php if(!empty($Lmsg)) echo 'visible' ?>">
                         <?php if (!empty($Lmsg)) echo $Lmsg ?>
                     </div>
-					<input type="email" name="log-email" placeholder="Email" required value="<?php echo isset($_POST['log-email']) ? $_POST['log-email'] : ''?>">
-					<input type="password" name="log-password" placeholder="Password" required value="<?php echo isset($_POST['log-password']) ? $_POST['log-password'] : ''?>">
-					<button class="loginbtn" type="submit" name="login">Login</button>
+                    <input type="email" name="log-email" placeholder="Email" required value="<?php echo isset($_POST['log-email']) ? $_POST['log-email'] : $remember_email ?>">
+                    <input type="password" name="log-password" placeholder="Password" required value="<?php echo isset($_POST['log-password']) ? $_POST['log-password'] : $remember_password ?>">
+          <div class="checkbox-container">
+                <input class="check" type="checkbox" name="remember" value="1" <?php echo $remember_checked; ?>>
+                <span class="checkbox-text">Remember me</span>
+          </div>
+          <button class="loginbtn" type="submit" name="login">Login</button>
                     <a href="email_otp.php">Forget Password?</a>
-				</form>
-			</div>
-	</div>
+                </form>
+            </div>
+    </div>
   <script>
 document.addEventListener('DOMContentLoaded', function() {
     const formFields = ['name', 'sign-email', 'phone_number', 'sign-password', 'confirm_password'];
 
     formFields.forEach(field => {
-        const inputElement = document.querySelector(`[name="${field}"]`);
+        const inputElement = document.querySelector([name="${field}"]);
         const errorElement = document.createElement('div');
         errorElement.className = 'error-message';
         inputElement.insertAdjacentElement('afterend', errorElement);
@@ -243,15 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<style>
-    .error-message {
-        color: red;
-        font-size: 15px;
-        /* margin-top: 1px; */
-        margin-left: 64px;
-        
-    }
-</style>
-
 </body>
 </html>
+
+
