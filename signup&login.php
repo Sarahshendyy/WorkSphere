@@ -1,9 +1,6 @@
 <?php
-
 include 'mail.php';
 $Smsg = '';
-
-
 if (isset($_POST['sign-btn']))
 {
   if(isset($_GET['LC']))
