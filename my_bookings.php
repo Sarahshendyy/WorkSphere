@@ -118,12 +118,12 @@ $bookings = fetchBookings($connect, $user_id, $statusFilter);
             <div class="booking-details">
                 <img src="./img/<?php echo $fetch_image['images']; ?>" alt="Room Image" class="room-image">
                 <div class="room-info">
-                    <a href="workspace.php?workspace_id=<?php echo $data['workspace_id'];?>">
+                    <a href="workspace_details.php?ws_id=<?php echo $data['workspace_id'];?>">
                         <h1 class="cssanimation typing " id="spicialstyle"><?php echo $data['workspace_name']; ?> </h1>
                     </a><br>
 
 
-                    <a href="room_details.php?room_id=<?php echo $fetch_image['room_id'];?>">
+                    <a href="room_details.php?r_id=<?php echo $data['room_id'];?>">
                         <h2 class="cssanimation typing " id="spicialstyle"><?php echo $data['room_name']; ?></h2>
                     </a>
                     <p class="location"><i class="fa-solid fa-location-dot"></i> <?php echo $data['location']; ?>
