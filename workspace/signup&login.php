@@ -190,72 +190,72 @@ $remember_checked = isset($_COOKIE['remember']) ? 'checked' : '';
                 </form>
             </div>
     </div>
-  <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const formFields = ['name', 'sign-email', 'phone_number', 'sign-password', 'confirm_password'];
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const formFields = ['name', 'sign-email', 'phone_number', 'sign-password', 'confirm_password'];
 
-    formFields.forEach(field => {
-        const inputElement = document.querySelector([name="${field}"]);
-        const errorElement = document.createElement('div');
-        errorElement.className = 'error-message';
-        inputElement.insertAdjacentElement('afterend', errorElement);
+            formFields.forEach(field => {
+                const inputElement = document.querySelector(`[name="${field}"]`);
+                const errorElement = document.createElement('div');
+                errorElement.className = 'error-message';
+                inputElement.insertAdjacentElement('afterend', errorElement);
 
-        inputElement.addEventListener('input', function() {
-            validateField(field, inputElement, errorElement);
+                inputElement.addEventListener('input', function () {
+                    validateField(field, inputElement, errorElement);
+                });
+
+                inputElement.addEventListener('blur', function () {
+                    validateField(field, inputElement, errorElement);
+                });
+            });
+
+            function validateField(field, inputElement, errorElement) {
+                const value = inputElement.value.trim();
+                errorElement.textContent = '';
+
+                if (field === 'name') {
+                    if (value === '') {
+                        errorElement.textContent = 'User name is required';
+                    }
+                }
+
+                if (field === 'sign-email') {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(value)) {
+                        errorElement.textContent = 'Invalid email format';
+                    }
+                }
+
+                if (field === 'phone_number') {
+                    if (!/^\d{11}$/.test(value)) {
+                        errorElement.textContent = 'Phone number must be 11 digits';
+                    }
+                }
+
+                if (field === 'sign-password') {
+                    const uppercase = /[A-Z]/.test(value);
+                    const lowercase = /[a-z]/.test(value);
+                    const numbers = /[0-9]/.test(value);
+                    const specialChar = /[^\w]/.test(value);
+
+                    if (value.length < 8) {
+                        errorElement.textContent = 'Password must be at least 8 characters';
+                    } else if (!uppercase || !lowercase || !numbers || !specialChar) {
+                        errorElement.textContent = 'Password must include uppercase, lowercase, number, and special character';
+                    }
+                }
+
+                if (field === 'confirm_password') {
+                    const password = document.querySelector('[name="sign-password"]').value;
+                    if (value !== password) {
+                        errorElement.textContent = 'Passwords do not match';
+                    }
+                }
+            }
         });
-
-        inputElement.addEventListener('blur', function() {
-            validateField(field, inputElement, errorElement);
-        });
-    });
-
-    function validateField(field, inputElement, errorElement) {
-        const value = inputElement.value.trim();
-        errorElement.textContent = '';
-
-        if (field === 'name') {
-            if (value === '') {
-                errorElement.textContent = 'User name is required';
-            }
-        }
-
-        if (field === 'sign-email') {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(value)) {
-                errorElement.textContent = 'Invalid email format';
-            }
-        }
-
-        if (field === 'phone_number') {
-            if (!/^\d{11}$/.test(value)) {
-                errorElement.textContent = 'Phone number must be 11 digits';
-            }
-        }
-
-        if (field === 'sign-password') {
-            const uppercase = /[A-Z]/.test(value);
-            const lowercase = /[a-z]/.test(value);
-            const numbers = /[0-9]/.test(value);
-            const specialChar = /[^\w]/.test(value);
-
-            if (value.length < 8) {
-                errorElement.textContent = 'Password must be at least 8 characters';
-            } else if (!uppercase || !lowercase || !numbers || !specialChar) {
-                errorElement.textContent = 'Password must include uppercase, lowercase, number, and special character';
-            }
-        }
-
-        if (field === 'confirm_password') {
-            const password = document.querySelector('[name="sign-password"]').value;
-            if (value !== password) {
-                errorElement.textContent = 'Passwords do not match';
-            }
-        }
-    }
-});
-</script>
-
+    </script>
 </body>
+
 </html>
 
 
