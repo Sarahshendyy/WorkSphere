@@ -1,12 +1,3 @@
-# el 7agat elly m7taga tt3dl 
-   
-    **sign/login**
-
-- el validition msh 48ala auto
-
-       **my bookings**
- - cancel bookings
-
   
        **sama:**
   
