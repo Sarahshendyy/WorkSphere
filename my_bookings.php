@@ -32,6 +32,21 @@ function fetchRoomImage($connect, $workspace_id) {
     return mysqli_fetch_assoc($result_img); 
 }
 
+// Handle Cancellation Request
+if (isset($_POST['cancel_booking'])) {
+    $booking_id = $_POST['booking_id'];
+    
+    // Update the status to 'Canceled'
+    $update_query = "UPDATE bookings SET `status` = 'canceled' WHERE booking_id = $booking_id AND user_id = $user_id";
+    if (mysqli_query($connect, $update_query)) {
+        echo "<script>alert('Booking canceled successfully.');</script>";
+        // Refresh the page to reflect the changes
+        echo "<script>window.location.href = 'my_bookings.php';</script>";
+    } else {
+        echo "<script>alert('Error canceling booking.');</script>";
+    }
+}
+
 
 // Filter handling
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
@@ -46,6 +61,7 @@ if ($filter == 'upcoming') {
     $statusFilter = "bookings.status IN ('Upcoming', 'Ongoing', 'Canceled', 'Completed')";
 }
 $bookings = fetchBookings($connect, $user_id, $statusFilter);
+
 ?>
 
 <!DOCTYPE html>
@@ -60,6 +76,13 @@ $bookings = fetchBookings($connect, $user_id, $statusFilter);
     <link rel="stylesheet" href="./css/my_bookings.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script defer src="script.js"></script>
+    <script>
+        function confirmCancellation(event) {
+            if (!confirm("Are you sure you want to cancel this booking?")) {
+                event.preventDefault();
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -130,17 +153,23 @@ $bookings = fetchBookings($connect, $user_id, $statusFilter);
                         <?php echo number_format($data['total_price']); ?> <span>EGP</span></p>
                 </div>
             </div>
+      <!-- Cancel Button for Upcoming Bookings -->
+      <?php if ($data['status'] == 'upcoming') { ?>
+            <form method="POST" action="" onsubmit="confirmCancellation(event);">
+                <input type="hidden" name="booking_id" value="<?php echo $data['booking_id']; ?>">
+                <button type="submit" name="cancel_booking" class="cancel-button">Cancel Booking</button>
+            </form>
+            <?php } ?>
         </div>
         <!-- Booking Card -->
-
         <?php 
+            } 
+        } else { 
+            echo "<p>No bookings found.</p>";
         } 
-    } else { 
-        echo "<p>No bookings found.</p>";
-    } 
-    ?>
+        ?>
     </div>
-
+   
 </body>
 
 </html>
