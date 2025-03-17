@@ -90,12 +90,12 @@ if (isset($_POST['update'])) {
                     <br>
                     <label for="zone_id">Zone:</label>
                     <select name="zone_id" id="zone_id" required>
-                        <?php foreach ($zones as $zone): ?>
+                        <?php foreach ($zones as $zone){ ?>
                             <option value="<?php echo $zone['zone_id']; ?>" 
                                 <?php echo ($zone['zone_id'] == $fetch['zone_id']) ? 'selected' : ''; ?>>
                                 <?php echo $zone['zone_name']; ?>
                             </option>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </select>
                     <br>
 
