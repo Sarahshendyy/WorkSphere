@@ -359,9 +359,27 @@ CREATE TABLE `zone` (
 --
 
 INSERT INTO `zone` (`zone_id`, `zone_name`) VALUES
-(1, 'giza '),
-(2, 'fisal'),
-(3, 'Cairo');
+(4, 'Cairo'),
+(5, 'Giza'),
+(6, 'Alexandria'),
+(7, 'Port Said'),
+(8, 'Suez'),
+(9, 'Luxor'),
+(10, 'Aswan'),
+(11, 'Mansoura'),
+(12, 'Tanta'),
+(13, 'Ismailia'),
+(14, 'Fayoum'),
+(15, 'Zagazig'),
+(16, 'Damietta'),
+(17, 'Sohag'),
+(18, 'Beni Suef'),
+(19, 'Minya'),
+(20, 'Qena'),
+(21, 'Asyut'),
+(22, 'Sharm El Sheikh'),
+(23, 'Hurghada');
+
 
 --
 -- Indexes for dumped tables
