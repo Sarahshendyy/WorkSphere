@@ -1,0 +1,81 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.review-container {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.review-container h1 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #333;
+}
+
+.rating-section {
+    margin-bottom: 1.5rem;
+}
+
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse; /* Reverse the order of stars */
+    justify-content: center; 
+}
+
+.star-rating input {
+    display: none; /* Hide the radio buttons */
+}
+
+.star-rating label {
+    font-size: 3.5rem;
+    color: #ccc; /* Default star color (unselected) */
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+}
+
+.star-rating input:checked ~ label {
+    color: #fda521; /* Color for selected stars */
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #fda521; /* Color for hovered stars */
+}
+
+.comment-section textarea {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.submit-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
