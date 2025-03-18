@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 15, 2025 at 06:47 PM
+-- Generation Time: Mar 19, 2025 at 12:18 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -75,19 +75,20 @@ CREATE TABLE `bookings` (
   `num_people` int(11) NOT NULL,
   `total_price` float DEFAULT NULL,
   `status` varchar(255) DEFAULT 'upcoming',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `review-email` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `bookings`
 --
 
-INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `date`, `start_time`, `end_time`, `num_people`, `total_price`, `status`, `created_at`) VALUES
-(7, 3, 4, '2025-03-15', '15:00:47', '18:00:47', 4, 400, 'upcoming', '2025-03-13 17:48:51'),
-(8, 3, 5, '2025-03-13', '19:00:47', '21:46:47', 10, NULL, 'ongoing', '2025-03-13 17:48:51'),
-(9, 3, 6, '2025-03-15', '10:54:55', '21:54:55', 20, 8000, 'upcoming', '2025-03-14 03:56:17'),
-(10, 4, 7, '2025-03-12', '18:54:55', '26:54:55', 5, 6500, 'canceled', '2025-03-14 03:56:17'),
-(11, 4, 8, '2025-03-18', '08:54:52', '13:54:52', 50, 9000, 'completed', '2025-03-14 04:55:24');
+INSERT INTO `bookings` (`booking_id`, `user_id`, `room_id`, `date`, `start_time`, `end_time`, `num_people`, `total_price`, `status`, `created_at`, `review-email`) VALUES
+(7, 3, 4, '2025-03-21', '15:00:47', '18:00:47', 4, 400, 'canceled', '2025-03-13 17:48:51', 0),
+(8, 3, 5, '2025-03-13', '19:00:47', '21:46:47', 10, NULL, 'ongoing', '2025-03-13 17:48:51', 0),
+(9, 3, 6, '2025-03-17', '10:54:55', '21:39:00', 20, 8000, 'completed', '2025-03-14 03:56:17', 0),
+(10, 3, 7, '2025-03-12', '18:54:55', '26:54:55', 5, 6500, 'canceled', '2025-03-14 03:56:17', 0),
+(11, 3, 8, '2025-03-21', '08:54:52', '13:54:52', 50, 9000, 'canceled', '2025-03-14 04:55:24', 0);
 
 -- --------------------------------------------------------
 
@@ -228,6 +229,13 @@ CREATE TABLE `reviews` (
   `review_text` longtext DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`review_id`, `booking_id`, `rating`, `review_text`, `created_at`) VALUES
+(5, 9, 5, 'perfect', '2025-03-18 18:47:09');
 
 -- --------------------------------------------------------
 
@@ -379,7 +387,6 @@ INSERT INTO `zone` (`zone_id`, `zone_name`) VALUES
 (21, 'Asyut'),
 (22, 'Sharm El Sheikh'),
 (23, 'Hurghada');
-
 
 --
 -- Indexes for dumped tables
@@ -555,7 +562,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `role`
@@ -585,7 +592,7 @@ ALTER TABLE `workspaces`
 -- AUTO_INCREMENT for table `zone`
 --
 ALTER TABLE `zone`
-  MODIFY `zone_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `zone_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables
@@ -669,13 +676,6 @@ ALTER TABLE `rooms`
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`zone_id`) REFERENCES `zone` (`zone_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `workspaces`
---
-ALTER TABLE `workspaces`
-  ADD CONSTRAINT `workspaces_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `workspaces_ibfk_2` FOREIGN KEY (`zone_id`) REFERENCES `zone` (`zone_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
