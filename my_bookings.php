@@ -27,7 +27,8 @@ function fetchBookings($connect, $user_id, $statusFilter) {
 
 // Function to fetch room image
 function fetchRoomImage($connect, $workspace_id) {
-    $select_img = "SELECT `images`,`room_id` FROM `rooms` WHERE `workspace_id` = $workspace_id ORDER BY room_id DESC LIMIT 1";
+    $select_img = "SELECT `images`,`room_id` FROM `rooms` 
+    WHERE `workspace_id` = $workspace_id ORDER BY `room_id` DESC LIMIT 1";
     $result_img = mysqli_query($connect, $select_img);
     return mysqli_fetch_assoc($result_img); 
 }
@@ -37,7 +38,8 @@ if (isset($_POST['cancel_booking'])) {
     $booking_id = $_POST['booking_id'];
     
     // Update the status to 'Canceled'
-    $update_query = "UPDATE bookings SET `status` = 'canceled' WHERE booking_id = $booking_id AND user_id = $user_id";
+    $update_query = "UPDATE bookings SET `status` = 'canceled' 
+    WHERE `booking_id` = $booking_id AND `user_id` = $user_id";
     if (mysqli_query($connect, $update_query)) {
         echo "<script>alert('Booking canceled successfully.');</script>";
         // Refresh the page to reflect the changes
@@ -46,7 +48,6 @@ if (isset($_POST['cancel_booking'])) {
         echo "<script>alert('Error canceling booking.');</script>";
     }
 }
-
 
 // Filter handling
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
@@ -77,11 +78,21 @@ $bookings = fetchBookings($connect, $user_id, $statusFilter);
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script defer src="script.js"></script>
     <script>
-        function confirmCancellation(event) {
-            if (!confirm("Are you sure you want to cancel this booking?")) {
-                event.preventDefault();
-            }
+        function validateCancellation(startTime, date, event) {
+    const bookingDateTime = new Date(`${date} ${startTime}`).getTime();
+    const currentDateTime = new Date().getTime();
+    const timeDifference = bookingDateTime - currentDateTime;
+    const fortyEightHoursInMs = 48 * 60 * 60 * 1000;
+
+    if (timeDifference <= fortyEightHoursInMs) {
+        alert("Cancellation is not permitted as the booking start time is within 48 hours. Please contact support for further assistance.");
+        event.preventDefault(); // Prevent form submission
+    } else {
+        if (!confirm("Are you sure you want to cancel this booking?")) {
+            event.preventDefault(); // Prevent form submission if user cancels the confirmation
         }
+    }
+}
     </script>
 </head>
 
@@ -153,12 +164,13 @@ $bookings = fetchBookings($connect, $user_id, $statusFilter);
                         <?php echo number_format($data['total_price']); ?> <span>EGP</span></p>
                 </div>
             </div>
-      <!-- Cancel Button for Upcoming Bookings -->
-      <?php if ($data['status'] == 'upcoming') { ?>
-            <form method="POST" action="" onsubmit="confirmCancellation(event);">
-                <input type="hidden" name="booking_id" value="<?php echo $data['booking_id']; ?>">
-                <button type="submit" name="cancel_booking" class="cancel-button">Cancel Booking</button>
-            </form>
+            <!-- Cancel Button for Upcoming Bookings -->
+            <?php if ($data['status'] == 'upcoming') { ?>
+                <form method="POST" action="" onsubmit="validateCancellation('<?php echo $data['start_time']; ?>',
+                 '<?php echo $data['date']; ?>', event);">
+                    <input type="hidden" name="booking_id" value="<?php echo $data['booking_id']; ?>">
+                    <button type="submit" name="cancel_booking" class="cancel-button">Cancel Booking</button>
+                </form>
             <?php } ?>
         </div>
         <!-- Booking Card -->
@@ -173,3 +185,4 @@ $bookings = fetchBookings($connect, $user_id, $statusFilter);
 </body>
 
 </html>
+
