@@ -180,7 +180,7 @@ $ws = mysqli_fetch_assoc($run_select_room); // Fetch workspace details once
                             foreach ($images as $index => $image) {
                                 $activeClass = $index === 0 ? 'active' : '';
                                 echo '<div class="carousel-item ' . $activeClass . '">
-                                        <img src="./img/' . trim($image) . '" alt="Room Image">
+                                        <img src="' . trim($image) . '" alt="Room Image">
                                       </div>';
                             }
                             ?>

@@ -197,7 +197,7 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
                                             $image = trim($image); // Remove any extra spaces
                                             ?>
                                             <div class="carousel-item <?php echo $first ? 'active' : ''; ?>">
-                                                <img src="./img/<?php echo $image; ?>" class="d-block w-100" alt="Workspace Image">
+                                                <img src="<?php echo $image; ?>" class="d-block w-100" alt="Workspace Image">
                                             </div>
                                             <?php
                                             $first = false; // Only the first image should be active
