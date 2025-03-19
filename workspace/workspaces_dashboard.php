@@ -28,7 +28,7 @@ if (isset($_POST["room_name"])) {
                 foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
                     $file_name = $_FILES['images']['name'][$key];
                     $file_tmp = $_FILES['images']['tmp_name'][$key];
-                    $upload_dir = "img/";
+                    $upload_dir = "";
                     $file_path = $upload_dir . basename($file_name);
 
                     if (move_uploaded_file($file_tmp, $file_path)) {
@@ -257,7 +257,7 @@ $rooms_result = mysqli_query($connect, $rooms_query);
                 <?php
                 $imageFiles = explode(',', $room['images']);
                 foreach ($imageFiles as $image) {
-                    echo "<img src='img/$image' width='50' height='50' style='margin-right:5px;'>";
+                    echo "<img src='$image' width='50' height='50' style='margin-right:5px;'>";
                 }
                 ?>
             </td>

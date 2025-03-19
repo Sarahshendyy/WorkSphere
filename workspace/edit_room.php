@@ -53,7 +53,7 @@ if (isset($_POST['update'])) {
     if (!empty($_FILES['room_images']['name'][0])) {
         foreach ($_FILES['room_images']['tmp_name'] as $key => $tmp_name) {
             $image_name = basename($_FILES['room_images']['name'][$key]);
-            $target_file = "img/" . $image_name;
+            $target_file = "" . $image_name;
 
             if (move_uploaded_file($tmp_name, $target_file)) {
                 $image_array[] = $image_name;
@@ -122,7 +122,7 @@ if (isset($_POST['update'])) {
                 <div class="image-preview">
                     <?php foreach ($image_array as $image): ?>
                         <div class="image-container">
-                            <img src="img/<?php echo $image; ?>" width="100">
+                            <img src="<?php echo $image; ?>" width="100">
                         </div>
                     <?php endforeach; ?>
                 </div>
