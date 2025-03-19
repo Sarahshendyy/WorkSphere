@@ -1,6 +1,7 @@
 <?php
 include "connection.php";
 
+
 $order_by = "workspaces.workspace_id"; // Default sorting
 if (!empty($_POST['sort'])) {
     $sort_option = $_POST['sort'];
@@ -31,21 +32,20 @@ $run_select_search = null;
 if (isset($_POST['search']) && !empty($_POST['text'])) {
     $text = mysqli_real_escape_string($connect, $_POST['text']);
     $select_search = "SELECT workspaces.*, 
-                           zone.zone_name, 
-                           rooms.images, 
-                           COALESCE(AVG(reviews.rating), 0) AS avg_rating
-                      FROM `workspaces` 
-                      JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
-                      LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
-                      LEFT JOIN `bookings` ON `rooms`.`room_id` = `bookings`.`room_id`
-                      LEFT JOIN `reviews` ON `bookings`.`booking_id` = `reviews`.`booking_id`
-                      WHERE (`workspaces`.`name` LIKE '%$text%') 
-                         OR (`workspaces`.`location` LIKE '%$text%') 
-                         OR (`zone`.`zone_name` LIKE '%$text%') 
-                         AND `Availability`=2
-                          
-                      GROUP BY workspaces.workspace_id
-                      ORDER BY $order_by";
+                       zone.zone_name, 
+                       rooms.images, 
+                       COALESCE(AVG(reviews.rating), 0) AS avg_rating
+                  FROM `workspaces` 
+                  JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
+                  LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
+                  LEFT JOIN `bookings` ON `rooms`.`room_id` = `bookings`.`room_id`
+                  LEFT JOIN `reviews` ON `bookings`.`booking_id` = `reviews`.`booking_id`
+                  WHERE (`workspaces`.`name` LIKE '%$text%' 
+                     OR `workspaces`.`location` LIKE '%$text%' 
+                     OR `zone`.`zone_name` LIKE '%$text%')
+                     AND `Availability`=2
+                  GROUP BY workspaces.workspace_id
+                  ORDER BY $order_by";
     $run_select_search = mysqli_query($connect, $select_search);
 }
 ?>
@@ -58,7 +58,9 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Workspace Listings</title>
     <link rel="stylesheet" href="css/workspaces.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <style>
         /* Center search and sort */
         .search-sort-container {
@@ -111,6 +113,28 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
         .card-body p {
             font-size: 14px;
         }
+        
+        .favorite-icon {
+            cursor: pointer;
+            font-size: 20px;
+            color: #ccc;
+            margin-left: 15px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            padding: 5px;
+        }
+
+        .favorite-icon.active {
+            color: #ff4757;
+        }
+        
+        .favorite-icon i.fa-solid {
+            color: #ff4757;
+        }
     </style>
 </head>
 
@@ -118,6 +142,7 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
 
     <!-- Search & Sort Container -->
     <div class="search-sort-container">
+   
         <form method="post" class="d-flex w-100">
             <input class="form-control" type="search" id="searchText" name="text" placeholder="Search by name or zone">
         </form>
@@ -132,12 +157,28 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
     </div>
 
     <div class="container">
+        
         <?php
         $result_set = isset($_POST['search']) ? $run_select_search : $run_select_ws;
         if ($result_set && mysqli_num_rows($result_set) > 0) {
             foreach ($result_set as $index => $row) {
-                $carouselId = "carouselExampleIndicators" . $index; ?>
-                <div class="workspace-card">
+                $carouselId = "carouselExampleIndicators" . $index; 
+                
+                // Check if this workspace is already a favorite for this user
+                $is_favorite = false;
+                if (isset($_SESSION['user_id'])) {
+                    $user_id = $_SESSION['user_id'];
+                    $workspace_id = $row['workspace_id'];
+                    $check_query = "SELECT * FROM favourite WHERE user_id = '$user_id' AND workspace_id = '$workspace_id'";
+                    $check_result = mysqli_query($connect, $check_query);
+                    $is_favorite = mysqli_num_rows($check_result) > 0;
+                }
+                ?>
+                
+                <div class="workspace-card position-relative">
+                    <div class="favorite-icon <?php echo $is_favorite ? 'active' : ''; ?>" onclick="toggleFavorite(this, <?php echo $row['workspace_id']; ?>)">
+                        <i class="<?php echo $is_favorite ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
+                    </div>
                     <a href="workspace_details.php?ws_id=<?php echo $row["workspace_id"]; ?>">
                         <div class="card">
                             <?php
@@ -216,6 +257,44 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
         });
     </script>
 
+    <script>
+        // Function to toggle favorite icon
+        function toggleFavorite(icon, workspaceId) {
+            // Check if user is logged in
+            <?php if(!isset($_SESSION['user_id'])): ?>
+                // Redirect to login page if not logged in
+                window.location.href = 'login.php';
+                return;
+            <?php endif; ?>
+            
+            $.ajax({
+                url: "toggle_favorite.php",
+                type: "POST",
+                data: { workspace_id: workspaceId },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === 'success') {
+                        icon.classList.toggle('active');
+                        const heartIcon = icon.querySelector('i');
+                        
+                        if (response.action === 'added') {
+                            heartIcon.classList.remove('fa-regular');
+                            heartIcon.classList.add('fa-solid');
+                        } else {
+                            heartIcon.classList.remove('fa-solid');
+                            heartIcon.classList.add('fa-regular');
+                        }
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while processing your request.");
+                }
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
