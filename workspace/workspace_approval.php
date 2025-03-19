@@ -1,22 +1,18 @@
 <?php
 include "mail.php";
 
-
 if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 4) {
     echo "<script>alert('Access Denied!'); window.location.href='indexx.php';</script>";
     exit();
 }
 
-
 $workspaces_query = "SELECT * FROM workspaces WHERE Availability = 1"; 
 $result = mysqli_query($connect, $workspaces_query);
-
 
 if (isset($_POST['approve'])) {
     $workspace_id = $_POST['workspace_id'];
 
-  
-    $owner_query = "SELECT users.email, users.name FROM workspaces 
+    $owner_query = "SELECT users.email, users.name, users.user_id FROM workspaces 
                     JOIN users ON workspaces.user_id = users.user_id 
                     WHERE workspaces.workspace_id = '$workspace_id'";
     $owner_result = mysqli_query($connect, $owner_query);
@@ -25,34 +21,38 @@ if (isset($_POST['approve'])) {
     if ($owner) {
         $user_email = $owner['email'];
         $user_name = $owner['name'];
+        $user_id = $owner['user_id'];
 
-        
         $update_query = "UPDATE workspaces SET Availability = 2 WHERE workspace_id = '$workspace_id'";
         if (mysqli_query($connect, $update_query)) {
-            $subject = "🎉 Congratulations! Your Workspace is Approved";
-            $message = "
-                <body style='font-family: Arial, sans-serif; background-color: #fffffa; color: #00000a;'>
-                    <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                        <h1>Welcome to Deskify!</h1>
-                    </div>
-                    <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
-                        <p>Dear <strong>$user_name</strong>,</p>
-                        <p>We are excited to inform you that your workspace listing has been approved! 🎉</p>
-                        <p>You can now manage your workspace and start receiving bookings.</p>
-                        <p>Visit your dashboard to see more details.</p>
-                        <p>Best regards,<br>The Deskify Team</p>
-                    </div>
-                </body>
-            ";
-            sendEmail($user_email, $subject, $message);
-            header("Location: workspace_approval.php");
-            exit();
+            $update_role_query = "UPDATE users SET role_id = 3 WHERE user_id = '$user_id'";
+            if (mysqli_query($connect, $update_role_query)) {
+                $subject = "🎉 Congratulations! Your Workspace is Approved";
+                $message = "
+                    <body style='font-family: Arial, sans-serif; background-color: #fffffa; color: #00000a;'>
+                        <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
+                            <h1>Welcome to Deskify!</h1>
+                        </div>
+                        <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
+                            <p>Dear <strong>$user_name</strong>,</p>
+                            <p>We are excited to inform you that your workspace listing has been approved! 🎉</p>
+                            <p>You can now manage your workspace and start receiving bookings.</p>
+                            <p>Visit your dashboard to see more details.</p>
+                            <p>Best regards,<br>The Deskify Team</p>
+                        </div>
+                    </body>
+                ";
+                sendEmail($user_email, $subject, $message);
+                header("Location: workspace_approval.php");
+                exit();
+            } else {
+                echo "Error updating user role: " . mysqli_error($connect);
+            }
         } else {
             echo "Error: " . mysqli_error($connect);
         }
     }
 }
-
 
 if (isset($_POST['decline'])) {
     $workspace_id = $_POST['workspace_id'];
@@ -67,10 +67,8 @@ if (isset($_POST['decline'])) {
         $user_email = $owner['email'];
         $user_name = $owner['name'];
 
-    
         $delete_query = "DELETE FROM workspaces WHERE workspace_id = '$workspace_id'";
         if (mysqli_query($connect, $delete_query)) {
-        
             $subject = "⚠️ Workspace Request Declined";
             $message = "
                 <body style='font-family: Arial, sans-serif; background-color: #fffffa; color: #00000a;'>
@@ -127,7 +125,6 @@ function sendEmail($to, $subject, $body) {
             <p><strong><?php echo htmlspecialchars($workspace['name']); ?></strong></p>
             <p>📍 Location: <?php echo htmlspecialchars($workspace['location']); ?></p>
             
-         
             <form method="POST" style="display:inline;">
                 <input type="hidden" name="workspace_id" value="<?php echo $workspace['workspace_id']; ?>">
                 <button type="submit" name="approve" class="approve-btn">✅ Approve</button>

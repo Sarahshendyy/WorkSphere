@@ -1,26 +1,27 @@
 <?php
-
 include "connection.php";
 
-
+// Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     die("Session not set! <script>window.location.href='login.php';</script>");
 }
 
 $user_id = $_SESSION['user_id'];
 
-
+// Fetch zones for the dropdown
 $zone_query = "SELECT * FROM zone";
 $zone_result = mysqli_query($connect, $zone_query);
 
+// Handle form submission
 if (isset($_POST['submit'])) {
-  
+    // Workspace details
     $name = mysqli_real_escape_string($connect, $_POST['name']);
     $location = mysqli_real_escape_string($connect, $_POST['location']);
     $description = mysqli_real_escape_string($connect, $_POST['description']);
     $price_hr = floatval($_POST['price_hr']);
-    $zone_id = intval($_POST['zone_id']); // Get zone_id from dropdown
+    $zone_id = intval($_POST['zone_id']);
 
+    // Insert workspace into the database
     $insert_workspace = "INSERT INTO workspaces (user_id, name, location, description, `price/hr`, zone_id, created_at) 
                          VALUES ('$user_id', '$name', '$location', '$description', '$price_hr', '$zone_id', NOW())";
     $insertQry = mysqli_query($connect, $insert_workspace);
@@ -29,29 +30,36 @@ if (isset($_POST['submit'])) {
         die("Workspace Insert Error: " . mysqli_error($connect));
     }
 
+    // Get the ID of the newly inserted workspace
     $workspace_id = mysqli_insert_id($connect);
 
+    // Handle rooms
     if (!empty($_POST['rooms']) && is_array($_POST['rooms'])) {
-        foreach ($_POST['rooms'] as $room) {
+        foreach ($_POST['rooms'] as $index => $room) {
             $room_name = mysqli_real_escape_string($connect, $room['name']);
             $seats = intval($room['seats']);
             $room_type = mysqli_real_escape_string($connect, $room['type']);
             $room_status = mysqli_real_escape_string($connect, $room['status']);
             $price_hr = floatval($room['price_hr']);
 
+            // Handle room images
             $image_paths = [];
-            if (!empty($_FILES['room_images']['name'][$room['index']])) {
-                $target_dir = "images/";
-                foreach ($_FILES['room_images']['name'][$room['index']] as $key => $image_name) {
+            if (!empty($_FILES['room_images']['name'][$index])) {
+                $target_dir = "img/"; // Your images folder
+                foreach ($_FILES['room_images']['name'][$index] as $key => $image_name) {
                     $target_file = $target_dir . basename($image_name);
-                    if (move_uploaded_file($_FILES['room_images']['tmp_name'][$room['index']][$key], $target_file)) {
-                        $image_paths[] = $target_file;
+                    if (move_uploaded_file($_FILES['room_images']['tmp_name'][$index][$key], $target_file)) {
+                        $image_paths[] = $target_file; // Save the path to the image
+                    } else {
+                        die("Failed to upload image: " . $_FILES['room_images']['name'][$index][$key]);
                     }
                 }
             }
 
+            // Convert the array of image paths to a comma-separated string
             $images = implode(",", $image_paths);
 
+            // Insert room into the database
             $insert_room = "INSERT INTO rooms (workspace_id, room_name, seats, room_type, room_status, images, `p/hr`) 
                             VALUES ('$workspace_id', '$room_name', '$seats', '$room_type', '$room_status', '$images', '$price_hr')";
             $insertRoomQry = mysqli_query($connect, $insert_room);
@@ -62,6 +70,7 @@ if (isset($_POST['submit'])) {
         }
     }
 
+    // Success message and redirect
     echo "<script>alert('Workspace listed successfully!'); window.location.href='indexx.php';</script>";
     exit();
 }
@@ -81,6 +90,7 @@ if (isset($_POST['submit'])) {
     <h2>List Your Workspace</h2>
     <form action="" method="POST" enctype="multipart/form-data">
         
+        <!-- Workspace Details -->
         <label for="name">Workspace Name:</label>
         <input type="text" name="name" required>
 
@@ -103,6 +113,7 @@ if (isset($_POST['submit'])) {
             <?php endwhile; ?>
         </select>
 
+        <!-- Rooms Section -->
         <h3>Rooms:</h3>
         <div id="rooms">
             <div class="room">
@@ -126,6 +137,7 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
         
+        <!-- Buttons -->
         <button type="button" onclick="addRoom()">Add Another Room</button>
         <button type="submit" name="submit">Submit</button>
     </form>
