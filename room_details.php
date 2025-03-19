@@ -207,7 +207,7 @@ $run_am = mysqli_query($connect, $amenities);
                         foreach ($images as $index => $image) {
                             $activeClass = $index === 0 ? 'active' : '';
                             echo '<div class="carousel-item ' . $activeClass . '">
-                                    <img src="./img/' . trim($image) . '" alt="Room Image">
+                                    <img src="' . trim($image) . '" alt="Room Image">
                                   </div>';
                         }
                         ?>
