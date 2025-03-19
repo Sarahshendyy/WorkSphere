@@ -3,7 +3,6 @@ include "connection.php";
 
 $owner_id = $_SESSION['user_id'];
 
-
 if (isset($_POST["room_name"])) {
     $room_name = mysqli_real_escape_string($connect, $_POST['room_name']);
     $seats = mysqli_real_escape_string($connect, $_POST['seats']);
@@ -11,7 +10,6 @@ if (isset($_POST["room_name"])) {
     $price = mysqli_real_escape_string($connect, $_POST['price']);
     $room_status = mysqli_real_escape_string($connect, $_POST['room_status']);
 
-    
     $workspace_query = "SELECT workspace_id FROM workspaces WHERE user_id = '$owner_id' LIMIT 1";
     $workspace_result = mysqli_query($connect, $workspace_query);
 
@@ -19,7 +17,6 @@ if (isset($_POST["room_name"])) {
         $workspace_row = mysqli_fetch_assoc($workspace_result);
         $workspace_id = $workspace_row['workspace_id'];
 
-        
         $insert_query = "INSERT INTO rooms (workspace_id, room_name, seats, room_type, `p/hr`, room_status) 
                  VALUES ('$workspace_id', '$room_name', '$seats', '$room_type', '$price', '$room_status')";
         if (mysqli_query($connect, $insert_query)) {
@@ -56,9 +53,7 @@ if (isset($_POST["room_name"])) {
     }
 }
 
-
-
-if (isset($_POST['update_status'])) {
+if (isset($_POST['booking_id'])) {
     $booking_id = $_POST['booking_id'];
     $new_status = $_POST['status'];
 
@@ -71,7 +66,6 @@ if (isset($_POST['update_status'])) {
         echo "Error updating record: " . mysqli_error($connect);
     }
 }
-
 
 $bookings_query = "
     SELECT workspaces.*, 
@@ -89,7 +83,7 @@ $bookings_query = "
            payments.payment_method
     FROM workspaces 
     INNER JOIN rooms ON workspaces.workspace_id = rooms.workspace_id
-    INNER JOIN bookings ON rooms.room_id = bookings.room_id  -- Ensures only booked rooms are included
+    INNER JOIN bookings ON rooms.room_id = bookings.room_id
     LEFT JOIN zone ON workspaces.zone_id = zone.zone_id
     LEFT JOIN reviews ON bookings.booking_id = reviews.booking_id
     LEFT JOIN users ON bookings.user_id = users.user_id
@@ -98,9 +92,6 @@ $bookings_query = "
     GROUP BY bookings.booking_id
     ORDER BY bookings.date DESC
 ";
-
-
-
 
 $bookings_result = mysqli_query($connect, $bookings_query);
 
@@ -120,7 +111,6 @@ foreach ($booking_statuses as $status) {
     $booking_counts[$status] = $row['count'];
 }
 
-
 $earnings_query = "
     SELECT workspaces.*, 
            zone.zone_name, 
@@ -139,7 +129,6 @@ $earnings_query = "
 ";
 
 $earnings_result = mysqli_query($connect, $earnings_query);
-
 
 $rooms_query = "SELECT r.*, GROUP_CONCAT(a.amenity SEPARATOR ', ') AS amenities 
                 FROM `rooms` r 
@@ -192,70 +181,56 @@ $rooms_result = mysqli_query($connect, $rooms_query);
 
 <div class="table-container mt-4">
     <h4>Bookings Overview</h4>
-    <form method="POST" action="workspaces_dashboard.php">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Customer</th>
-                    <th>Room</th>
-                    <th>Date</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Status</th>
-                    <th>Amount (EGP)</th>
-                    <th>Payment Method</th>
-                    <th>Update Booking</th>
-                </tr>
-            </thead>
-            <tbody>
-    <?php while ($booking = mysqli_fetch_assoc($bookings_result)): ?>
-    <tr>
-        <td><?php echo htmlspecialchars($booking['customer']); ?></td>
-        <td><?php echo htmlspecialchars($booking['room_name']); ?></td>
-        <td><?php echo htmlspecialchars($booking['date']); ?></td>
-        <td><?php echo htmlspecialchars($booking['start_time']); ?></td>
-        <td><?php echo htmlspecialchars($booking['end_time']); ?></td>
-        <td>
-            <!-- Each row has its own form to update individually -->
-            <form method="POST">
-                <input type="hidden" name="booking_id" value="<?php echo $booking['booking_id']; ?>">
-                <select class="form-select" name="status">
-                    <?php foreach ($booking_statuses as $status): ?>
-                        <option value="<?php echo $status; ?>" <?php echo ($booking['status'] == $status) ? 'selected' : ''; ?>>
-                            <?php echo ucfirst($status); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-        </td>
-        <td><?php echo htmlspecialchars($booking['total_price']); ?></td>
-        <td><?php echo htmlspecialchars($booking['payment_method']); ?></td>
-        <td>
-                <button type="submit" name="update_status" class="btn btn-primary btn-sm">Update</button>
-            </form>
-        </td>
-    </tr>
-    <?php endwhile; ?>
-</tbody>
-
-        </table>
-    </form>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Room</th>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <th>Amount (EGP)</th>
+                <th>Payment Method</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php while ($booking = mysqli_fetch_assoc($bookings_result)): ?>
+            <tr>
+                <td><?php echo htmlspecialchars($booking['customer']); ?></td>
+                <td><?php echo htmlspecialchars($booking['room_name']); ?></td>
+                <td><?php echo htmlspecialchars($booking['date']); ?></td>
+                <td><?php echo htmlspecialchars($booking['start_time']); ?></td>
+                <td><?php echo htmlspecialchars($booking['end_time']); ?></td>
+                <td>
+                    <form method="POST" id="form_<?php echo $booking['booking_id']; ?>">
+                        <input type="hidden" name="booking_id" value="<?php echo $booking['booking_id']; ?>">
+                        <select class="form-select" name="status" onchange="document.getElementById('form_<?php echo $booking['booking_id']; ?>').submit();">
+                            <?php foreach ($booking_statuses as $status): ?>
+                                <option value="<?php echo $status; ?>" <?php echo ($booking['status'] == $status) ? 'selected' : ''; ?>>
+                                    <?php echo ucfirst($status); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </form>
+                </td>
+                <td><?php echo htmlspecialchars($booking['total_price']); ?></td>
+                <td><?php echo htmlspecialchars($booking['payment_method']); ?></td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
 </div>
 
-
 <div class="dashboard-container">
-
-    
     <div class="chart-container">
         <h4>Booking Statistics</h4>
         <canvas id="bookingChart"></canvas>
     </div>
-
-    
     <div class="chart-container">
         <h4>Earnings Per Room</h4>
         <canvas id="earningsChart"></canvas>
     </div>
-
 </div>
 
 <!-- Existing Rooms Table -->
@@ -311,27 +286,22 @@ $rooms_result = mysqli_query($connect, $rooms_query);
             </div>
             <div class="modal-body">
                 <form method="POST" action="workspaces_dashboard.php" enctype="multipart/form-data">
-                
                     <div class="mb-3">
                         <label class="form-label">Room Name:</label>
                         <input type="text" name="room_name" class="form-control" required>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Seats:</label>
                         <input type="number" name="seats" class="form-control" required>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Room Type:</label>
                         <input type="text" name="room_type" class="form-control" required>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Price per Hour (EGP):</label>
                         <input type="number" name="price" class="form-control" required>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Room Status:</label>
                         <select name="room_status" class="form-select" required>
@@ -339,22 +309,16 @@ $rooms_result = mysqli_query($connect, $rooms_query);
                             <option value="ongoing">Not Available</option>
                         </select>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label">Upload Room Images:</label>
                         <input type="file" name="images[]" class="form-control" multiple required>
                     </div>
-
                     <button type="submit" class="btn btn-primary">Add Room</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-
-
-
 
 <script>
     var ctx1 = document.getElementById('bookingChart').getContext('2d');
