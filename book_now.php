@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = $_SESSION['user_id'] ?? null;
     $roomId = mysqli_real_escape_string($connect, $data['room_id']); // Get from JSON, not GET
     $date = $data['date'] ?? '';
+    $booking_id=$data['booking_id'] ?? '';
     $startTime = $data['start_time'] ?? '';
     $endTime = $data['end_time'] ?? '';
     $numPeople = $data['num_people'] ?? '';
@@ -57,14 +58,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->bind_param("iisssi", $userId, $roomId, $date, $startTime, $endTime, $numPeople);
     if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Booking successfully created!']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to create booking: ' . $stmt->error]);
-    }
+    $booking_id = $stmt->insert_id; // Get the last inserted booking ID
+    echo json_encode(['status' => 'success', 'message' => 'Booking successfully created!', 'booking_id' => $booking_id]);
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Failed to create booking: ' . $stmt->error]);
+}
 
     $stmt->close();
     exit;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -448,13 +451,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         return response.json();
                     })
                     .then(data => {
-                        if (data.status === 'success') {
-                            alert('Booking successful! Redirecting to payment...');
-                            window.location.href = 'payment.php'; // Redirect to payment.php
-                        } else {
-                            alert('Booking failed: ' + data.message);
-                        }
-                    })
+                if (data.status === 'success') {
+                    alert('Booking successful! Redirecting to payment...');
+                    // Redirect to payment.php with booking_id as a parameter
+                    window.location.href = `booking_details.php?booking_id=${data.booking_id}`;
+                } else {
+                    alert('Booking failed: ' + data.message);
+                }
+            })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('An error occurred while processing your request. Details: ' + error.message);
