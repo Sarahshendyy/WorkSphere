@@ -3,7 +3,7 @@ include "connection.php";
 $user_id = $_SESSION['user_id'];
 
 if (isset($_POST['submit'])) {
-    $description = htmlspecialchars(mysqli_real_escape_string($connect, $_POST['description']));
+    $description = mysqli_real_escape_string($connect, $_POST['description']);
     $images = isset($_FILES['images']) ? $_FILES['images'] : null;
     $file = isset($_FILES['file']) ? $_FILES['file'] : null;
 
