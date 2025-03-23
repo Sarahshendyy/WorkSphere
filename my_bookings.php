@@ -10,6 +10,8 @@ function displayStatus($status) {
         return '<i class="fa-solid fa-arrows-rotate"></i> Ongoing';
     } elseif ($status == 'canceled') {
         return '<i class="fa-solid fa-circle-xmark"></i> Canceled';
+    }elseif ($status == 'completed') {
+        return '<i class="fa-solid fa-circle-check"></i> Completed';
     }
 }
 // Function to fetch bookings
