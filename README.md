@@ -1,4 +1,4 @@
-       BUGS
+      #BUGS
    -login(remember me ) css
 
    -community w my bookings (popup bdl el local host) 
