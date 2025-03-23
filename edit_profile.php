@@ -43,7 +43,7 @@ if (isset($_POST['update'])) {
     } else {
         // If no new image is uploaded, keep the existing image
         $update_profile = "UPDATE `users` 
-                           SET `name`='$name', `email`='$email', `age`='$age', `address`='$address', 
+                           SET `name`='$name', `email`='$email', `age`='$age', `location`='$address', 
                                `job_title`='$job_title', `zone_id`='$zone_id' 
                            WHERE `user_id`='$user_id'";
     }
