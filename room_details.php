@@ -248,7 +248,7 @@ $run_am = mysqli_query($connect, $amenities);
                         <div class="price"><?php echo $room['p/hr']; ?> EGP</div>
                         <div class="price-label">Per Hour</div>
                     </div>
-                    <button class="book-now-button">Book Now</button>
+                    <a href="book_now.php?r_id=<?php echo $room['room_id']?>"><button class="book-now-button">Book Now</button></a> 
                 </div>
             </div>
         </div>
