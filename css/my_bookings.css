@@ -130,6 +130,12 @@ body {
   background: var(--danger-background);
 }
 
+.status.completed {
+  color: green ;
+  background-color:rgb(225, 250, 225) ;
+}
+
+
 /* Booking Details */
 .booking-details {
   display: flex;
