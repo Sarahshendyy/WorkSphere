@@ -1,4 +1,4 @@
-       **BUGS
+       BUGS
    -login(remember me ) css
 
    -community w my bookings (popup bdl el local host) 
@@ -11,7 +11,7 @@
 
    -(update pass) el validition msh m3mola 
 
-   - (edit_profile) (profile pic ) css msh zahra
+   -(edit_profile) (profile pic ) css msh zahra
 
    
 
