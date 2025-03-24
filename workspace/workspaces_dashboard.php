@@ -1,5 +1,6 @@
 <?php
-include "connection.php";
+// include "connection.php";
+include "mail.php";
 
 $owner_id = $_SESSION['user_id'];
 
@@ -59,7 +60,66 @@ if (isset($_POST['booking_id'])) {
 
     $update_query = "UPDATE bookings SET status = '$new_status' WHERE booking_id = '$booking_id'";
     $run_update = mysqli_query($connect, $update_query);
+    
     if ($run_update) {
+        // If status was changed to "completed", send the review email
+        if ($new_status == 'completed') {
+            // Get booking and user details
+            $email_query = "SELECT `users`.`email`, `users`.`name` 
+                           FROM `bookings` 
+                           JOIN `users` ON `bookings`.`user_id` = `users`.`user_id` 
+                           WHERE booking_id = '$booking_id'";
+            $email_result = mysqli_query($connect, $email_query);
+            
+            if ($email_result && mysqli_num_rows($email_result) > 0) {
+                $user_data = mysqli_fetch_assoc($email_result);
+                $email = $user_data['email'];
+                $user_name = $user_data['name'];
+
+                // Compose the email
+                $subject = "We Value Your Feedback!";
+                $message = "
+                    <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
+                        <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
+                            <h1>We Value Your Feedback, $user_name!</h1>
+                        </div>
+                        <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
+                            <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$user_name</span>,</p>
+                            <p style='color: #00000a;'>Thank you for choosing our workspace! We hope you had a great experience.</p>
+                            <p style='color: #00000a;'>We would love to hear your feedback. Please take a moment to review your booking:</p>
+                            <p style='text-align: center;'>
+                                <a href='http://localhost/graduation/review.php?booking_id=$booking_id' 
+                                   style='display: inline-block; padding: 10px 20px; background-color: #fda521; color: #fffffa; 
+                                          text-decoration: none; font-weight: bold; border-radius: 5px;'>
+                                    Leave a Review
+                                </a>
+                            </p>
+                            <p style='color: #00000a;'>Thank you for your time!</p>
+                            <p style='color: #00000a;'>Best regards,<br>Your Workspace Team</p>
+                        </div>
+                        <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
+                            <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
+                            <p style='color: #fffffa;'>Email: <a href='mailto:support@yourworkspace.com' style='color: #fda521;'>support@yourworkspace.com</a></p>
+                        </div>
+                    </body>
+                ";
+                
+                // Set up the email
+                $mail->setFrom('deskify0@gmail.com', 'Deskify');
+                $mail->addAddress($email);
+                $mail->isHTML(true);
+                $mail->Subject = $subject;
+                $mail->Body = $message;
+
+                // Send the email
+                if ($mail->send()) {
+                    // Update the email sent flag
+                    $update_email_flag = "UPDATE bookings SET `review-email` = 1 WHERE booking_id = '$booking_id'";
+                    mysqli_query($connect, $update_email_flag);
+                }
+            }
+        }
+        
         header("Location: workspaces_dashboard.php");
         exit();
     } else {
