@@ -24,7 +24,7 @@ if (isset($_POST['submit'])) {
 
     $file_path = null; 
     if ($file && !empty($file['tmp_name'])) { // Check if a file was actually uploaded
-        $file_path = './img/' . basename($file['name']);
+        $file_path = './files/' . basename($file['name']);
         move_uploaded_file($file['tmp_name'], $file_path);
     }
 
