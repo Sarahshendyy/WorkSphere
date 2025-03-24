@@ -125,21 +125,18 @@ if (isset($_POST['update_password'])) {
                 <p>Email: <?php echo $fetch['email']; ?></p>
                 <p>Phone Number: <?php echo $fetch['phone']; ?></p>
 
-                <!-- Display Age if it exists -->
-                <?php if (!empty($fetch['age'])){ ?>
+                <!-- Display Age if it exists - ONLY SHOW FOR OWN PROFILE -->
+                 <?php if ($is_own_profile && !empty($fetch['age'])){ ?>
                     <p>Age: <?php echo $fetch['age']; ?></p>
-                <?php } ?>
-
-                <!-- Display Address if it exists -->
-                <?php if (!empty($fetch['location'])){ ?>
-                    <p>Address: <?php echo $fetch['location']; ?></p>
-                <?php } ?>
-
-                <!-- Display Zone if it exists -->
-                <?php if (!empty($fetch['zone_name'])){ ?>
-                    <p>Zone: <?php echo $fetch['zone_name']; ?></p>
-                <?php } ?>
-
+                    <?php } ?>
+                    <!-- Display Address if it exists - ONLY SHOW FOR OWN PROFILE -->
+                     <?php if ($is_own_profile && !empty($fetch['location'])){ ?>
+                        <p>Address: <?php echo $fetch['location']; ?></p>
+                        <?php } ?>
+                        <!-- Display Zone if it exists - ONLY SHOW FOR OWN PROFILE -->
+                         <?php if ($is_own_profile && !empty($fetch['zone_name'])){ ?>
+                            <p>Zone: <?php echo $fetch['zone_name']; ?></p>
+                            <?php } ?>
                 <!-- Display Job Title if it exists -->
                 <?php if (!empty($fetch['job_title'])){ ?>
                     <p>Job Title: <?php echo $fetch['job_title']; ?></p>
