@@ -1,15 +1,24 @@
 <?php
 include "connection.php";
-$user_id = $_SESSION['user_id'];
+
+// Check if we're viewing a specific user's profile (from community page)
+if (isset($_GET['user_id'])) {
+    $viewed_user_id = mysqli_real_escape_string($connect, $_GET['user_id']);
+} else {
+    // Default to logged-in user's profile
+    $viewed_user_id = $_SESSION['user_id'];
+}
 
 // Fetch user data with zone information
 $select_user = "SELECT `users`.*, `zone`.`zone_name` 
                 FROM `users` 
                 LEFT JOIN `zone` ON `users`.`zone_id` = `zone`.`zone_id` 
-                WHERE `users`.`user_id`='$user_id'";
+                WHERE `users`.`user_id`='$viewed_user_id'";
 $run_select = mysqli_query($connect, $select_user);
 $fetch = mysqli_fetch_assoc($run_select);
 
+// Check if the current user is viewing their own profile
+$is_own_profile = ($_SESSION['user_id'] == $viewed_user_id);
 // Handle form submission for adding business
 if (isset($_POST['add_business'])) {
     $company_name = mysqli_real_escape_string($connect, $_POST['company_name']);
@@ -19,10 +28,36 @@ if (isset($_POST['add_business'])) {
     // Convert the contact info array to a comma-separated string
     $contact_info_str = implode(", ", $contact_info);
 
-    // Update role_id to 2 
+    // Handle file upload
+    $portfolio_path = '';
+    if (isset($_FILES['portfolio']) && $_FILES['portfolio']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = './files/';
+        
+        $file_name = basename($_FILES['portfolio']['name']);
+        $file_tmp = $_FILES['portfolio']['tmp_name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        
+        // Validate file type
+        $allowed_extensions = ['pdf', 'doc', 'docx', 'ppt', 'pptx'];
+        if (in_array($file_ext, $allowed_extensions)) {
+            // Generate unique filename
+            $unique_name = uniqid() . '_' . $file_name;
+            $target_path = $upload_dir . $unique_name;
+            
+            if (move_uploaded_file($file_tmp, $target_path)) {
+                $portfolio_path = $target_path;
+            } else {
+                echo "<script>alert('Error uploading portfolio file.');</script>";
+            }
+        } else {
+            echo "<script>alert('Invalid file type. Only PDF, DOC, DOCX, PPT, PPTX are allowed.');</script>";
+        }
+    }
+
+    // Update role_id to 2 and include portfolio path
     $update_query = "UPDATE `users` 
                      SET `company_name`='$company_name', `company_type`='$company_type', 
-                         `contact_info`='$contact_info_str', `role_id`=2 
+                         `contact_info`='$contact_info_str', `role_id`=2, `portfolio`='$portfolio_path' 
                      WHERE `user_id`='$user_id'";
     $run_update = mysqli_query($connect, $update_query);
 
@@ -75,6 +110,7 @@ if (isset($_POST['update_password'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/profile.css">
     <title>Profile</title>
+
 </head>
 <body>
     <div class="container">
@@ -118,50 +154,58 @@ if (isset($_POST['update_password'])) {
                 <?php if (!empty($fetch['company_type'])){ ?>
                     <p>Company Type: <?php echo $fetch['company_type']; ?></p>
                 <?php } ?>
-
+                
                 <!-- Display Contact Info if it exists -->
                 <?php if (!empty($fetch['contact_info'])){ ?>
                     <p>Contact Info: <?php echo $fetch['contact_info']; ?></p>
                 <?php } ?>
 
-                <a href="edit_profile.php">Edit Profile</a>
-
-                <!-- Add Your Business Button -->
-                <?php if ($fetch['role_id'] != 2){ ?>
-                    <button id="openModalBtn">Add Your Business</button>
+                <!-- Display Portfolio if it exists -->
+                <?php if (!empty($fetch['portfolio'])){ ?>
+                    <p>Portfolio: <a href="<?php echo $fetch['portfolio']; ?>" target="_blank">View Portfolio</a></p>
                 <?php } ?>
+                
+                <?php if ($is_own_profile){ ?>
+                    <!-- Only show edit options if it's the user's own profile -->
+                     <a href="edit_profile.php">Edit Profile</a>
+                     <!-- Add Your Business Button -->
+                      <?php if ($fetch['role_id'] != 2){ ?>
+                        <button id="openModalBtn">Add Your Business</button>
+                        <?php } ?>
+                        <!-- Update Password Button -->
+                         <button id="openPasswordModalBtn">Update Password</button>
+                         <?php } ?>
+                        </div>
+                    </div>
+                </div>
+                
 
-                <!-- Update Password Button -->
-                <button id="openPasswordModalBtn">Update Password</button>
-            </div>
-        </div>
-    </div>
-
+                <!-- Only show the modals if it's the user's own profile -->
+                 <?php if ($is_own_profile){ ?>
     <!-- Pop-up Modal for Adding Business -->
-    <div id="businessModal" class="modal">
+     <div id="businessModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Add Your Business</h2>
-            <form action="" method="post">
+            <form action="" method="post" enctype="multipart/form-data">
                 <label for="company_name">Company Name:</label>
                 <input type="text" name="company_name" id="company_name" required>
-
                 <label for="company_type">Company Type:</label>
                 <input type="text" name="company_type" id="company_type" required>
-
-                <!-- Contact Info Fields -->
-                <div id="contactInfoContainer">
+                <!-- Portfolio File Upload -->
+                 <label for="portfolio">Upload Portfolio (PDF/DOC/PPT):</label>
+                 <input type="file" name="portfolio" id="portfolio" accept=".pdf,.doc,.docx,.ppt,.pptx" required>
+                 <!-- Contact Info Fields -->
+                  <div id="contactInfoContainer">
                     <label for="contact_info">Contact Info:</label>
                     <input type="text" name="contact_info[]" required>
                 </div>
-
                 <!-- Button to Add More Contact Info Fields -->
-                <button type="button" id="addContactInfoBtn">Add Another Contact Info</button>
-
-                <input type="submit" name="add_business" value="Submit Business">
-            </form>
+                 <button type="button" id="addContactInfoBtn">Add Another Contact Info</button>
+                 <input type="submit" name="add_business" value="Submit Business">
+                </form>
+            </div>
         </div>
-    </div>
 
     <!-- Pop-up Modal for Updating Password -->
     <div id="passwordModal" class="modal">
@@ -182,6 +226,7 @@ if (isset($_POST['update_password'])) {
             </form>
         </div>
     </div>
+    <?php } ?>
 
     <!-- JavaScript for Modals and Dynamic Fields -->
     <script>
