@@ -7,10 +7,6 @@
 
    -(book-now) insert booking tb2a b3d el payment msh 2bl
 
-   -(review email ) b3d ma el booking yb2a completed ygelo email b el reviw 
-
-   -(update pass) el validition msh m3mola 
-
    -(edit_profile) (profile pic ) css msh zahra
 
    
