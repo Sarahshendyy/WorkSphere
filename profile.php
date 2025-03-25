@@ -55,12 +55,11 @@ if (isset($_POST['add_business'])) {
     }
 
     // Update role_id to 2 and include portfolio path
-    $update_query = "UPDATE `users` 
-                     SET `company_name`='$company_name', `company_type`='$company_type', 
-                         `contact_info`='$contact_info_str', `role_id`=2, `portfolio`='$portfolio_path' 
-                     WHERE `user_id`='$user_id'";
-    $run_update = mysqli_query($connect, $update_query);
-
+$update_query = "UPDATE `users` 
+SET `company_name`='$company_name', `company_type`='$company_type', 
+    `contact_info`='$contact_info_str', `role_id`=2, `portfolio`='$portfolio_path' 
+WHERE `user_id`='$viewed_user_id'";
+$run_update = mysqli_query($connect, $update_query);
     if ($run_update) {
         header("Location: profile.php");
         exit();
@@ -74,7 +73,7 @@ if (isset($_POST['update_password'])) {
     $confirm_password = mysqli_real_escape_string($connect, $_POST['confirm_password']);
 
     // Fetch the current password from the database
-    $select_password = "SELECT `password` FROM `users` WHERE `user_id`='$user_id'";
+    $select_password = "SELECT `password` FROM `users` WHERE `user_id`='$viewed_user_id'";
     $run_select_password = mysqli_query($connect, $select_password);
     $fetch_password = mysqli_fetch_assoc($run_select_password);
 
@@ -86,20 +85,14 @@ if (isset($_POST['update_password'])) {
             $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
             // Update the password in the database
-            $update_password_query = "UPDATE `users` SET `password`='$hashed_password' WHERE `user_id`='$user_id'";
+            $update_password_query = "UPDATE `users` SET `password`='$hashed_password' WHERE `user_id`='$viewed_user_id'";
             $run_update_password = mysqli_query($connect, $update_password_query);
 
             if ($run_update_password) {
                 echo "<script>alert('Password updated successfully.');</script>";
-            } else {
-                echo "<script>alert('Failed to update password.');</script>";
-            }
-        } else {
-            echo "<script>alert('New password and confirmation do not match.');</script>";
-        }
-    } else {
-        echo "<script>alert('Current password is incorrect.');</script>";
-    }
+            } 
+        } 
+    } 
 }
 ?>
 
@@ -124,7 +117,6 @@ if (isset($_POST['update_password'])) {
                 <h1>Name: <?php echo $fetch['name']; ?></h1>
                 <p>Email: <?php echo $fetch['email']; ?></p>
                 <p>Phone Number: <?php echo $fetch['phone']; ?></p>
-
                 <!-- Display Age if it exists - ONLY SHOW FOR OWN PROFILE -->
                  <?php if ($is_own_profile && !empty($fetch['age'])){ ?>
                     <p>Age: <?php echo $fetch['age']; ?></p>
@@ -175,14 +167,14 @@ if (isset($_POST['update_password'])) {
                         </div>
                     </div>
                 </div>
-                
+
 
                 <!-- Only show the modals if it's the user's own profile -->
                  <?php if ($is_own_profile){ ?>
     <!-- Pop-up Modal for Adding Business -->
      <div id="businessModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close">×</span>
             <h2>Add Your Business</h2>
             <form action="" method="post" enctype="multipart/form-data">
                 <label for="company_name">Company Name:</label>
@@ -207,17 +199,20 @@ if (isset($_POST['update_password'])) {
     <!-- Pop-up Modal for Updating Password -->
     <div id="passwordModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close">×</span>
             <h2>Update Password</h2>
-            <form action="" method="post">
+            <form action="" method="post" id="updatePasswordForm">
                 <label for="current_password">Current Password:</label>
                 <input type="password" name="current_password" id="current_password" required>
+                <span id="currentPasswordError" class="error-message"></span>
 
                 <label for="new_password">New Password:</label>
                 <input type="password" name="new_password" id="new_password" required>
+                <span id="newPasswordError" class="error-message"></span>
 
                 <label for="confirm_password">Confirm New Password:</label>
                 <input type="password" name="confirm_password" id="confirm_password" required>
+                <span id="confirmPasswordError" class="error-message"></span>
 
                 <input type="submit" name="update_password" value="Update Password">
             </form>
@@ -281,6 +276,85 @@ if (isset($_POST['update_password'])) {
                 contactInfoContainer.appendChild(newInput);
             });
         }
+
+        // Password Validation JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const updatePasswordForm = document.getElementById('updatePasswordForm');
+            const currentPasswordInput = document.getElementById('current_password');
+            const newPasswordInput = document.getElementById('new_password');
+            const confirmPasswordInput = document.getElementById('confirm_password');
+
+            const currentPasswordError = document.getElementById('currentPasswordError');
+            const newPasswordError = document.getElementById('newPasswordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+            updatePasswordForm.addEventListener('input', function(event) {
+                const target = event.target;
+
+                if (target === currentPasswordInput) {
+                    if (!target.value) {
+                        currentPasswordError.textContent = 'Current password is required.';
+                    } else {
+                        currentPasswordError.textContent = '';
+                    }
+                }
+
+                if (target === newPasswordInput) {
+                    const passwordValue = target.value;
+
+                    if (!passwordValue) {
+                        newPasswordError.textContent = 'New password is required.';
+                    } else if (passwordValue.length < 8) {
+                        newPasswordError.textContent = 'Password must be at least 8 characters long.';
+                    } else if (!/[a-z]/.test(passwordValue) || !/[A-Z]/.test(passwordValue) || !/[0-9]/.test(passwordValue)) {
+                        newPasswordError.textContent = 'Password must contain at least one lowercase letter, one uppercase letter, and one digit.';
+                    } else {
+                        newPasswordError.textContent = '';
+                    }
+
+                    // Also validate confirm password when new password changes
+                    if (confirmPasswordInput.value) {
+                        if (passwordValue !== confirmPasswordInput.value) {
+                            confirmPasswordError.textContent = 'New password do not match.';
+                        } else {
+                            confirmPasswordError.textContent = '';
+                        }
+                    }
+                }
+
+                if (target === confirmPasswordInput) {
+                    if (newPasswordInput.value !== target.value) {
+                        confirmPasswordError.textContent = 'New password do not match.';
+                    } else {
+                        confirmPasswordError.textContent = '';
+                    }
+                }
+            });
+
+            updatePasswordForm.addEventListener('submit', function(event) {
+                // Perform final validation before submitting
+                if (currentPasswordInput.value === '') {
+                    currentPasswordError.textContent = 'Current password is required.';
+                    event.preventDefault(); // Prevent form submission
+                }
+
+                if (newPasswordInput.value === '') {
+                    newPasswordError.textContent = 'New password is required.';
+                    event.preventDefault();
+                } else if (newPasswordError.textContent !== '') {
+                    // If there's an existing error in the new password, prevent submission
+                    event.preventDefault();
+                }
+
+                if (confirmPasswordInput.value === '') {
+                    confirmPasswordError.textContent = 'Confirm password is required.';
+                    event.preventDefault();
+                } else if (confirmPasswordError.textContent !== '') {
+                    // If there's an existing error in the confirm password, prevent submission
+                    event.preventDefault();
+                }
+            });
+        });
     </script>
 </body>
 </html>
