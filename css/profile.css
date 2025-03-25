@@ -243,6 +243,12 @@ body {
     background-color: #218838; /* Darker green on hover */
 }
 
+.error-message {
+    color: red;
+    font-size: 0.8em;
+    display: block; /* Ensures errors are displayed below the input */
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
     .container {
