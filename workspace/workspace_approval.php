@@ -23,36 +23,38 @@ if (isset($_POST['approve'])) {
         $user_name = $owner['name'];
         $user_id = $owner['user_id'];
 
-        $update_query = "UPDATE workspaces SET Availability = 2 WHERE workspace_id = '$workspace_id'";
-        if (mysqli_query($connect, $update_query)) {
-            $update_role_query = "UPDATE users SET role_id = 3 WHERE user_id = '$user_id'";
-            if (mysqli_query($connect, $update_role_query)) {
-                $subject = "🎉 Congratulations! Your Workspace is Approved";
-                $message = "
-                    <body style='font-family: Arial, sans-serif; background-color: #fffffa; color: #00000a;'>
-                        <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                            <h1>Welcome to Deskify!</h1>
-                        </div>
-                        <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
-                            <p>Dear <strong>$user_name</strong>,</p>
-                            <p>We are excited to inform you that your workspace listing has been approved! 🎉</p>
-                            <p>You can now manage your workspace and start receiving bookings.</p>
-                            <p>Visit your dashboard to see more details.</p>
-                            <p>Best regards,<br>The Deskify Team</p>
-                        </div>
-                    </body>
-                ";
-                sendEmail($user_email, $subject, $message);
-                header("Location: workspace_approval.php");
-                exit();
-            } else {
-                echo "Error updating user role: " . mysqli_error($connect);
-            }
+        // Update the user's role
+        $update_role_query = "UPDATE users SET role_id = 3 WHERE user_id = '$user_id'";
+        $update_workspace_query = "UPDATE workspaces SET Availability = 0 WHERE workspace_id = '$workspace_id'";
+
+        if (mysqli_query($connect, $update_role_query) && mysqli_query($connect, $update_workspace_query)) {
+            $subject = "🎉 Welcome On Board! Ready to Activate Your Workspace";
+            $message = "
+                <body style='font-family: Arial, sans-serif; background-color: #fffffa; color: #00000a;'>
+                    <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
+                        <h1>Welcome to Deskify!</h1>
+                    </div>
+                    <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
+                        <p>Dear <strong>$user_name</strong>,</p>
+                        <p>Congratulations! Your workspace listing has been approved. 🎉</p>
+                        <p>To activate your workspace and start receiving bookings, please complete your payment.</p>
+                        <p><a href='http://localhost/graduation/workspace_payment.php?user_id=$user_id' style='display: inline-block; padding: 10px 15px; background-color: #0a7273; color: white; text-decoration: none; border-radius: 5px;'>Proceed to Payment</a></p>
+                        <p>Best regards,<br>The Deskify Team</p>
+                    </div>
+                </body>
+            ";
+            sendEmail($user_email, $subject, $message);
+            header("Location: workspace_approval.php");
+            exit();
         } else {
-            echo "Error: " . mysqli_error($connect);
+            echo "Error updating database: " . mysqli_error($connect);
         }
+    } else {
+        echo "Error fetching workspace owner: " . mysqli_error($connect);
     }
 }
+
+
 
 if (isset($_POST['decline'])) {
     $workspace_id = $_POST['workspace_id'];
