@@ -1,14 +1,14 @@
 <?php
-include "connection.php";
 
+include "connection.php";
 
 $order_by = "workspaces.workspace_id"; // Default sorting
 if (!empty($_POST['sort'])) {
     $sort_option = $_POST['sort'];
     if ($sort_option == 'highest_price') {
-        $order_by = "`price/hr` DESC";
+        $order_by = "starting_price DESC";
     } elseif ($sort_option == 'lowest_price') {
-        $order_by = "`price/hr` ASC";
+        $order_by = "starting_price ASC";
     } elseif ($sort_option == 'highest_rating') {
         $order_by = "avg_rating DESC";
     }
@@ -17,7 +17,8 @@ if (!empty($_POST['sort'])) {
 $select_ws = "SELECT workspaces.*, 
                      zone.zone_name, 
                      rooms.images, 
-                     COALESCE(AVG(reviews.rating), 0) AS avg_rating
+                     COALESCE(AVG(reviews.rating), 0) AS avg_rating,
+                     MIN(rooms.`p/hr`) AS starting_price
               FROM `workspaces` 
               JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
               LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
@@ -34,7 +35,8 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
     $select_search = "SELECT workspaces.*, 
                        zone.zone_name, 
                        rooms.images, 
-                       COALESCE(AVG(reviews.rating), 0) AS avg_rating
+                       COALESCE(AVG(reviews.rating), 0) AS avg_rating,
+                       MIN(rooms.`p/hr`) AS starting_price
                   FROM `workspaces` 
                   JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
                   LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
@@ -142,22 +144,20 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
 
     <!-- Search & Sort Container -->
     <div class="search-sort-container">
-   
         <form method="post" class="d-flex w-100">
             <input class="form-control" type="search" id="searchText" name="text" placeholder="Search by name or zone">
         </form>
         <form method="post">
             <select class="form-select" name="sort" id="sort" onchange="this.form.submit()">
                 <option value="">Sort By</option>
-                <option value="highest_price">Highest Price</option>
-                <option value="lowest_price">Lowest Price</option>
-                <option value="highest_rating">Highest Rating</option>
+                <option value="highest_price" <?php echo (!empty($_POST['sort']) && $_POST['sort'] == 'highest_price') ? 'selected' : ''; ?>>Highest Price</option>
+                <option value="lowest_price" <?php echo (!empty($_POST['sort']) && $_POST['sort'] == 'lowest_price') ? 'selected' : ''; ?>>Lowest Price</option>
+                <option value="highest_rating" <?php echo (!empty($_POST['sort']) && $_POST['sort'] == 'highest_rating') ? 'selected' : ''; ?>>Highest Rating</option>
             </select>
         </form>
     </div>
 
     <div class="container">
-        
         <?php
         $result_set = isset($_POST['search']) ? $run_select_search : $run_select_ws;
         if ($result_set && mysqli_num_rows($result_set) > 0) {
@@ -194,19 +194,18 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
                                     while ($imag = mysqli_fetch_assoc($run_img)) {
                                         $images = explode(',', $imag['images']);
                                         foreach ($images as $image) {
-                                            $image = trim($image); // Remove any extra spaces
+                                            $image = trim($image);
                                             ?>
                                             <div class="carousel-item <?php echo $first ? 'active' : ''; ?>">
                                                 <img src="<?php echo $image; ?>" class="d-block w-100" alt="Workspace Image">
                                             </div>
                                             <?php
-                                            $first = false; // Only the first image should be active
+                                            $first = false;
                                         }
                                     }
                                     ?>
                                 </div>
 
-                                <!-- Carousel Navigation Buttons -->
                                 <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $carouselId; ?>" data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon"></span>
                                 </button>
@@ -218,7 +217,7 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
                             <div class="card-body text-center">
                                 <h2><?php echo htmlspecialchars($row['name']); ?></h2>
                                 <h3><?php echo htmlspecialchars($row['zone_name']); ?></h3>
-                                <h4>Price/hr: <?php echo htmlspecialchars($row['price/hr']); ?> EGP</h4>
+                                <h4>Starting from <?php echo htmlspecialchars($row['starting_price']); ?> EGP/hour</h4>
                                 <p class="rating">Rating: <?php echo number_format($row['avg_rating'], 1); ?> / 5</p>
                             </div>
                         </div>
@@ -255,14 +254,9 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
                 });
             });
         });
-    </script>
 
-    <script>
-        // Function to toggle favorite icon
         function toggleFavorite(icon, workspaceId) {
-            // Check if user is logged in
             <?php if(!isset($_SESSION['user_id'])): ?>
-                // Redirect to login page if not logged in
                 window.location.href = 'login.php';
                 return;
             <?php endif; ?>
@@ -294,7 +288,5 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
             });
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
