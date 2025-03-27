@@ -7,7 +7,7 @@ $owner_id = $_SESSION['user_id'];
 if (isset($_POST["room_name"])) {
     $room_name = mysqli_real_escape_string($connect, $_POST['room_name']);
     $seats = mysqli_real_escape_string($connect, $_POST['seats']);
-    $room_type = mysqli_real_escape_string($connect, $_POST['room_type']);
+    $type_id = mysqli_real_escape_string($connect, $_POST['type_id']); 
     $price = mysqli_real_escape_string($connect, $_POST['price']);
     $room_status = mysqli_real_escape_string($connect, $_POST['room_status']);
 
@@ -18,8 +18,8 @@ if (isset($_POST["room_name"])) {
         $workspace_row = mysqli_fetch_assoc($workspace_result);
         $workspace_id = $workspace_row['workspace_id'];
 
-        $insert_query = "INSERT INTO rooms (workspace_id, room_name, seats, room_type, `p/hr`, room_status) 
-                 VALUES ('$workspace_id', '$room_name', '$seats', '$room_type', '$price', '$room_status')";
+        $insert_query = "INSERT INTO rooms (workspace_id, room_name, seats, type_id, `p/hr`, room_status) 
+                 VALUES ('$workspace_id', '$room_name', '$seats', '$type_id', '$price', '$room_status')";
         if (mysqli_query($connect, $insert_query)) {
             $room_id = mysqli_insert_id($connect); 
 
@@ -241,46 +241,14 @@ $rooms_result = mysqli_query($connect, $rooms_query);
 
 <div class="table-container mt-4">
     <h4>Bookings Overview</h4>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Customer</th>
-                <th>Room</th>
-                <th>Date</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Status</th>
-                <th>Amount (EGP)</th>
-                <th>Payment Method</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($booking = mysqli_fetch_assoc($bookings_result)): ?>
-            <tr>
-                <td><?php echo htmlspecialchars($booking['customer']); ?></td>
-                <td><?php echo htmlspecialchars($booking['room_name']); ?></td>
-                <td><?php echo htmlspecialchars($booking['date']); ?></td>
-                <td><?php echo htmlspecialchars($booking['start_time']); ?></td>
-                <td><?php echo htmlspecialchars($booking['end_time']); ?></td>
-                <td>
-                    <form method="POST" id="form_<?php echo $booking['booking_id']; ?>">
-                        <input type="hidden" name="booking_id" value="<?php echo $booking['booking_id']; ?>">
-                        <select class="form-select" name="status" onchange="document.getElementById('form_<?php echo $booking['booking_id']; ?>').submit();">
-                            <?php foreach ($booking_statuses as $status): ?>
-                                <option value="<?php echo $status; ?>" <?php echo ($booking['status'] == $status) ? 'selected' : ''; ?>>
-                                    <?php echo ucfirst($status); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </form>
-                </td>
-                <td><?php echo htmlspecialchars($booking['total_price']); ?></td>
-                <td><?php echo htmlspecialchars($booking['payment_method']); ?></td>
-            </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
+    <a href="booking_overview.php" class="btn btn-primary">View All Bookings</a>
 </div>
+
+<div class="table-container mt-4">
+    <h4>Rooms Management</h4>
+    <a href="rooms_table.php" class="btn btn-primary">Manage Rooms</a>
+</div>
+
 
 <div class="dashboard-container">
     <div class="chart-container">
@@ -293,92 +261,6 @@ $rooms_result = mysqli_query($connect, $rooms_query);
     </div>
 </div>
 
-<!-- Existing Rooms Table -->
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Room Name</th>
-            <th>Seats</th>
-            <th>Type</th>
-            <th>Price/hr</th>
-            <th>Images</th>
-            <th>Room Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php while ($room = mysqli_fetch_assoc($rooms_result)): ?>
-        <tr>
-            <td><?php echo htmlspecialchars($room['room_name']); ?></td>
-            <td><?php echo htmlspecialchars($room['seats']); ?></td>
-            <td><?php echo htmlspecialchars($room['room_type']); ?></td>
-            <td><?php echo htmlspecialchars($room['p/hr']); ?> EGP</td>
-            <td>
-                <?php
-                $imageFiles = explode(',', $room['images']);
-                foreach ($imageFiles as $image) {
-                    echo "<img src='$image' width='50' height='50' style='margin-right:5px;'>";
-                }
-                ?>
-            </td>
-            <td><?php echo htmlspecialchars($room['room_status']); ?></td>
-            <td>
-                <a href="edit_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                <a href="delete_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-danger btn-sm">Delete</a>
-            </td>
-        </tr>
-        <?php endwhile; ?>
-    </tbody>
-</table>
-
-<!-- Add Room Button -->
-<button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addRoomModal">
-    + Add Room
-</button>
-
-<!-- Add Room Modal -->
-<div class="modal fade" id="addRoomModal" tabindex="-1" aria-labelledby="addRoomModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addRoomModalLabel">Add New Room</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="workspaces_dashboard.php" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label class="form-label">Room Name:</label>
-                        <input type="text" name="room_name" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Seats:</label>
-                        <input type="number" name="seats" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Room Type:</label>
-                        <input type="text" name="room_type" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Price per Hour (EGP):</label>
-                        <input type="number" name="price" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Room Status:</label>
-                        <select name="room_status" class="form-select" required>
-                            <option value="available">Available</option>
-                            <option value="ongoing">Not Available</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Upload Room Images:</label>
-                        <input type="file" name="images[]" class="form-control" multiple required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Room</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     var ctx1 = document.getElementById('bookingChart').getContext('2d');
