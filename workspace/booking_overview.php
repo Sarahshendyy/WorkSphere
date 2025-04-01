@@ -21,7 +21,9 @@ $bookings_query = "
            bookings.start_time, 
            bookings.end_time, 
            bookings.status, 
-           payments.amount AS total_price, 
+           bookings.total_price, 
+           bookings.pay_method, 
+           payments.amount AS paid_amount, 
            payments.payment_method
     FROM workspaces 
     INNER JOIN rooms ON workspaces.workspace_id = rooms.workspace_id
@@ -39,80 +41,107 @@ $bookings_result = mysqli_query($connect, $bookings_query);
 
 $booking_statuses = ["ongoing", "canceled", "upcoming", "completed"];
 
-
 if (isset($_POST['booking_id'])) {
     $booking_id = $_POST['booking_id'];
     $new_status = $_POST['status'];
 
+    // Fetch old status, total_price, and pay_method
+    $fetch_booking = "
+        SELECT status, total_price, pay_method 
+        FROM bookings 
+        WHERE booking_id = '$booking_id'
+    ";
+    $booking_data = mysqli_fetch_assoc(mysqli_query($connect, $fetch_booking));
+    $old_status = $booking_data['status'];
+    $amount = $booking_data['total_price'];
+    $pay_method = $booking_data['pay_method'];
+
+    // Update booking status
     $update_query = "UPDATE bookings SET status = '$new_status' WHERE booking_id = '$booking_id'";
     $run_update = mysqli_query($connect, $update_query);
-    
-if ($run_update) {
-    // If status was changed to "completed", send the review email
-    if ($new_status == 'completed') {
-        // Get booking and user details
-        $email_query = "SELECT `users`.`email`, `users`.`name` 
-                       FROM `bookings` 
-                       JOIN `users` ON `bookings`.`user_id` = `users`.`user_id` 
-                       WHERE booking_id = '$booking_id'";
-        $email_result = mysqli_query($connect, $email_query);
-        
-        if ($email_result && mysqli_num_rows($email_result) > 0) {
-            $user_data = mysqli_fetch_assoc($email_result);
-            $email = $user_data['email'];
-            $user_name = $user_data['name'];
 
-            // Compose the email
-            $subject = "We Value Your Feedback!";
-            $message = "
-                <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
-                    <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                        <h1>We Value Your Feedback, $user_name!</h1>
-                    </div>
-                    <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
-                        <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$user_name</span>,</p>
-                        <p style='color: #00000a;'>Thank you for choosing our workspace! We hope you had a great experience.</p>
-                        <p style='color: #00000a;'>We would love to hear your feedback. Please take a moment to review your booking:</p>
-                        <p style='text-align: center;'>
-                            <a href='http://localhost/graduation/review.php?booking_id=$booking_id' 
-                               style='display: inline-block; padding: 10px 20px; background-color: #fda521; color: #fffffa; 
-                                      text-decoration: none; font-weight: bold; border-radius: 5px;'>
-                                Leave a Review
-                            </a>
-                        </p>
-                        <p style='color: #00000a;'>Thank you for your time!</p>
-                        <p style='color: #00000a;'>Best regards,<br>Your Workspace Team</p>
-                    </div>
-                    <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
-                        <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-                        <p style='color: #fffffa;'>Email: <a href='mailto:support@yourworkspace.com' style='color: #fda521;'>support@yourworkspace.com</a></p>
-                    </div>
-                </body>
+    if ($run_update) {
+
+        // Insert into payments if going from upcoming to ongoing and pay at host
+            if ($new_status == "ongoing" && $pay_method == "pay at host") {
+            // Get workspace_id
+            $workspace_query = "SELECT workspaces.workspace_id 
+            FROM bookings 
+            JOIN rooms ON bookings.room_id = rooms.room_id 
+            JOIN workspaces ON rooms.workspace_id = workspaces.workspace_id 
+            WHERE bookings.booking_id = '$booking_id'
             ";
-            
-            // Set up the email
-            $mail->setFrom('deskify0@gmail.com', 'Deskify');
-            $mail->addAddress($email);
-            $mail->isHTML(true);
-            $mail->Subject = $subject;
-            $mail->Body = $message;
+            $workspace_result = mysqli_query($connect, $workspace_query);
+            $workspace_data = mysqli_fetch_assoc($workspace_result);
+            $workspace_id = $workspace_data['workspace_id'];
 
-            // Send the email
-            if ($mail->send()) {
-                // Update the email sent flag
-                $update_email_flag = "UPDATE bookings SET `review-email` = 1 WHERE booking_id = '$booking_id'";
-                mysqli_query($connect, $update_email_flag);
+            // Check if payment already exists
+            $payment_check = mysqli_query($connect, "SELECT * FROM payments WHERE booking_id = '$booking_id'");
+            if (mysqli_num_rows($payment_check) == 0) {
+            $insert_payment = "INSERT INTO `payments` VALUES (NULL,'$booking_id','$amount','paid at host',NULL,NULL,'$workspace_id')";
+            $run_insert=mysqli_query($connect,$insert_payment); 
+            }
+            }
+
+
+        // Send review email if completed
+        if ($new_status == 'completed') {
+            $email_query = "SELECT users.email, users.name 
+                            FROM bookings 
+                            JOIN users ON bookings.user_id = users.user_id 
+                            WHERE booking_id = '$booking_id'";
+            $email_result = mysqli_query($connect, $email_query);
+            
+            if ($email_result && mysqli_num_rows($email_result) > 0) {
+                $user_data = mysqli_fetch_assoc($email_result);
+                $email = $user_data['email'];
+                $user_name = $user_data['name'];
+
+                $subject = "We Value Your Feedback!";
+                $message = "
+                    <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
+                        <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
+                            <h1>We Value Your Feedback, $user_name!</h1>
+                        </div>
+                        <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
+                            <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$user_name</span>,</p>
+                            <p style='color: #00000a;'>Thank you for choosing our workspace! We hope you had a great experience.</p>
+                            <p style='color: #00000a;'>We would love to hear your feedback. Please take a moment to review your booking:</p>
+                            <p style='text-align: center;'>
+                                <a href='http://localhost/graduation/review.php?booking_id=$booking_id' 
+                                   style='display: inline-block; padding: 10px 20px; background-color: #fda521; color: #fffffa; 
+                                          text-decoration: none; font-weight: bold; border-radius: 5px;'>
+                                    Leave a Review
+                                </a>
+                            </p>
+                            <p style='color: #00000a;'>Thank you for your time!</p>
+                            <p style='color: #00000a;'>Best regards,<br>Your Workspace Team</p>
+                        </div>
+                        <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
+                            <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
+                            <p style='color: #fffffa;'>Email: <a href='mailto:support@yourworkspace.com' style='color: #fda521;'>support@yourworkspace.com</a></p>
+                        </div>
+                    </body>
+                ";
+
+                $mail->setFrom('deskify0@gmail.com', 'Deskify');
+                $mail->addAddress($email);
+                $mail->isHTML(true);
+                $mail->Subject = $subject;
+                $mail->Body = $message;
+
+                if ($mail->send()) {
+                    mysqli_query($connect, "UPDATE bookings SET `review-email` = 1 WHERE booking_id = '$booking_id'");
+                }
             }
         }
-    }
-    
-    header("Location: workspaces_dashboard.php");
-    exit();
-} else {
-    echo "Error updating record: " . mysqli_error($connect);
-}
-}
 
+        header("Location: workspaces_dashboard.php");
+        exit();
+    } else {
+        echo "Error updating record: " . mysqli_error($connect);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -152,7 +181,7 @@ if ($run_update) {
                     <td><?php echo htmlspecialchars($booking['start_time']); ?></td>
                     <td><?php echo htmlspecialchars($booking['end_time']); ?></td>
                     <td>
-                        <form method="POST" action="workspaces_dashboard.php" id="form_<?php echo $booking['booking_id']; ?>">
+                        <form method="POST" id="form_<?php echo $booking['booking_id']; ?>">
                             <input type="hidden" name="booking_id" value="<?php echo $booking['booking_id']; ?>">
                             <select class="form-select" name="status" onchange="document.getElementById('form_<?php echo $booking['booking_id']; ?>').submit();">
                                 <?php foreach ($booking_statuses as $status): ?>
@@ -160,12 +189,12 @@ if ($run_update) {
                                         <?php echo ucfirst($status); ?>
                                     </option>
                                 <?php endforeach; ?>
-                                </select>
-                            </form>
-                        </td>
-                        <td><?php echo htmlspecialchars($booking['total_price']); ?></td>
-                        <td><?php echo htmlspecialchars($booking['payment_method']); ?></td>
-                    </tr>
+                            </select>
+                        </form>
+                    </td>
+                    <td><?php echo htmlspecialchars($booking['total_price']); ?></td>
+                    <td><?php echo htmlspecialchars($booking['pay_method']); ?></td>
+                </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
