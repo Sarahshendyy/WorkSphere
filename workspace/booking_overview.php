@@ -136,7 +136,8 @@ if (isset($_POST['booking_id'])) {
             }
         }
 
-        header("Location: workspaces_dashboard.php");
+                header("Location: booking_overview.php");
+
         exit();
     } else {
         echo "Error updating record: " . mysqli_error($connect);
