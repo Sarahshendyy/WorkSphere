@@ -1,5 +1,6 @@
 <?php
 include '../../connection.php';
+include '../../app/helpers/user.php';
 
 if (isset($_SESSION['user_id'])) {
     if (isset($_POST['message']) && isset($_POST['to_user'])) {
@@ -14,35 +15,27 @@ if (isset($_SESSION['user_id'])) {
 
         // File upload handling
         if(isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-            // File upload directory - changed to 'files' folder
             $upload_dir = '../../files/';
             
-            // Create directory if it doesn't exist
             if (!file_exists($upload_dir)) {
                 mkdir($upload_dir, 0755, true);
             }
             
-            // Get file info
             $file_name = $_FILES['file']['name'];
             $file_tmp = $_FILES['file']['tmp_name'];
             $file_size = $_FILES['file']['size'];
             $file_type = $_FILES['file']['type'];
             
-            // Sanitize file name
             $file_name = preg_replace("/[^A-Za-z0-9_.\-]/", '', $file_name);
-            
-            // Generate unique filename to prevent overwrites
             $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
             $unique_name = uniqid('chat_', true) . '.' . $file_ext;
             $destination = $upload_dir . $unique_name;
             
-            // Validate file size (max 5MB)
             $max_size = 5 * 1024 * 1024; // 5MB
             if ($file_size > $max_size) {
                 die(json_encode(['error' => 'File size exceeds maximum limit of 5MB']));
             }
             
-            // Validate file type
             $allowed_types = [
                 'image/jpeg', 'image/png', 'image/gif',
                 'application/pdf', 'application/msword',
@@ -55,7 +48,6 @@ if (isset($_SESSION['user_id'])) {
                 die(json_encode(['error' => 'File type not allowed']));
             }
             
-            // Move uploaded file
             if (move_uploaded_file($file_tmp, $destination)) {
                 $message_file = $unique_name;
                 $upload_success = true;
@@ -64,9 +56,9 @@ if (isset($_SESSION['user_id'])) {
             }
         }
 
-        // Insert message into the chats table using prepared statement
-        $sql = "INSERT INTO chat (from_user, to_user, message, opened, created_at,star, edited, file) 
-                VALUES (?, ?, ?, 0, ?, 0,0, ?)";
+        // Insert user message into the chats table
+        $sql = "INSERT INTO chat (from_user, to_user, message, opened, created_at, star, edited, file) 
+                VALUES (?, ?, ?, 0, ?, 0, 0, ?)";
         
         $stmt = mysqli_prepare($connect, $sql);
         $null = NULL;
@@ -75,7 +67,7 @@ if (isset($_SESSION['user_id'])) {
         $res = mysqli_stmt_execute($stmt);
         
         if ($res) {
-            // Check if this is the first conversation between them
+            // Check if this is the first conversation
             $sql2 = "SELECT * FROM `conversation` 
                     WHERE (user_1 = ? AND user_2 = ?) 
                     OR (user_2 = ? AND user_1 = ?)";
@@ -85,27 +77,54 @@ if (isset($_SESSION['user_id'])) {
             mysqli_stmt_execute($stmt2);
             $result2 = mysqli_stmt_get_result($stmt2);
 
-            // Setting up the time Zone
             define('TIMEZONE', 'Africa/Cairo');
             date_default_timezone_set(TIMEZONE);
             $time = date("h:i:s a");
 
             if (mysqli_num_rows($result2) == 0) {
-                // Insert into conversations table
                 $sql3 = "INSERT INTO `conversation` (user_1, user_2) VALUES (?, ?)";
                 $stmt3 = mysqli_prepare($connect, $sql3);
                 mysqli_stmt_bind_param($stmt3, "ii", $from_id, $to_id);
                 mysqli_stmt_execute($stmt3);
             }
             
-            // Return the chat message HTML
+            // Fetch automated response if available
+            $stmt_auto = mysqli_prepare($connect, "SELECT answer FROM automated_replies WHERE question = ?");
+            mysqli_stmt_bind_param($stmt_auto, "s", $message);
+            mysqli_stmt_execute($stmt_auto);
+            $result_auto = mysqli_stmt_get_result($stmt_auto);
+            
+            // Only insert automated response if we found one and it's not the user talking to themselves
+            if (($auto_reply = mysqli_fetch_assoc($result_auto)) && $from_id != $to_id) {
+                $admin_response = $auto_reply['answer'];
+                
+                // First check if this response was already inserted
+                $check_sql = "SELECT chat_id FROM chat 
+                             WHERE from_user = ? AND to_user = ? 
+                             AND message = ? AND created_at >= ?";
+                $check_stmt = mysqli_prepare($connect, $check_sql);
+                mysqli_stmt_bind_param($check_stmt, "iiss", $to_id, $from_id, $admin_response, $date);
+                mysqli_stmt_execute($check_stmt);
+                $check_result = mysqli_stmt_get_result($check_stmt);
+                
+                if (mysqli_num_rows($check_result) == 0) {
+                    // Insert automated response from the recipient to the sender
+                    $insert_auto = "INSERT INTO chat (from_user, to_user, message, opened, created_at, star, edited) 
+                                    VALUES (?, ?, ?, 0, ?, 0, 0)";
+                    $stmt_auto_insert = mysqli_prepare($connect, $insert_auto);
+                    mysqli_stmt_bind_param($stmt_auto_insert, "iiss", $to_id, $from_id, $admin_response, $date);
+                    mysqli_stmt_execute($stmt_auto_insert);
+                }
+            }
+
+            // Return chat message
             ob_start();
             ?>
             <p class="rtext align-self-end border rounded p-2 mb-1">
                 <?= htmlspecialchars($message) ?>
                 <?php if ($upload_success): ?>
                     <br>
-                    <a href="/files/chat_attachments/<?= htmlspecialchars($message_file) ?>" 
+                    <a href="/files/<?= htmlspecialchars($message_file) ?>" 
                        target="_blank" 
                        class="file-link">
                         <i class="fas fa-paperclip"></i> <?= htmlspecialchars($file_name) ?>
@@ -116,7 +135,6 @@ if (isset($_SESSION['user_id'])) {
             <?php
             echo ob_get_clean();
         } else {
-            // Error handling
             error_log("Database error: " . mysqli_error($connect));
             die(json_encode(['error' => 'Error sending message. Please try again.']));
         }
