@@ -121,6 +121,7 @@ $ws = mysqli_fetch_assoc($run_select_room); // Fetch workspace details once
             font-size: 18px;
             font-weight: bold;
             color: #333;
+            text-align: right;
         }
 
         .workspace-item .favorite-icon {
@@ -206,29 +207,15 @@ $ws = mysqli_fetch_assoc($run_select_room); // Fetch workspace details once
                 </div>
                 <div class="price">
                     <?php echo $row['p/hr']; ?> EGP/Hour
+                    <br>
+                    <?php echo $row['p/m']; ?> EGP/Month
                 </div>
-                <div class="favorite-icon" onclick="toggleFavorite(this)">
-                    <i class="fa-regular fa-heart"></i> <!-- Heart icon for favoriting -->
-                </div>
+                
             </div>
         <?php } ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Function to toggle favorite icon
-        function toggleFavorite(icon) {
-            icon.classList.toggle('active');
-            const heartIcon = icon.querySelector('i');
-            if (icon.classList.contains('active')) {
-                heartIcon.classList.remove('fa-regular');
-                heartIcon.classList.add('fa-solid');
-            } else {
-                heartIcon.classList.remove('fa-solid');
-                heartIcon.classList.add('fa-regular');
-            }
-        }
-    </script>
 </body>
 
 </html>
