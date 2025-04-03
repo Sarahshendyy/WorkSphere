@@ -44,25 +44,25 @@ if (isset($_POST['sign-btn']))
     $massage = "
       <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
         <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-          <h1>Welcome to Deskify, $user_name!</h1>
+          <h1>Welcome to WorkSphere, $user_name!</h1>
         </div>
         <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
           <p style='color: #00000a;'>Dear <span style='color: #fda521;'> $user_name</span>,</p>
-          <p style='color: #00000a;'>Thank you for registering with Deskify! Please use the OTP below to verify your email address and complete your registration:</p>
+          <p style='color: #00000a;'>Thank you for registering with WorkSphere! Please use the OTP below to verify your email address and complete your registration:</p>
           <p style='text-align: center; font-size: 24px; font-weight: bold; color: #fda521;'>$rand</p>
           <p style='color: #00000a;'>If you did not request this registration, please ignore this email.</p>
-          <p style='color: #00000a;'>Best regards,<br>The Deskify Team</p>
+          <p style='color: #00000a;'>Best regards,<br>The WorkSphere Team</p>
         </div>
         <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
         <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-        <p style='color: #fffffa;'>Email: <a href='mailto:deskify0@gmail.com' style='color: #fda521;'>deskify0@gmail.com</a></p>
+        <p style='color: #fffffa;'>Email: <a href='mailto:worksphere04@gmail.com' style='color: #fda521;'>worksphere04@gmail.com</a></p>
         </div>
       </body>
       ";
     $old_time = time(); // TIME AS IT IS ON THE THE FORM SUBMISSION
     $_SESSION['old_time'] = $old_time;
 
-    $mail->setFrom('deskify0@gmail.com', 'Deskify');
+    $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
     $mail->addAddress($email);
     $mail->isHTML(true);
     $mail->Subject = 'Account Activation code';
@@ -190,7 +190,7 @@ $remember_checked = isset($_COOKIE['remember']) ? 'checked' : '';
                 </form>
             </div>
     </div>
-     <script>
+      <script>
         document.addEventListener('DOMContentLoaded', function () {
             const formFields = ['name', 'sign-email', 'phone_number', 'sign-password', 'confirm_password'];
 
