@@ -32,14 +32,14 @@ if (isset($_POST['approve'])) {
             $message = "
                 <body style='font-family: Arial, sans-serif; background-color: #fffffa; color: #00000a;'>
                     <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                        <h1>Welcome to Deskify!</h1>
+                        <h1>Welcome to WorkSphere!</h1>
                     </div>
                     <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
                         <p>Dear <strong>$user_name</strong>,</p>
                         <p>Congratulations! Your workspace listing has been approved. 🎉</p>
                         <p>To activate your workspace and start receiving bookings, please complete your payment.</p>
                         <p><a href='http://localhost/graduation/workspace_payment.php?user_id=$user_id' style='display: inline-block; padding: 10px 15px; background-color: #0a7273; color: white; text-decoration: none; border-radius: 5px;'>Proceed to Payment</a></p>
-                        <p>Best regards,<br>The Deskify Team</p>
+                        <p>Best regards,<br>The WorkSphere Team</p>
                     </div>
                 </body>
             ";
@@ -80,8 +80,8 @@ if (isset($_POST['decline'])) {
                     <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
                         <p>Dear <strong>$user_name</strong>,</p>
                         <p>We regret to inform you that your workspace listing request has been declined.</p>
-                        <p>If you have any questions or need further clarification, please <a href='mailto:deskify0@gmail.com' style='color: #dc3545;'>contact us</a>.</p>
-                        <p>Best regards,<br>The Deskify Team</p>
+                        <p>If you have any questions or need further clarification, please <a href='mailto:worksphere04@gmail.com' style='color: #dc3545;'>contact us</a>.</p>
+                        <p>Best regards,<br>The WorkSphere Team</p>
                     </div>
                 </body>
             ";
@@ -96,7 +96,7 @@ if (isset($_POST['decline'])) {
 
 function sendEmail($to, $subject, $body) {
     global $mail;
-    $mail->setFrom('deskify0@gmail.com', 'Deskify');
+    $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
     $mail->addAddress($to);
     $mail->isHTML(true);
     $mail->Subject = $subject;

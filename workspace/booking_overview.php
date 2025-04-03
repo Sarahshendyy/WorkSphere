@@ -115,16 +115,16 @@ if (isset($_POST['booking_id'])) {
                                 </a>
                             </p>
                             <p style='color: #00000a;'>Thank you for your time!</p>
-                            <p style='color: #00000a;'>Best regards,<br>Your Workspace Team</p>
+                            <p style='color: #00000a;'>Best regards,<br>WorkSphere Team</p>
                         </div>
                         <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
                             <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-                            <p style='color: #fffffa;'>Email: <a href='mailto:support@yourworkspace.com' style='color: #fda521;'>support@yourworkspace.com</a></p>
+                            <p style='color: #fffffa;'>Email: <a href='mailto:worksphere04@gmail.com' style='color: #fda521;'>worksphere04@gmail.com</a></p>
                         </div>
                     </body>
                 ";
 
-                $mail->setFrom('deskify0@gmail.com', 'Deskify');
+                $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
                 $mail->addAddress($email);
                 $mail->isHTML(true);
                 $mail->Subject = $subject;
@@ -136,8 +136,7 @@ if (isset($_POST['booking_id'])) {
             }
         }
 
-                header("Location: booking_overview.php");
-
+        header("Location: booking_overview.php");
         exit();
     } else {
         echo "Error updating record: " . mysqli_error($connect);
