@@ -51,6 +51,29 @@ INSERT INTO `amenities` (`amenitiy_id`, `amenity`, `room_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `automated_replies`
+--
+
+CREATE TABLE `automated_replies` (
+  `id` int(11) NOT NULL,
+  `question` text NOT NULL,
+  `answer` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `automated_replies`
+--
+
+INSERT INTO `automated_replies` (`id`, `question`, `answer`, `created_at`) VALUES
+(4, 'How can I reset my password?', 'To reset your password, go to settings and click on \"Forgot Password\".', '2025-04-03 20:39:04'),
+(5, 'How do I contact support?', 'You can contact support via email at support@example.com or call +123456789.', '2025-04-03 20:39:04'),
+(6, 'What are your working hours?', 'Our working hours are from 9 AM to 6 PM, Monday to Friday.', '2025-04-03 20:39:04');
+
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `bookings`
 --
 
