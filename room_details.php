@@ -16,6 +16,10 @@ $room = mysqli_fetch_assoc($run_select_room); // Fetch room details
 
 $amenities = "SELECT * FROM `amenities` WHERE `room_id`=$room_id";
 $run_am = mysqli_query($connect, $amenities);
+
+$hourly_cost = $room['p/hr'] * 160;
+$savings = round(($hourly_cost - $room['p/m']) / $hourly_cost * 100);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -137,52 +141,130 @@ $run_am = mysqli_query($connect, $amenities);
             color: #333;
         }
 
+        /* Updated Price Section Styles */
         .price-button-container {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .price-wrapper {
+            display: flex;
+            gap: 25px;
             align-items: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            align-content: center;
-            justify-content: flex-start;
         }
 
-        .price-container {
-            margin-bottom: 20px;
+        .price-option {
+            text-align: center;
         }
 
-        .price-container .price {
-            font-size: 24px;
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .price-container .price-label {
-            font-size: 16px;
+        .price-label {
+            font-size: 14px;
             color: #666;
+            margin-bottom: 5px;
         }
 
-        .book-now-button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 18px;
+        .price {
+            font-size: 22px;
             font-weight: bold;
-            width: 100%;
-            max-width: 200px;
-            margin-left: auto;
+            color: #333;
         }
 
-        .book-now-button:hover {
-            background-color: #0056b3;
+        .hour-price {
+            color: #6c757d;
+            /* Slightly muted for hourly */
         }
+
+        .month-price {
+            color: #28a745;
+            /* Green for monthly to highlight better value */
+            font-size: 24px;
+            /* Slightly larger */
+        }
+
+     
 
         .location-icon {
             margin-right: 8px;
             color: #555;
+        }
+
+        .savings-badge {
+            background: #ffc107;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        /* Updated Booking Buttons Styles */
+        .booking-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .booking-button {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .hourly-button {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .hourly-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .monthly-button {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .monthly-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .savings-badge {
+            background: #ffc107;
+            color: #333;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .price-option {
+            position: relative;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .price-option:nth-child(2) {
+            background-color: #f8f9fa;
         }
     </style>
 </head>
@@ -243,12 +325,35 @@ $run_am = mysqli_query($connect, $amenities);
                 </div>
 
                 <!-- Price and Book Now Button -->
+                <!-- Price and Book Now Button -->
+                <!-- Replace your current price-button-container section with this: -->
                 <div class="price-button-container">
-                    <div class="price-container">
-                        <div class="price"><?php echo $room['p/hr']; ?> EGP</div>
-                        <div class="price-label">Per Hour</div>
+                    <div class="price-wrapper">
+                        <div class="price-option">
+                            <div class="price-label">Hourly Rate</div>
+                            <div class="price hour-price"><?php echo $room['p/hr']; ?> EGP</div>
+                        </div>
+                        <div class="price-option">
+                            <div class="price-label">Monthly Rate</div>
+                            <div class="price month-price"><?php echo $room['p/m']; ?> EGP</div>
+                            <div class="savings-badge">
+                                Save <?php echo $savings; ?>%
+                            </div>
+                        </div>
                     </div>
-                    <a href="book_now.php?r_id=<?php echo $room['room_id']?>"><button class="book-now-button">Book Now</button></a> 
+
+                    <div class="booking-buttons">
+                        <a href="book_now.php?r_id=<?php echo $room['room_id'] ?>&type=hourly" class="btn-hourly">
+                            <button class="booking-button hourly-button">
+                                <i class="fa-regular fa-clock"></i> Book Hourly
+                            </button>
+                        </a>
+                        <a href="book_monthly.php?r_id=<?php echo $room['room_id'] ?>&type=monthly" class="btn-monthly">
+                            <button class="booking-button monthly-button">
+                                <i class="fa-solid fa-piggy-bank"></i> Save with Monthly Booking
+                            </button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
