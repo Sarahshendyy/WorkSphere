@@ -35,30 +35,30 @@ if(isset($_POST['submit']))
                 $massage1=" 
                 <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
                     <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                        <h1>Welcome to Deskify, <span style='color: #fda521;'>$user_name</span>!</h1>
+                        <h1>Welcome to WorkSphere, <span style='color: #fda521;'>$user_name</span>!</h1>
                     </div>
                     <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
                         <p style='color: #00000a;'>Dear <span style='color: #fda521;'> $user_name</span>,</p>
-                        <p style='color: #00000a;'>Thank you for joining Deskify! We are thrilled to have you on board.</p>
+                        <p style='color: #00000a;'>Thank you for joining WorkSphere! We are thrilled to have you on board.</p>
                         <p style='color: #00000a;'>Here are some things you can do to get started:</p>
                         <ul>
-                            <li style='color: #00000a'>Explore our features and tools to manage your tasks efficiently.</li>
+                            <li style='color: #00000a'>Explore our features and tools to manage your bookings efficiently.</li>
                             <li style='color: #00000a'>Customize your profile to make it your own.</li>
                             <li style='color: #00000a'>Connect with other users and share your experiences.</li>
                         </ul>
                         <p style='color: #00000a;'>If you have any questions or need assistance, feel free to reach out to our support team at any time.</p>
                         <p style='color: #fda521;'>Happy tasking!</p>
-                        <p style='color: #00000a;'>Best regards,<br>The Deskify Team</p>
+                        <p style='color: #00000a;'>Best regards,<br>The WorkSphere Team</p>
                     </div>
                     <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
                         <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-                        <p style='color: #fffffa;'>Email: <a href='mailto:deskify0p@gmail.com' style='color: #fda521;'>deskify0@gmail.com</a></p>
+                        <p style='color: #fffffa;'>Email: <a href='mailto:worksphere04@gmail.com' style='color: #fda521;'>worksphere04@gmail.com</a></p>
                     </div>
                 </body>
                     ";
                 unset($_SESSION['otp']); 
 
-                $mail->setFrom('deskify0@gmail.com', 'Deskify');
+                $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
                 $mail->addAddress($email);
                 $mail->isHTML(true);
                 $mail->Subject = 'Welcome Aboard';
@@ -84,7 +84,7 @@ if (isset($_POST['resend']))
     $massage=" 
     <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
         <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-            <h1>Welcome to Deskify, $user_name!</h1>
+            <h1>Welcome to WorkSphere, $user_name!</h1>
         </div>
         <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
             <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$user_name </span>,</p>
@@ -95,7 +95,7 @@ if (isset($_POST['resend']))
         </div>
         <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
             <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-            <p style='color: #fffffa;'>Email: <a href='mailto:deskify0@gmail.com' style='color: #fda521;'>deskify0@gmail.com</a></p>
+            <p style='color: #fffffa;'>Email: <a href='mailto:worksphere04@gmail.com' style='color: #fda521;'>worksphere04@gmail.com</a></p>
         </div>
     </body>
     ";
@@ -104,7 +104,7 @@ if (isset($_POST['resend']))
     $old_time=time();  // TIME AS IT IS , we will have 60 seconds upon submission
     $_SESSION['old_time']=$old_time;
 
-    $mail->setFrom('deskify0p@gmail.com', 'Deskify');
+    $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
     $mail->addAddress($email);
     $mail->isHTML(true);
     $mail->Subject = 'Activation code';

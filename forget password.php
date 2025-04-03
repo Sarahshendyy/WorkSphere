@@ -38,16 +38,16 @@ if(isset($_POST['submit']))
                         <p style='color: #00000a;'>Dear <span style='color: #fda521;'> $user_name</span>,</p>
                         <p style='color: #00000a;'>Your password has been successfully reset. You can now log in to your account using your new password.</p>
                         <p style='color: #00000a;'>If you did not request this change, please contact our support team immediately.</p>
-                        <p style='color: #00000a;'>Best regards,<br>The Deskify Team</p>
+                        <p style='color: #00000a;'>Best regards,<br>The WorkSphere Team</p>
                     </div>
                     <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
                         <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-                        <p style='color: #fffffa;'>Email: <a href='mailto:deskify0@gmail.com' style='color: #fda521;'>deskify0@gmail.com</a></p>
+                        <p style='color: #fffffa;'>Email: <a href='mailto:worksphere04@gmail.com' style='color: #fda521;'>worksphere04@gmail.com</a></p>
                     </div>
                 </body>
                 ";
 
-                $mail->setFrom('deskify0@gmail.com', 'Deskify');
+                $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
                 $mail->addAddress($email);
                 $mail->isHTML(true);
                 $mail->Subject = 'Password Reset Successfully';
