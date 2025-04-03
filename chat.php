@@ -91,6 +91,26 @@ include 'connection.php';
                 </div>
             </h3>
         </div>
+<div class="predefined-questions">
+    <h5>Common Questions</h5>
+    <?php
+    $select_questions = "SELECT * FROM automated_replies";
+    $result_questions = mysqli_query($connect, $select_questions);
+    $questions = mysqli_fetch_all($result_questions, MYSQLI_ASSOC);
+    if (mysqli_num_rows($result_questions) == 0) {
+        echo '<p>No predefined questions available.</p>';
+    }
+    // Display predefined questions as buttons
+
+    foreach ($questions as $q) {
+        echo '<button class="btn btn-secondary predefined-question" 
+                data-question="'.htmlspecialchars($q['question']).'" 
+                data-answer="'.htmlspecialchars($q['answer']).'">
+                '.$q['question'].'
+              </button>';
+    }
+    ?>
+</div>
 
         <div class="shadow p-4 rounded d-flex flex-column mt-2 chat-box" id="chatBox">
             <?php 
@@ -210,8 +230,7 @@ include 'connection.php';
     </div>
  
 
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 	var scrollDown = function(){
         let chatBox = document.getElementById('chatBox');
@@ -333,6 +352,43 @@ include 'connection.php';
     });
     
     });
+    $(document).ready(function(){
+    $(".predefined-question").on("click", function(){
+        var question = $(this).data("question");
+
+        var formData = new FormData();
+        formData.append('message', question);
+        formData.append('to_user', <?=$chatWith['user_id']?>);
+
+        $.ajax({
+            url: 'app/ajax/insert.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data, status) {
+                 if (status === 'success') {
+                    // Append the user's question immediately
+                    $("#chatBox").append(data);
+                    scrollDown();
+                    // Reload to see the auto-reply (or update dynamically later)
+                    // Consider fetching/displaying the auto-reply dynamically instead of reloading
+                    // For now, reload matches the send button behavior
+                    location.reload();
+                 } else {
+                     alert("Message could not be sent.");
+                 }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Error sending predefined question:", textStatus, errorThrown);
+                alert("Error sending message. Please try again.");
+            }
+        });
+        // REMOVED THE setTimeout and the second AJAX call entirely
+    });
+
+    // ... (ensure other handlers like #sendBtn, edit, delete etc. are still here)
+});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> </body>
 </html>
