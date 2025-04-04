@@ -50,12 +50,13 @@
         flex-direction: column;
     }
 
-    label {
+    label.labels{
         font-size: 14px;
         color: #555;
         margin-bottom: 5px;
         text-align: left;
         font-weight: bold; /* Make labels slightly bolder */
+        margin-right: 85%;
     }
 
     input[type="text"],
@@ -140,3 +141,33 @@
             font-size: 15px;
         }
     }
+    /* Style the label that will contain the icon */
+        label.camera-icon-label {
+            display: block; /* Place it below the image */
+            text-align: center;
+            margin-top: 5px; /* Space between image and icon */
+            cursor: pointer;
+            color: #007bff; /* Icon color */
+            font-size: 1.5em; /* Icon size */
+            transition: color 0.3s ease;
+        }
+
+        label.camera-icon-label:hover {
+            color: #0056b3; /* Darker color on hover */
+        }
+
+        /* Hide the actual file input */
+        input#profile-image-input {
+            display: none;
+        }
+
+         /* Responsive adjustments for the picture part */
+         @media (max-width: 600px) {
+            .profile-pic img#profile-pic-preview {
+                width: 80px;
+                height: 80px;
+            }
+            label.camera-icon-label {
+                font-size: 1.3em; /* Slightly smaller icon on small screens */
+            }
+         }
