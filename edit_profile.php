@@ -65,30 +65,42 @@ if (isset($_POST['update'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/edit_profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Edit Profile</title>
 </head>
 <body>
-    <div class="container">
+<div class="container">
         <div class="profile">
-            <div class="profile-pic">
-                <img src="img/<?php echo $fetch['image']; ?>" alt="Profile Picture">
-            </div>
+            <!-- Form starts BEFORE the profile picture section if pic is part of the form -->
+            <form action="edit_profile.php" method="post" enctype="multipart/form-data">
+                <div class="profile-pic-container">
+                    <div class="profile-pic">
+                        <!-- Give the image an ID for the preview -->
+                        <img src="./img/<?php echo $fetch['image']; ?>" alt="Profile Picture" id="profile-pic-preview">
+                    </div>
+                    <!-- Hidden File Input -->
+                    <input type="file" name="image" id="profile-image-input" accept="image/png, image/jpeg, image/gif">
+                    <!-- Clickable Camera Icon Label -->
+                    <label for="profile-image-input" name="image" class="camera-icon-label" title="Change profile picture">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                </div>
             <div class="profile-info">
                 <h1>Edit Profile</h1>
                 <form action="" method="post" enctype="multipart/form-data">
-                    <label for="name">Name:</label>
+                    <label class="labels" for="name">Name:</label>
                     <input type="text" name="name" id="name" value="<?php echo $fetch['name']; ?>" required>
                     <br>
-                    <label for="email">Email:</label>
+                    <label class="labels" for="email">Email:</label>
                     <input type="email" name="email" id="email" value="<?php echo $fetch['email']; ?>" required>
                     <br>
-                    <label for="age">Age:</label>
+                    <label class="labels" for="age">Age:</label>
                     <input type="number" name="age" id="age" value="<?php echo !empty($fetch['age']) ? $fetch['age'] : ''; ?>">
                     <br>
-                    <label for="address">Address:</label>
+                    <label class="labels" for="address">Address:</label>
                     <input type="text" name="address" id="address" value="<?php echo !empty($fetch['address']) ? $fetch['address'] : ''; ?>">
                     <br>
-                    <label for="zone_id">Zone:</label>
+                    <label  class="labels" for="zone_id">Zone:</label>
                     <select name="zone_id" id="zone_id" required>
                         <?php foreach ($zones as $zone){ ?>
                             <option value="<?php echo $zone['zone_id']; ?>" 
@@ -99,11 +111,11 @@ if (isset($_POST['update'])) {
                     </select>
                     <br>
 
-                    <label for="job_title">Job Title:</label>
+                    <label class="labels" for="job-title">Job-Title:</label>
                     <input type="text" name="job_title" id="job_title" value="<?php echo !empty($fetch['job_title']) ? $fetch['job_title'] : ''; ?>">
-                    <br>
+                    <!-- <br>
                     <label for="image">Profile Picture:</label>
-                    <input type="file" name="image" id="image">
+                    <input type="file" name="image" id="image"> -->
                     <br>
 
                     <input type="submit" name="update" value="Update Profile">
