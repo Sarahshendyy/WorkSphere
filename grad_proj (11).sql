@@ -433,6 +433,12 @@ ALTER TABLE `amenities`
   ADD KEY `room_id` (`room_id`);
 
 --
+-- Indexes for table `automated_replies`
+--
+ALTER TABLE `automated_replies`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `bookings`
 --
 ALTER TABLE `bookings`
