@@ -30,56 +30,51 @@ $fetch = mysqli_fetch_assoc($result);
 
 
 	<!-- SIDEBAR -->
-	<section id="sidebar">
-		<a href="landing.php" class="brand">
-			<i class='bx bxl-slack'></i>
-			<span class="text">WorkSphere</span>
-		</a>
-		<ul class="side-menu top">
-			<li>
-				<a href="profile.php">
-					<i class='bx bxs-user-detail'></i>
-					<span class="text">Profile</span>
-				</a>
-			</li>
-			<li>
-				<a href="chat.php">
-					<i class='bx bx-chat'></i>
-					<span class="text">Chat</span>
-				</a>
-			</li>
-			<li>
-				<a href="calendar.php">
-				<i class='bx bxs-calendar' ></i>
-					<span class="text">Calendar</span>
-				</a>
-			</li>
-			<li>
-				<a href="my_bookings.php">
-					<i class='bx bxs-contact'></i>
-					<span class="text">My Bookings</span>
-				</a>
-			</li>
-			<li>
-				<a href="community.php">
-					<i class='bx bx-globe'></i>
-					<span class="text">Our Community</span>
-				</a>
-			</li>
-
-			<li>
-				<a href="workspaces_list.php">
-					<i class='bx bx-buildings' ></i>
-					<span class="text">All Workspaces</span>
-
-				</a>
-			</li>
-
-
-		
-		<ul class="side-menu">	
-		</ul>
-	</section>
+	<!-- SIDEBAR -->
+<section id="sidebar">
+    <a href="landing.php" class="brand">
+        <i class='bx bxl-slack'></i>
+        <span class="text">WorkSphere</span>
+    </a>
+    <ul class="side-menu top">
+        <li <?php if(basename($_SERVER['PHP_SELF']) == 'profile.php') echo 'class="active"' ?>>
+            <a href="profile.php">
+                <i class='bx bxs-user-detail'></i>
+                <span class="text">Profile</span>
+            </a>
+        </li>
+        <li <?php if(basename($_SERVER['PHP_SELF']) == 'chat.php') echo 'class="active"' ?>>
+            <a href="chat.php">
+                <i class='bx bx-chat'></i>
+                <span class="text">Chat</span>
+            </a>
+        </li>
+        <li <?php if(basename($_SERVER['PHP_SELF']) == 'calendar.php') echo 'class="active"' ?>>
+            <a href="calendar.php">
+                <i class='bx bxs-calendar' ></i>
+                <span class="text">Calendar</span>
+            </a>
+        </li>
+        <li <?php if(basename($_SERVER['PHP_SELF']) == 'my_bookings.php') echo 'class="active"' ?>>
+            <a href="my_bookings.php">
+                <i class='bx bxs-contact'></i>
+                <span class="text">My Bookings</span>
+            </a>
+        </li>
+        <li <?php if(basename($_SERVER['PHP_SELF']) == 'community.php') echo 'class="active"' ?>>
+            <a href="community.php">
+                <i class='bx bx-globe'></i>
+                <span class="text">Our Community</span>
+            </a>
+        </li>
+        <li <?php if(basename($_SERVER['PHP_SELF']) == 'workspaces_list.php') echo 'class="active"' ?>>
+            <a href="workspaces_list.php">
+                <i class='bx bx-buildings' ></i>
+                <span class="text">All Workspaces</span>
+            </a>
+        </li>
+    </ul>
+</section>
 	<!-- SIDEBAR -->
 	<!-- CONTENT -->
 	<section id="content">
