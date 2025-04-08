@@ -1,5 +1,5 @@
 <?php
-include "connection.php";
+include "nav.php";
 
 // Check if we're viewing a specific user's profile (from community page)
 if (isset($_GET['user_id'])) {
@@ -101,6 +101,8 @@ if (isset($_POST['update_password'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="./css/profile.css">
     <title>Profile</title>
 
@@ -114,58 +116,49 @@ if (isset($_POST['update_password'])) {
                 </div>
             <?php } ?>
             <div class="profile-info">
-                <h1>Name: <?php echo $fetch['name']; ?></h1>
-                <p>Email: <?php echo $fetch['email']; ?></p>
-                <p>Phone Number: <?php echo $fetch['phone']; ?></p>
-                <!-- Display Age if it exists - ONLY SHOW FOR OWN PROFILE -->
-                 <?php if ($is_own_profile && !empty($fetch['age'])){ ?>
-                    <p>Age: <?php echo $fetch['age']; ?></p>
-                    <?php } ?>
-                    <!-- Display Address if it exists - ONLY SHOW FOR OWN PROFILE -->
-                     <?php if ($is_own_profile && !empty($fetch['location'])){ ?>
-                        <p>Address: <?php echo $fetch['location']; ?></p>
-                        <?php } ?>
-                        <!-- Display Zone if it exists - ONLY SHOW FOR OWN PROFILE -->
-                         <?php if ($is_own_profile && !empty($fetch['zone_name'])){ ?>
-                            <p>Zone: <?php echo $fetch['zone_name']; ?></p>
-                            <?php } ?>
-                <!-- Display Job Title if it exists -->
+                <h1><?php echo htmlspecialchars($fetch['name']); ?></h1>
+
+                <!-- Add classes like "info-item email", "info-item phone", etc. -->
+                <p class="info-item email"><strong>Email:</strong> <?php echo htmlspecialchars($fetch['email']); ?></p>
+                <p class="info-item phone"><strong>Phone:</strong> <?php echo htmlspecialchars($fetch['phone']); ?></p>
+
+                <?php if ($is_own_profile && !empty($fetch['age'])){ ?>
+                    <p class="info-item age"><strong>Age:</strong> <?php echo htmlspecialchars($fetch['age']); ?></p>
+                <?php } ?>
+                <?php if ($is_own_profile && !empty($fetch['location'])){ ?>
+                    <p class="info-item location"><strong>Address:</strong> <?php echo htmlspecialchars($fetch['location']); ?></p>
+                <?php } ?>
+                <?php if ($is_own_profile && !empty($fetch['zone_name'])){ ?>
+                    <p class="info-item zone"><strong>Zone:</strong> <?php echo htmlspecialchars($fetch['zone_name']); ?></p>
+                <?php } ?>
+
                 <?php if (!empty($fetch['job_title'])){ ?>
-                    <p>Job Title: <?php echo $fetch['job_title']; ?></p>
+                    <p class="info-item job"><strong>Job Title:</strong> <?php echo htmlspecialchars($fetch['job_title']); ?></p>
                 <?php } ?>
-
-                <!-- Display Company Name if it exists -->
                 <?php if (!empty($fetch['company_name'])){ ?>
-                    <p>Company Name: <?php echo $fetch['company_name']; ?></p>
+                    <p class="info-item company"><strong>Company:</strong> <?php echo htmlspecialchars($fetch['company_name']); ?></p>
                 <?php } ?>
-
-                <!-- Display Company Type if it exists -->
                 <?php if (!empty($fetch['company_type'])){ ?>
-                    <p>Company Type: <?php echo $fetch['company_type']; ?></p>
+                    <p class="info-item type"><strong>Type:</strong> <?php echo htmlspecialchars($fetch['company_type']); ?></p>
                 <?php } ?>
-                
-                <!-- Display Contact Info if it exists -->
                 <?php if (!empty($fetch['contact_info'])){ ?>
-                    <p>Contact Info: <?php echo $fetch['contact_info']; ?></p>
+                     { /* Assuming multiple contacts possible, maybe style differently or add icon per contact */ }
+                    <p class="info-item contact"><strong>Contact Info:</strong> <?php echo htmlspecialchars($fetch['contact_info']); ?></p>
+                <?php } ?>
+                <?php if (!empty($fetch['portfolio'])){ ?>
+                    <p class="info-item portfolio"><strong>Portfolio:</strong> <a href="<?php echo htmlspecialchars($fetch['portfolio']); ?>" target="_blank">View Portfolio</a></p>
                 <?php } ?>
 
-                <!-- Display Portfolio if it exists -->
-                <?php if (!empty($fetch['portfolio'])){ ?>
-                    <p>Portfolio: <a href="<?php echo $fetch['portfolio']; ?>" target="_blank">View Portfolio</a></p>
-                <?php } ?>
-                
                 <?php if ($is_own_profile){ ?>
-                    <!-- Only show edit options if it's the user's own profile -->
-                     <a href="edit_profile.php">Edit Profile</a>
-                     <!-- Add Your Business Button -->
-                      <?php if ($fetch['role_id'] != 2){ ?>
-                        <button id="openModalBtn">Add Your Business</button>
+                    <div class="profile-actions">
+                        <a href="edit_profile.php" class="btn btn-edit">Edit Profile</a>
+                        <?php if ($fetch['role_id'] != 2){ ?>
+                            <button id="openModalBtn" class="btn btn-add">Add Your Business</button>
                         <?php } ?>
-                        <!-- Update Password Button -->
-                         <button id="openPasswordModalBtn">Update Password</button>
-                         <?php } ?>
-                        </div>
+                        <button id="openPasswordModalBtn" class="btn btn-update">Update Password</button>
                     </div>
+                <?php } ?>
+            </div>
                 </div>
 
 
@@ -222,6 +215,10 @@ if (isset($_POST['update_password'])) {
 
     <!-- JavaScript for Modals and Dynamic Fields -->
     <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // --- Modal Handling ---
+
         // Get the modals
         const businessModal = document.getElementById("businessModal");
         const passwordModal = document.getElementById("passwordModal");
@@ -230,56 +227,102 @@ if (isset($_POST['update_password'])) {
         const openModalBtn = document.getElementById("openModalBtn");
         const openPasswordModalBtn = document.getElementById("openPasswordModalBtn");
 
-        // Get the <span> elements that close the modals
-        const closeBtns = document.querySelectorAll(".close");
+        // Get all elements that can close modals (close buttons)
+        const closeBtns = document.querySelectorAll(".modal .close");
 
-        // Open the business modal when the button is clicked
+        // Helper Function to Open Modal
+        function openModal(modal) {
+            if (modal) {
+                modal.classList.add("show"); // Add class to trigger animation
+                // Optional: Focus the first input field in the modal
+                const firstInput = modal.querySelector('input:not([type="hidden"]), textarea, select');
+                if (firstInput) {
+                    // Timeout helps ensure the modal is visible before focusing
+                    setTimeout(() => firstInput.focus(), 50);
+                }
+            }
+        }
+
+        // Helper Function to Close Modal
+        function closeModal(modal) {
+            if (modal) {
+                modal.classList.remove("show"); // Remove class
+            }
+        }
+
+        // Event listener for opening the business modal
         if (openModalBtn) {
-            openModalBtn.addEventListener("click", () => {
-                businessModal.style.display = "block";
+            openModalBtn.addEventListener("click", (e) => {
+                e.preventDefault(); // Prevent potential default button behavior
+                openModal(businessModal);
             });
         }
 
-        // Open the password modal when the button is clicked
+        // Event listener for opening the password modal
         if (openPasswordModalBtn) {
-            openPasswordModalBtn.addEventListener("click", () => {
-                passwordModal.style.display = "block";
+            openPasswordModalBtn.addEventListener("click", (e) => {
+                e.preventDefault(); // Prevent potential default button behavior
+                openModal(passwordModal);
             });
         }
 
-        // Close the modals when the close button is clicked
+        // Event listener for closing modals via close buttons
         closeBtns.forEach((btn) => {
             btn.addEventListener("click", () => {
-                businessModal.style.display = "none";
-                passwordModal.style.display = "none";
+                // Find the parent modal element and close it
+                const modal = btn.closest('.modal'); // .closest finds the nearest ancestor matching the selector
+                closeModal(modal);
             });
         });
 
-        // Close the modals when clicking outside of them
+        // Event listener for closing modals by clicking outside the modal content
         window.addEventListener("click", (event) => {
-            if (event.target === businessModal || event.target === passwordModal) {
-                businessModal.style.display = "none";
-                passwordModal.style.display = "none";
+            // Check if the click target is the modal overlay itself (has .modal and .show)
+            if (event.target.classList.contains('modal') && event.target.classList.contains('show')) {
+                closeModal(event.target); // event.target is the modal overlay in this case
             }
         });
 
-        // Add More Contact Info Fields
+        // Event listener for closing modals with the Escape key
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                const openModals = document.querySelectorAll('.modal.show');
+                openModals.forEach(closeModal); // Close any open modals
+            }
+        });
+
+
+        // --- Add More Contact Info Fields ---
         const addContactInfoBtn = document.getElementById("addContactInfoBtn");
-        const contactInfoContainer = document.getElementById("contactInfoContainer");
+    const contactInfoContainer = document.getElementById("contactInfoContainer");
 
-        if (addContactInfoBtn) {
-            addContactInfoBtn.addEventListener("click", () => {
-                const newInput = document.createElement("input");
-                newInput.type = "text";
-                newInput.name = "contact_info[]";
-                newInput.required = true;
-                contactInfoContainer.appendChild(newInput);
-            });
-        }
+    if (addContactInfoBtn && contactInfoContainer) { // Check if both elements exist
+        addContactInfoBtn.addEventListener("click", () => {
+            // Create a new input element
+            const newInput = document.createElement("input");
+            newInput.type = "text";
+            newInput.name = "contact_info[]";
+            newInput.placeholder = "Enter contact info"; // Add placeholder text
+            newInput.required = true;
 
-        // Password Validation JavaScript
-        document.addEventListener('DOMContentLoaded', function() {
-            const updatePasswordForm = document.getElementById('updatePasswordForm');
+            // Apply styles to match existing inputs
+            newInput.style.marginTop = "10px";
+            newInput.style.width = "100%";
+            newInput.style.padding = "10px";
+            newInput.style.border = "1px solid #ccc";
+            newInput.style.borderRadius = "5px";
+
+            // Append the new input to the container
+            contactInfoContainer.appendChild(newInput);
+        });
+    }
+
+
+        // --- Password Validation ---
+
+        const updatePasswordForm = document.getElementById('updatePasswordForm');
+        // Check if the form exists before adding listeners
+        if (updatePasswordForm) {
             const currentPasswordInput = document.getElementById('current_password');
             const newPasswordInput = document.getElementById('new_password');
             const confirmPasswordInput = document.getElementById('confirm_password');
@@ -288,73 +331,121 @@ if (isset($_POST['update_password'])) {
             const newPasswordError = document.getElementById('newPasswordError');
             const confirmPasswordError = document.getElementById('confirmPasswordError');
 
+            // Function to clear all password errors
+            const clearPasswordErrors = () => {
+                if (currentPasswordError) currentPasswordError.textContent = '';
+                if (newPasswordError) newPasswordError.textContent = '';
+                if (confirmPasswordError) confirmPasswordError.textContent = '';
+            };
+
+            // Clear errors when the password modal is opened
+            if (openPasswordModalBtn && passwordModal) {
+                 openPasswordModalBtn.addEventListener('click', clearPasswordErrors);
+                 // Also clear errors if closed without submitting (e.g., clicking X or outside)
+                 passwordModal.addEventListener('transitionend', (event) => {
+                    // Check if the transition was for opacity and it's now 0 (closing)
+                    if (event.propertyName === 'opacity' && !passwordModal.classList.contains('show')) {
+                        clearPasswordErrors();
+                        // Optionally reset form fields
+                        // updatePasswordForm.reset();
+                    }
+                 });
+            }
+
+
+            // Real-time input validation
             updatePasswordForm.addEventListener('input', function(event) {
                 const target = event.target;
 
+                // Current Password Validation (Basic check for emptiness)
                 if (target === currentPasswordInput) {
-                    if (!target.value) {
+                    if (!target.value.trim()) {
                         currentPasswordError.textContent = 'Current password is required.';
                     } else {
                         currentPasswordError.textContent = '';
                     }
                 }
 
+                // New Password Validation
                 if (target === newPasswordInput) {
                     const passwordValue = target.value;
+                    newPasswordError.textContent = ''; // Clear previous error first
 
                     if (!passwordValue) {
                         newPasswordError.textContent = 'New password is required.';
                     } else if (passwordValue.length < 8) {
                         newPasswordError.textContent = 'Password must be at least 8 characters long.';
-                    } else if (!/[a-z]/.test(passwordValue) || !/[A-Z]/.test(passwordValue) || !/[0-9]/.test(passwordValue)) {
-                        newPasswordError.textContent = 'Password must contain at least one lowercase letter, one uppercase letter, and one digit.';
-                    } else {
-                        newPasswordError.textContent = '';
+                    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(passwordValue)) {
+                        // Simplified regex: checks for at least one lowercase, one uppercase, one digit
+                        newPasswordError.textContent = 'Must include lowercase, uppercase, and a digit.';
                     }
 
-                    // Also validate confirm password when new password changes
+                    // Also validate confirm password whenever new password changes
                     if (confirmPasswordInput.value) {
                         if (passwordValue !== confirmPasswordInput.value) {
-                            confirmPasswordError.textContent = 'New password do not match.';
+                            confirmPasswordError.textContent = 'Passwords do not match.';
                         } else {
                             confirmPasswordError.textContent = '';
                         }
                     }
                 }
 
+                // Confirm Password Validation
                 if (target === confirmPasswordInput) {
                     if (newPasswordInput.value !== target.value) {
-                        confirmPasswordError.textContent = 'New password do not match.';
+                        confirmPasswordError.textContent = 'Passwords do not match.';
                     } else {
                         confirmPasswordError.textContent = '';
                     }
                 }
             });
 
+            // Final validation before submitting
             updatePasswordForm.addEventListener('submit', function(event) {
-                // Perform final validation before submitting
-                if (currentPasswordInput.value === '') {
+                let isValid = true; // Assume valid initially
+
+                // Re-validate all fields on submit
+                if (!currentPasswordInput.value.trim()) {
                     currentPasswordError.textContent = 'Current password is required.';
-                    event.preventDefault(); // Prevent form submission
+                    isValid = false;
+                } else {
+                     currentPasswordError.textContent = ''; // Clear if valid now
                 }
 
-                if (newPasswordInput.value === '') {
+
+                const newPasswordValue = newPasswordInput.value;
+                 newPasswordError.textContent = ''; // Clear previous error first
+                 if (!newPasswordValue) {
                     newPasswordError.textContent = 'New password is required.';
-                    event.preventDefault();
-                } else if (newPasswordError.textContent !== '') {
-                    // If there's an existing error in the new password, prevent submission
-                    event.preventDefault();
-                }
+                    isValid = false;
+                } else if (newPasswordValue.length < 8) {
+                    newPasswordError.textContent = 'Password must be at least 8 characters long.';
+                     isValid = false;
+                 } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPasswordValue)) {
+                     newPasswordError.textContent = 'Must include lowercase, uppercase, and a digit.';
+                     isValid = false;
+                 }
 
-                if (confirmPasswordInput.value === '') {
-                    confirmPasswordError.textContent = 'Confirm password is required.';
-                    event.preventDefault();
-                } else if (confirmPasswordError.textContent !== '') {
-                    // If there's an existing error in the confirm password, prevent submission
+
+                confirmPasswordError.textContent = ''; // Clear previous error first
+                 if (!confirmPasswordInput.value) {
+                     confirmPasswordError.textContent = 'Please confirm the new password.';
+                     isValid = false;
+                 } else if (newPasswordValue !== confirmPasswordInput.value) {
+                     confirmPasswordError.textContent = 'Passwords do not match.';
+                     isValid = false;
+                 }
+
+
+                // Prevent form submission if any validation failed
+                if (!isValid) {
                     event.preventDefault();
                 }
+                // If valid, the form will submit normally.
             });
-        });
-    </script>
+        } // End if(updatePasswordForm)
+
+    }); // End DOMContentLoaded
+</script>
 </body>
 </html>
