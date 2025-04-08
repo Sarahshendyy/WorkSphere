@@ -74,6 +74,11 @@ $fetch = mysqli_fetch_assoc($result);
 
 				</a>
 			</li>
+
+
+		
+		<ul class="side-menu">	
+		</ul>
 	</section>
 	<!-- SIDEBAR -->
 	<!-- CONTENT -->
@@ -82,6 +87,37 @@ $fetch = mysqli_fetch_assoc($result);
 		<nav>
 			<i class='bx bx-menu' ></i>
 			<a href="landing.php" class="nav-link">Home</a>
+
+
+            <a href="#" class="nav-link"></a>
+            
+            
+            <a href="#" class="nav-link"></a>
+
+
+
+            <a href="#" class="nav-link"></a>
+
+            <?php
+            $currpage = basename($_SERVER['PHP_SELF']);
+            $SRCHPages = array('projects.php', 'ViewSprints.php', 'tasks.php', 'archive_taskss.php');
+            if(in_array($currpage, $SRCHPages)) { ?>
+			<form method="POST">
+				<div class="form-input">
+					<input type="search" id="searchText" placeholder="Search..." name="text" value="<?php echo isset($_POST['text']) ? $_POST['text'] : ''?>">
+					<button type="submit" class="search-btn" name="search"><i class='bx bx-search' ></i></button>
+				</div>
+			</form>
+            <?php } else { ?>
+            <form method="POST" style="visibility: hidden">
+                <div class="form-input">
+                    <input type="search" placeholder="Search..." name="text">
+                    <button type="submit" class="search-btn" name="search"><i class='bx bx-search' ></i></button>
+                </div>
+            </form>
+            <?php } ?>
+
+
 			<input type="checkbox" id="switch-mode" hidden>
 			<a href="profile.php" class="profile">
 			
