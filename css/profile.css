@@ -1,36 +1,68 @@
-/* General Styles */
+/* --- Imports & Variables (Optional) --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --info-color: #17a2b8;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --font-family: 'Poppins', Arial, sans-serif; /* Modern font */
+    --border-radius: 6px; /* Consistent border radius */
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07); /* Softer default shadow */
+    --transition-speed: 0.3s;
+}
+
+/* --- General Styles --- */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: var(--font-family);
+    background-color: var(--light-color);
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    color: var(--dark-color);
+    line-height: 1.6;
 }
 
 .container {
     background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
-    margin: 20px;
+    padding: 35px; /* Generous padding */
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-left: 30px; /* Sidebar width + gap */
+    margin-top: 24px;
+    margin-right: 40px;
+    margin-bottom: 35px;
+    max-width: 850px;
+    transition: margin-left var(--transition-speed) ease; /* Smooth transition if sidebar collapses */
 }
 
+/* --- Profile Section --- */
 .profile {
     text-align: center;
 }
 
+.profile-pic {
+    display: inline-block; /* Allows centering and hover effects */
+    position: relative; /* For potential future pseudo-elements */
+    margin-bottom: 30px;
+}
+
 .profile-pic img {
-    width: 150px;
-    height: 150px;
+    width: 160px; /* Slightly larger */
+    height: 160px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 20px;
-    border: 3px solid #007bff;
+    border: 5px solid #fff; /* White border to lift it off background */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12); /* Enhanced shadow */
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.profile-pic img:hover {
+    transform: scale(1.05) rotate(2deg); /* Subtle scale and rotate on hover */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
 }
 
 .profile-info {
@@ -38,238 +70,353 @@ body {
 }
 
 .profile-info h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #333;
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: var(--dark-color);
+    border-bottom: 1px solid #eee; /* Subtle separator */
+    padding-bottom: 15px;
 }
 
 .profile-info p {
     font-size: 16px;
-    color: #555;
-    margin: 5px 0;
+    color: var(--secondary-color); /* Slightly lighter text for details */
+    margin: 12px 0;
+    display: flex; /* Align icon and text */
+    align-items: center; /* Vertically center icon with text */
 }
 
-.profile-info a {
+.profile-info p strong {
+    color: var(--dark-color); /* Darker label */
+    margin-right: 8px;
+    font-weight: 500;
+    min-width: 100px; /* Align labels somewhat */
     display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
+}
+
+/* --- Icons using FontAwesome --- */
+.profile-info p.info-item::before {
+    font-family: "Font Awesome 5 Free"; /* Ensure this matches your FA version */
+    font-weight: 900; /* Use the solid style */
+    margin-right: 12px;
+    color: var(--primary-color); /* Icon color */
+    font-size: 1.1em;
+    width: 20px; /* Fixed width for alignment */
+    text-align: center;
+}
+
+/* Specific Icons */
+.profile-info p.email::before    { content: "\f0e0"; color: #DB4437;} /* Envelope - Google Red */
+.profile-info p.phone::before    { content: "\f095"; color: #4CAF50;} /* Phone - Green */
+.profile-info p.age::before      { content: "\f1fd"; } /* Birthday Cake */
+.profile-info p.location::before { content: "\f3c5"; color: #FFC107;} /* Map Marker - Yellow */
+.profile-info p.zone::before     { content: "\f57d"; color: #9c27b0;} /* Map Marked Alt - Purple */
+.profile-info p.job::before      { content: "\f0b1"; color: #607D8B;} /* Briefcase - Blue Grey */
+.profile-info p.company::before  { content: "\f1ad"; color: #03A9F4;} /* Building - Light Blue */
+.profile-info p.type::before     { content: "\f02b"; color: #795548;} /* Tag - Brown */
+.profile-info p.contact::before  { content: "\f2bb"; color: #FF9800;} /* Address Card - Orange */
+.profile-info p.portfolio::before{ content: "\f15c"; color: #E91E63;} /* File Alt - Pink */
+
+.profile-info p.portfolio a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-speed) ease;
+    position: relative; /* For underline effect */
+}
+.profile-info p.portfolio a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -3px;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width var(--transition-speed) ease;
+}
+.profile-info p.portfolio a:hover {
+    color: #0056b3; /* Darker blue */
+}
+.profile-info p.portfolio a:hover::after {
+    width: 100%;
+}
+
+
+/* --- Button Styles --- */
+.profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid #eee; /* Separator before buttons */
+}
+
+/* Use a common .btn class and specific modifiers */
+.profile-actions .btn {
+    display: inline-flex; /* Align icon and text if added later */
+    align-items: center;
+    justify-content: center;
+    padding: 12px 25px; /* Slightly larger padding */
     color: #fff;
     text-decoration: none;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.profile-info a:hover {
-    background-color: #0056b3;
-}
-
-/* Add Your Business Button */
-#openModalBtn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #28a745; /* Green color */
-    color: #fff;
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: var(--border-radius);
+    font-size: 15px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-speed) ease,
+                box-shadow var(--transition-speed) ease,
+                transform var(--transition-speed) ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden; /* For ripple effect maybe later */
+    z-index: 1;
 }
 
-#openModalBtn:hover {
-    background-color: #218838; /* Darker green on hover */
+.profile-actions .btn:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px); /* Lift effect */
 }
 
-/* Modal Styles */
+.profile-actions .btn:active {
+    transform: translateY(-1px) scale(0.98); /* Press effect */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific button colors */
+.profile-actions .btn-edit { background-color: var(--primary-color); }
+.profile-actions .btn-edit:hover { background-color: #0056b3; }
+
+.profile-actions .btn-add { background-color: var(--success-color); }
+.profile-actions .btn-add:hover { background-color: #218838; }
+
+.profile-actions .btn-update { background-color: var(--info-color); }
+.profile-actions .btn-update:hover { background-color: #138496; }
+
+
+/* --- Modal Styles --- */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none; /* Initially hidden */
+    position: fixed;
+    z-index: 1050;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.65); /* Slightly darker overlay */
+    /* Animation Properties */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed) ease, visibility 0s linear var(--transition-speed);
+}
+/* Class added by JS to show modal */
+.modal.show {
+    display: block; /* Need block for layout */
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--transition-speed) ease, visibility 0s linear 0s;
 }
 
 .modal-content {
     background-color: #fff;
-    margin: 10% auto; /* 10% from the top and centered */
-    padding: 20px;
-    border-radius: 8px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: var(--border-radius);
     width: 90%;
-    max-width: 500px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 550px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    position: relative;
+    /* Animation */
+    transform: scale(0.95) translateY(-20px);
+    transition: transform var(--transition-speed) ease;
+}
+.modal.show .modal-content {
+     transform: scale(1) translateY(0);
+}
+
+#passwordModal .modal-content {
+    max-width: 480px;
 }
 
 .modal-content h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-    color: #333;
+    font-size: 24px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
 }
 
 .modal-content form {
     display: flex;
     flex-direction: column;
+    gap: 5px; /* Small gap between label and input */
 }
 
 .modal-content label {
     font-size: 14px;
-    color: #555;
-    margin-bottom: 5px;
+    color: var(--secondary-color);
+    margin-bottom: 0; /* Reduce space, handled by gap */
+    font-weight: 500;
 }
 
-.modal-content input[type="text"] {
+.modal-content input[type="text"],
+.modal-content input[type="password"],
+.modal-content input[type="file"] {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
+    padding: 12px 15px;
+    margin-bottom: 15px; /* Space below each input group */
+    border: 1px solid #ced4da;
+    border-radius: var(--border-radius);
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 
-.modal-content input[type="submit"] {
-    background-color: #28a745; /* Green color */
+.modal-content input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.modal-content input[type="submit"],
+.modal-content button[type="button"] {
+    background-color: var(--success-color);
     color: #fff;
     border: none;
-    padding: 10px;
-    border-radius: 4px;
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
     font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    margin-top: 10px;
+    align-self: flex-end; /* Align submit button right */
 }
 
 .modal-content input[type="submit"]:hover {
-    background-color: #218838; /* Darker green on hover */
+    background-color: #218838;
+    transform: scale(1.02);
 }
 
-/* Add Another Contact Info Button */
-#addContactInfoBtn {
-    background-color: #17a2b8; /* Teal color */
-    color: #fff;
-    border: none;
-    padding: 10px;
-    border-radius: 4px;
+#addContactInfoBtn { /* Add Contact Button styling */
+    background-color: var(--info-color);
+    align-self: flex-start; /* Align left */
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 10px 15px;
     font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-bottom: 15px; /* Space between buttons */
 }
-
 #addContactInfoBtn:hover {
-    background-color: #138496; /* Darker teal on hover */
+    background-color: #138496;
+    transform: scale(1.02);
 }
 
 /* Close Button */
 .close {
-    color: #aaa;
-    float: right;
-    font-size: 24px;
-    font-weight: bold;
+    color: var(--secondary-color);
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    font-weight: 300; /* Lighter close icon */
+    line-height: 1;
+    opacity: 0.8;
     cursor: pointer;
+    transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
 }
 
 .close:hover,
 .close:focus {
-    color: #000;
+    color: var(--dark-color);
     text-decoration: none;
-}
-/* Update Password Button */
-#openPasswordModalBtn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #17a2b8; /* Teal color */
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#openPasswordModalBtn:hover {
-    background-color: #138496; /* Darker teal on hover */
-}
-
-/* Password Modal Styles */
-#passwordModal .modal-content {
-    background-color: #fff;
-    margin: 10% auto; /* 10% from the top and centered */
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-#passwordModal .modal-content h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-#passwordModal .modal-content label {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 5px;
-}
-
-#passwordModal .modal-content input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-#passwordModal .modal-content input[type="submit"] {
-    background-color: #28a745; /* Green color */
-    color: #fff;
-    border: none;
-    padding: 10px;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#passwordModal .modal-content input[type="submit"]:hover {
-    background-color: #218838; /* Darker green on hover */
+    opacity: 1;
+    transform: rotate(90deg); /* Rotate effect on hover */
 }
 
 .error-message {
-    color: red;
-    font-size: 0.8em;
-    display: block; /* Ensures errors are displayed below the input */
+    color: var(--danger-color);
+    font-size: 0.88em;
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    font-weight: 400;
 }
 
-/* Responsive Design */
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
+    .container {
+        margin-left: 40px; /* Adjust margin if sidebar collapses partially or is smaller */
+    }
+}
+
+@media (max-width: 768px) {
+     .container {
+         margin-left: 20px;
+         margin-right: 20px;
+         padding: 25px;
+     }
+     .profile-info h1 {
+         font-size: 24px;
+     }
+     .profile-info p strong {
+         min-width: 80px; /* Reduce label width */
+     }
+      .profile-actions {
+         justify-content: center;
+         gap: 10px;
+     }
+     .profile-actions .btn {
+         width: calc(50% - 10px); /* Two buttons per row approx */
+         padding: 10px 15px;
+     }
+      .modal-content {
+        margin: 10% auto;
+    }
+}
+
 @media (max-width: 600px) {
     .container {
-        padding: 15px;
+        margin-left: 15px;
+        margin-right: 15px;
+        padding: 20px;
     }
-
     .profile-pic img {
         width: 120px;
         height: 120px;
     }
-
     .profile-info h1 {
-        font-size: 20px;
+        font-size: 22px;
     }
-
     .profile-info p {
         font-size: 14px;
+        flex-direction: column; /* Stack icon/label and value */
+        align-items: flex-start;
+        margin: 15px 0;
     }
-
-    .profile-info a {
-        padding: 8px 16px;
-        font-size: 14px;
+    .profile-info p.info-item::before {
+        margin-bottom: 5px; /* Space between icon and text */
+        margin-right: 0;
     }
+     .profile-info p strong {
+         margin-bottom: 3px;
+         min-width: auto; /* Don't force alignment */
+     }
+     .profile-actions .btn {
+         width: 100%; /* Full width buttons */
+         font-size: 14px;
+     }
+     .modal-content {
+        margin: 5% auto;
+        padding: 20px;
+    }
+     .modal-content input[type="submit"],
+     .modal-content button[type="button"] {
+         width: 100%; /* Full width modal buttons */
+         align-self: center;
+     }
 }
