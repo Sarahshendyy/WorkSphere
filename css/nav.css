@@ -45,11 +45,6 @@ body {
 	background: var(--grey);
 	overflow-x: hidden;
 }
-
-
-
-
-
 /* SIDEBAR */
 #sidebar {
 	position: fixed;
@@ -163,11 +158,9 @@ body {
 	min-width: calc(60px  - ((4px + 6px) * 2));
 	display: flex;
 	justify-content: center;
+	font-size: 22px;
 }
 /* SIDEBAR */
-
-
-
 
 
 /* CONTENT */
@@ -190,9 +183,9 @@ body {
 	height: 56px;
 	background: var(--light);
 	padding: 0 24px;
-	display: flex;
-	align-items: center;
-	grid-gap: 24px;
+	display: flex;         /* Already using flexbox */
+	align-items: center;   /* Vertically aligns items */
+	grid-gap: 24px;       /* Adds space between items */
 	font-family: var(--lato);
 	position: sticky;
 	top: 0;
@@ -220,45 +213,12 @@ body {
 #content nav .nav-link {
 	font-size: 16px;
 	transition: .3s ease;
+	
 }
 #content nav .nav-link:hover {
 	color: var(--blue);
 }
-#content nav form {
-	max-width: 400px;
-	width: 100%;
-	margin-right: auto;
-}
-#content nav form .form-input {
-	display: flex;
-	align-items: center;
-	height: 36px;
-}
-#content nav form .form-input input {
-	flex-grow: 0.6;
-	padding: 0 16px;
-	height: 100%;
-	border: none;
-	background: var(--grey);
-	border-radius: 36px 0 0 36px;
-	outline: none;
-	width: 40px;
-	color: var(--dark);
-}
-#content nav form .form-input button {
-	width: 36px;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background:  #ffae00;
-	color: var(--light);
-	font-size: 18px;
-	border: none;
-	outline: none;
-	border-radius: 0 36px 36px 0;
-	cursor: pointer;
-}
+
 #content nav .notification {
 	font-size: 20px;
 	position: relative;
@@ -279,12 +239,15 @@ body {
 	justify-content: center;
 	align-items: center;
 }
-#content nav .profile img {
+#content nav .profile {
+    margin-left: auto; /* <<< ADD THIS LINE */
+}
+
+#content nav .profile img { /* Style for the image inside the link */
 	width: 36px;
 	height: 36px;
 	object-fit: cover;
 	border-radius: 50%;
-    
 }
 #content nav .switch-mode {
 	display: block;
@@ -311,11 +274,7 @@ body {
 }
 /* NAVBAR */
 
-
-
-
-
-/* MAIN */
+/* MAN */
 #content main {
 	width: 100%;
 	/* padding: 36px 24px; */
@@ -326,22 +285,6 @@ body {
 i{
 	color:  rgb(255, 174, 0);
 }
-.bx-search:before {
-    content: "\ee5a";
-    color: white;
-}
-/* 
-<this part to put the contant >
-/* MAIN */
-/* CONTENT */
-
-
-
-
-
-
-
-
 
 
 @media screen and (max-width: 576px) {
