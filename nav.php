@@ -1,36 +1,35 @@
 <?php
 include "connection.php";
 $user_id = $_SESSION['user_id'];
-// display image
-$select= "SELECT * FROM `users` WHERE `user_id` = $user_id";
+
+
+$select = "SELECT *
+           FROM `users` 
+           INNER JOIN `role` ON `users`.`role_id` = `role`.`role_id` 
+           WHERE `user_id` = $user_id";
 $result = mysqli_query($connect, $select);
 $fetch = mysqli_fetch_assoc($result);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<!-- Boxicons -->
-	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<!-- My CSS -->
-	 
+    <!-- My CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/nav.css">
+    <link rel="stylesheet" href="css/nav.css">
 
-    
     <title>WorkSphere</title>
     <link rel="icon" type="image/x-icon" href="./img/keklogo.png">
 </head>
 <body>
-
-
-	<!-- SIDEBAR -->
-	<!-- SIDEBAR -->
+    <!-- SIDEBAR -->
 <section id="sidebar">
     <a href="landing.php" class="brand">
         <i class='bx bxl-slack'></i>
@@ -73,59 +72,37 @@ $fetch = mysqli_fetch_assoc($result);
                 <span class="text">All Workspaces</span>
             </a>
         </li>
+        <?php
+            if (isset($fetch['role_id']) && $fetch['role_id'] != 3 && $fetch['role_id'] != 4) {
+            ?>
+                <li <?php if(basename($_SERVER['PHP_SELF'])== './workspace/listing_workspaces.php') echo 'class="active"' ?>>
+                    <a href="./workspace/listing_workspaces.php">
+                        <i class='bx bx-list-plus'></i>
+                        <span class="text">List Your Workspace</span>
+                    </a>
+                </li>
+            <?php
+            }
+            ?>
     </ul>
 </section>
-	<!-- SIDEBAR -->
-	<!-- CONTENT -->
-	<section id="content">
-		<!-- NAVBAR -->
-		<nav>
-			<i class='bx bx-menu' ></i>
-			<a href="landing.php" class="nav-link">Home</a>
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <nav>
+            <i class='bx bx-menu' ></i>
+            <a href="landing.php" class="nav-link">Home</a>
 
-
-            <a href="#" class="nav-link"></a>
-            
-            
-            <a href="#" class="nav-link"></a>
-
-
-
-            <a href="#" class="nav-link"></a>
-
-            <?php
-            $currpage = basename($_SERVER['PHP_SELF']);
-            $SRCHPages = array('projects.php', 'ViewSprints.php', 'tasks.php', 'archive_taskss.php');
-            if(in_array($currpage, $SRCHPages)) { ?>
-			<form method="POST">
-				<div class="form-input">
-					<input type="search" id="searchText" placeholder="Search..." name="text" value="<?php echo isset($_POST['text']) ? $_POST['text'] : ''?>">
-					<button type="submit" class="search-btn" name="search"><i class='bx bx-search' ></i></button>
-				</div>
-			</form>
-            <?php } else { ?>
-            <form method="POST" style="visibility: hidden">
-                <div class="form-input">
-                    <input type="search" placeholder="Search..." name="text">
-                    <button type="submit" class="search-btn" name="search"><i class='bx bx-search' ></i></button>
-                </div>
-            </form>
-            <?php } ?>
-
-
-			<input type="checkbox" id="switch-mode" hidden>
-			<a href="profile.php" class="profile">
-			
-				<img src="./img/<?php echo $fetch['image'] ?>">
-			</a>
-		</nav>
-<!-- <part of contant>	 -->
-
-<main>
-</main>
-	    <!-- bootstrap js link -->
-		<script src="js/bootstrap.min.js"></script>
-
-	<script src="./js/script.js"></script>
+            <input type="checkbox" id="switch-mode" hidden>
+            <a href="profile.php" class="profile">
+                <img src="./img/<?php echo !empty($fetch['image']) ? $fetch['image'] : 'default.png'; ?>" alt="Profile Image">
+            </a>
+        </nav>
+        <main>
+        </main>
+        <!-- bootstrap js link -->
+        <script src="js/bootstrap.min.js"></script>
+        <script src="./js/script.js"></script>
+    </section>
 </body>
 </html>
