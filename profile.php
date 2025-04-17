@@ -142,7 +142,6 @@ if (isset($_POST['update_password'])) {
                     <p class="info-item type"><strong>Type:</strong> <?php echo htmlspecialchars($fetch['company_type']); ?></p>
                 <?php } ?>
                 <?php if (!empty($fetch['contact_info'])){ ?>
-                     { /* Assuming multiple contacts possible, maybe style differently or add icon per contact */ }
                     <p class="info-item contact"><strong>Contact Info:</strong> <?php echo htmlspecialchars($fetch['contact_info']); ?></p>
                 <?php } ?>
                 <?php if (!empty($fetch['portfolio'])){ ?>
