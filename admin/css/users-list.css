@@ -1,0 +1,332 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6; /* Light background */
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px; /* Slightly wider container */
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background-color: #ffffff; /* White card background */
+    padding: 30px 40px;
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); /* Softer shadow */
+}
+
+h1.page-title { /* Added class for better targeting */
+    color: #2c3e50; /* Darker blue-grey */
+    margin-bottom: 35px;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h1.page-title::after { /* Subtle underline effect */
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #3498db; /* Primary accent color */
+    border-radius: 2px;
+}
+
+
+/* --- Search and Filter --- */
+.controls-container { /* Wrapper for controls */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px; /* Space between items */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.search-wrapper {
+    flex-grow: 1; /* Allow search to take available space */
+    min-width: 250px; /* Minimum width */
+    position: relative; /* Needed for icon positioning */
+}
+
+.filter-wrapper {
+    min-width: 180px;
+}
+
+/* Search Input Styling */
+#searchText {
+    border-radius: 25px; /* Pill shape */
+    border: 1px solid #ced4da;
+    padding: 10px 20px 10px 40px; /* Left padding for icon */
+    font-size: 0.95rem;
+    transition: all 0.3s ease-in-out;
+    box-shadow: none; /* Remove default Bootstrap glow */
+    width: 100%; /* Fill wrapper */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23adb5bd" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>'); /* Embedded SVG search icon */
+    background-repeat: no-repeat;
+    background-position: 15px center;
+    background-size: 16px 16px;
+}
+
+/* Filter Dropdown Styling */
+#filterRole {
+    border-radius: 25px; /* Pill shape */
+    border: 1px solid #ced4da;
+    padding: 10px 45px 10px 20px; /* Adjusted padding (right for arrow) */
+    font-size: 0.95rem;
+    transition: all 0.3s ease-in-out;
+    box-shadow: none;
+    width: 100%;
+    background-color: #fff; /* Ensure background is white */
+    cursor: pointer; /* Indicate it's clickable */
+    -webkit-appearance: none; /* Remove default OS styling (Chrome, Safari, Edge) */
+    -moz-appearance: none;    /* Remove default OS styling (Firefox) */
+    appearance: none;         /* Remove default OS styling (Standard) */
+    /* Add custom dropdown arrow */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23495057" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 15px center; /* Position arrow */
+    background-size: 20px; /* Size of arrow */
+}
+
+/* Focus states for both input and select */
+#searchText:focus, #filterRole:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25); /* Use accent color for focus */
+    outline: none;
+}
+
+/* Hover state for filter (optional) */
+#filterRole:hover {
+    border-color: #aab3bb;
+}
+
+/* --- Styling for Dropdown Options (Limited Browser Support) --- */
+#filterRole option {
+    background-color: #ffffff; /* Try setting a background */
+    color: #333333;           /* Set the text color */
+    padding: 8px 15px;       /* Add padding (often ignored) */
+    font-size: 0.95rem;        /* Match font size (might be ignored) */
+    /* Note: Borders, margins, specific hover effects on individual options
+       are generally NOT possible with CSS on native <select> options. */
+}
+
+
+/* --- Table Styling --- */
+.table-container {
+    margin-top: 20px;
+    overflow-x: auto; /* Ensure table is scrollable on small screens */
+}
+
+.table {
+    border-collapse: separate; /* Allows border-radius on cells */
+    border-spacing: 0;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px; /* Rounded corners for the table */
+    overflow: hidden; /* Clip content to rounded corners */
+}
+
+.table thead th {
+    background-color: #3498db; /* Primary accent color */
+    color: #ffffff;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+    padding: 15px;
+    vertical-align: middle;
+    border: none; /* Remove default borders */
+    text-align: left;
+}
+
+.table thead th:first-child {
+    border-top-left-radius: 8px;
+}
+.table thead th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease; /* Removed transform */
+    border-bottom: 1px solid #eef2f5; /* Lighter row separator */
+}
+
+.table tbody tr:last-child {
+    border-bottom: none; /* No border on the last row */
+}
+
+.table tbody tr:hover {
+    background-color: #eaf4fb; /* Light blue hover */
+}
+
+
+.table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    font-size: 0.95rem;
+    color: #555;
+    border: none; /* Remove default borders */
+}
+
+/* Style specific columns */
+.table tbody td:nth-child(1) { /* # column */
+    font-weight: 600;
+    color: #3498db;
+}
+
+.table tbody td a { /* User name link */
+    color: #2980b9;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.table tbody td a:hover {
+    color: #1f618d;
+    text-decoration: underline;
+}
+
+
+/* --- Status Styling --- */
+.status {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 500;
+    display: inline-block; /* Needed for padding/border-radius */
+    text-transform: capitalize;
+    text-align: center;
+    min-width: 70px; /* Minimum width for consistency */
+    border: 1px solid transparent; /* Base border */
+}
+
+.status-hold {
+    background-color: #fef0cd;
+    color: #c67e00;
+    border-color: #fde4a8;
+}
+
+.status-active {
+    background-color: #d1f7e1;
+    color: #1a8a53;
+    border-color: #a8eecb;
+}
+
+/* --- Action Buttons (Refined Styles) --- */
+.action-buttons {
+    display: flex;
+    gap: 8px; /* Consistent space between buttons */
+    align-items: center;
+    flex-wrap: nowrap; /* Prevent wrapping unless absolutely necessary */
+    justify-content: flex-start; /* Align buttons to the start */
+}
+
+.action-buttons .btn {
+    padding: 6px 14px; /* Slightly adjusted padding */
+    font-size: 0.875rem; /* Slightly larger, clearer font */
+    border-radius: 6px; /* Slightly softer radius */
+    transition: all 0.2s ease-in-out;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Softer initial shadow */
+    display: inline-flex; /* Align text/icons nicely */
+    align-items: center;
+    justify-content: center;
+    line-height: 1.5; /* Ensure text vertical alignment */
+    font-weight: 500; /* Slightly bolder text */
+    text-transform: capitalize; /* e.g., "Hold", "Unhold", "Delete" */
+    min-width: 70px; /* Ensure minimum width for consistency */
+    text-align: center;
+    cursor: pointer; /* Ensure cursor indicates clickability */
+}
+
+/* Hover and Active States */
+.action-buttons .btn:hover {
+    transform: translateY(-2px); /* More noticeable lift */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Stronger shadow on hover */
+    opacity: 0.95; /* Slight fade effect */
+}
+
+.action-buttons .btn:active {
+    transform: translateY(0px); /* Press down effect */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Specific Button Colors */
+.action-buttons .btn.btn-warning { /* Hold */
+    background-color: #f1c40f; /* Brighter yellow */
+    color: #5f4c05; /* Darker text for better contrast */
+}
+.action-buttons .btn.btn-warning:hover {
+    background-color: #e6ac0e;
+    color: #4d3e04;
+}
+
+.action-buttons .btn.btn-success { /* Unhold */
+    background-color: #2ecc71; /* Standard success green */
+    color: #fff;
+}
+.action-buttons .btn.btn-success:hover {
+    background-color: #27ae60; /* Darker green on hover */
+    color: #fff;
+}
+
+.action-buttons .btn.btn-danger { /* Delete */
+    background-color: #e74c3c; /* Standard danger red */
+    color: #fff;
+}
+.action-buttons .btn.btn-danger:hover {
+    background-color: #c0392b; /* Darker red on hover */
+    color: #fff;
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    h1.page-title {
+        font-size: 1.8rem;
+    }
+    .controls-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-wrapper, .filter-wrapper {
+        width: 100%;
+        min-width: unset;
+    }
+   
+     .table tbody td {
+         padding: 12px 10px; /* Adjust padding */
+     }
+     .action-buttons {
+         flex-wrap: wrap; /* Allow buttons to wrap on smaller table cells */
+         justify-content: center;
+     }
+}
+
+@media (max-width: 576px) {
+    .action-buttons {
+        gap: 6px; /* Reduce gap slightly */
+    }
+    .action-buttons .btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        min-width: 60px;
+    }
+    h1.page-title {
+        font-size: 1.6rem;
+        margin-bottom: 25px;
+    }
+    .container {
+        padding: 15px;
+    }
+}
