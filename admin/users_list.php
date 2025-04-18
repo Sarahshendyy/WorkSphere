@@ -1,39 +1,171 @@
 <?php
-include "connection.php";
+
+include '../mail.php';
 
 // Handle "Hold" action
 if (isset($_GET['action']) && $_GET['action'] == 'hold' && isset($_GET['id'])) {
     $user_id = $_GET['id'];
+    
+    // First get user details
+    $user_query = "SELECT `name`, `email` FROM `users` WHERE `user_id` = $user_id";
+    $user_result = mysqli_query($connect, $user_query);
+    $user_data = mysqli_fetch_assoc($user_result);
+    $name = $user_data['name'];
+    $email = $user_data['email'];
+    
     $update_status = "UPDATE `users` SET `action` = 'hold' WHERE `user_id` = $user_id";
     if (mysqli_query($connect, $update_status)) {
-        echo "<script>alert('User status updated to Hold.');</script>";
+        // Send email notification
+        $message = " 
+        <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
+            <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
+                <h1>Account Status Update: <span style='color: #fda521;'>On Hold</span></h1>
+            </div>
+            <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
+                <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$name</span>,</p>
+                <p style='color: #00000a;'>We regret to inform you that your WorkSphere account has been temporarily placed on hold by our administration team.</p>
+                
+                <p style='color: #00000a;'><strong>What this means:</strong></p>
+                <ul>
+                    <li style='color: #00000a'>You won't be able to access certain platform features</li>
+                    <li style='color: #00000a'>You'll receive further communication about next steps</li>
+                </ul>
+                
+                <p style='color: #00000a;'>If you believe this action was taken in error or would like to appeal this decision, please contact our support team immediately.</p>
+                
+                <p style='color: #fda521;'>We hope to resolve this matter soon.</p>
+                <p style='color: #00000a;'>Best regards,<br>The WorkSphere Admin Team</p>
+            </div>
+            <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
+                <p style='color: #fffffa;'>For support or questions, please contact:</p>
+                <p style='color: #fffffa;'>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #fda521;'>admin-support@worksphere04@gmail.com</a></p>
+            </div>
+        </body>";
+        
+        $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+        $mail->addAddress($email);
+        $mail->isHTML(true);
+        $mail->Subject = 'Your WorkSphere Account Has Been Placed On Hold';
+        $mail->Body = $message;
+        $mail->send();
+        
+        $_SESSION['swal'] = ['icon' => 'success', 'title' => 'User status updated to Hold'];
     } else {
-        echo "<script>alert('Failed to update user status.');</script>";
+        $_SESSION['swal'] = ['icon' => 'error', 'title' => 'Failed to update user status'];
     }
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
 }
 
 // Handle "Un hold" action
 if (isset($_GET['action']) && $_GET['action'] == 'unhold' && isset($_GET['id'])) {
     $user_id = $_GET['id'];
+    
+    // First get user details
+    $user_query = "SELECT `name`, `email` FROM `users` WHERE `user_id` = $user_id";
+    $user_result = mysqli_query($connect, $user_query);
+    $user_data = mysqli_fetch_assoc($user_result);
+    $name = $user_data['name'];
+    $email = $user_data['email'];
+    
     $update_status = "UPDATE `users` SET `action` = 'active' WHERE `user_id` = $user_id";
     if (mysqli_query($connect, $update_status)) {
-        echo "<script>alert('User status updated to Active.');</script>";
+        // Send email notification
+        $message = " 
+        <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
+            <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
+                <h1>Account Status Update: <span style='color: #fda521;'>Reactivated</span></h1>
+            </div>
+            <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
+                <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$name</span>,</p>
+                <p style='color: #00000a;'>We're pleased to inform you that your WorkSphere account has been reactivated and all restrictions have been lifted.</p>
+                
+                <p style='color: #00000a;'><strong>What this means:</strong></p>
+                <ul>
+                    <li style='color: #00000a'>Full access to all platform features has been restored</li>
+                    <li style='color: #00000a'>You can continue using WorkSphere as normal</li>
+                </ul>
+                
+                <p style='color: #00000a;'>We appreciate your patience and understanding during this process.</p>
+                
+                <p style='color: #fda521;'>Welcome back to WorkSphere!</p>
+                <p style='color: #00000a;'>Best regards,<br>The WorkSphere Admin Team</p>
+            </div>
+            <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
+                <p style='color: #fffffa;'>For any questions, please contact:</p>
+                <p style='color: #fffffa;'>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #fda521;'>admin-support@worksphere04@gmail.com</a></p>
+            </div>
+        </body>";
+        
+        $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+        $mail->addAddress($email);
+        $mail->isHTML(true);
+        $mail->Subject = 'Your WorkSphere Account Has Been Reactivated';
+        $mail->Body = $message;
+        $mail->send();
+        
+        $_SESSION['swal'] = ['icon' => 'success', 'title' => 'User status updated to Active'];
     } else {
-        echo "<script>alert('Failed to update user status.');</script>";
+        $_SESSION['swal'] = ['icon' => 'error', 'title' => 'Failed to update user status'];
     }
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
 }
 
 // Handle "Delete" action
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $user_id = $_GET['id'];
+    
+    // First get user details before deleting
+    $user_query = "SELECT `name`, `email` FROM `users` WHERE `user_id` = $user_id";
+    $user_result = mysqli_query($connect, $user_query);
+    $user_data = mysqli_fetch_assoc($user_result);
+    $name = $user_data['name'];
+    $email = $user_data['email'];
+    
     $delete_user = "DELETE FROM `users` WHERE `user_id` = $user_id";
     if (mysqli_query($connect, $delete_user)) {
-        echo "<script>alert('User deleted successfully.');</script>";
+        // Send email notification
+        $message = " 
+        <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
+            <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
+                <h1>Account Status Update: <span style='color: #fda521;'>Deleted</span></h1>
+            </div>
+            <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
+                <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$name</span>,</p>
+                <p style='color: #00000a;'>This is to formally notify you that your WorkSphere account has been permanently deleted from our system.</p>
+                
+                <p style='color: #00000a;'><strong>What this means:</strong></p>
+                <ul>
+                    <li style='color: #00000a'>All your account data has been removed from our platform</li>
+                   
+                </ul>
+                
+                <p style='color: #00000a;'>If you believe this action was taken in error, please contact our support team immediately as we may be able to restore your account within a limited time frame.</p>
+                
+                <p style='color: #00000a;'>We appreciate the time you spent with WorkSphere.</p>
+                <p style='color: #00000a;'>Best regards,<br>The WorkSphere Admin Team</p>
+            </div>
+            <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
+                <p style='color: #fffffa;'>For urgent matters, please contact:</p>
+                <p style='color: #fffffa;'>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #fda521;'>admin-support@worksphere04@gmail.com</a></p>
+            </div>
+        </body>";
+        
+        $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+        $mail->addAddress($email);
+        $mail->isHTML(true);
+        $mail->Subject = 'Your WorkSphere Account Has Been Deleted';
+        $mail->Body = $message;
+        $mail->send();
+        
+        $_SESSION['swal'] = ['icon' => 'success', 'title' => 'User deleted successfully'];
     } else {
-        echo "<script>alert('Failed to delete user.');</script>";
+        $_SESSION['swal'] = ['icon' => 'error', 'title' => 'Failed to delete user'];
     }
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
 }
-
 // Check if it's a search or filter request
 $filter_role = isset($_POST['filter_role']) ? $_POST['filter_role'] : '';
 //the search 
@@ -87,6 +219,8 @@ $run_select = mysqli_query($connect, $select_users);
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
@@ -160,8 +294,7 @@ $run_select = mysqli_query($connect, $select_users);
                                                 <?php } else { ?>
                                                     <a href="?action=hold&id=<?php echo $row['user_id']; ?>" class="btn btn-warning btn-sm">Hold</a>
                                                 <?php } ?>
-                                                <a href="?action=delete&id=<?php echo $row['user_id']; ?>" class="btn btn-danger btn-sm"
-                                                   onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                                                <a href="?action=delete&id=<?php echo $row['user_id']; ?>" class="btn btn-danger btn-sm delete-btn">Delete</a>
                                              </div>
                                         </td>
                                     </tr>
@@ -178,7 +311,18 @@ $run_select = mysqli_query($connect, $select_users);
 
 
     <script>
-        $(document).ready(function () {
+               $(document).ready(function () {
+            // Show SweetAlert notifications from PHP
+            <?php if (isset($_SESSION['swal'])): ?>
+                Swal.fire({
+                    icon: '<?php echo $_SESSION['swal']['icon']; ?>',
+                    title: '<?php echo $_SESSION['swal']['title']; ?>',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                <?php unset($_SESSION['swal']); ?>
+            <?php endif; ?>
+
             // Dynamic search
             $("#searchText").on("input", function () {
                 var searchText = $(this).val();
@@ -205,6 +349,47 @@ $run_select = mysqli_query($connect, $select_users);
                     success: function (data) {
                         var results = $(data).find("#usersTable").html();
                         $("#usersTable").html(results);
+                    }
+                });
+            });
+
+            // SweetAlert confirmation for delete buttons
+            $(document).on('click', '.btn-danger', function(e) {
+                e.preventDefault();
+                var deleteUrl = $(this).attr('href');
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = deleteUrl;
+                    }
+                });
+            });
+
+            // SweetAlert confirmation for hold/unhold buttons
+            $(document).on('click', '.btn-success, .btn-warning', function(e) {
+                e.preventDefault();
+                var actionUrl = $(this).attr('href');
+                var actionText = $(this).hasClass('btn-success') ? 'unhold' : 'hold';
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Are you sure you want to ${actionText} this user?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: `Yes, ${actionText}`
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = actionUrl;
                     }
                 });
             });
