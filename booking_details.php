@@ -11,7 +11,7 @@ if (!isset($_GET['booking_id'])) {
 $bookingId = mysqli_real_escape_string($connect, $_GET['booking_id']);
 
 // Fetch booking details
-$query = "SELECT b.*, r.room_name, r.`p/hr`, w.name AS workspace_name, u.email AS user_email 
+$query = "SELECT b.*, r.room_name, r.`p/hr`, r.workspace_id, w.name AS workspace_name, u.email AS user_email 
           FROM bookings b
           JOIN rooms r ON b.room_id = r.room_id
           JOIN workspaces w ON r.workspace_id = w.workspace_id
@@ -51,10 +51,12 @@ $hoursBooked = $interval->h + ($interval->i / 60); // Convert minutes to hours
 $totalAmount = $pricePerHour * $hoursBooked;
 $transactionId = rand(10000, 99999);
 
-// Handle Pay at Host
 if (isset($_POST['pay_at_host'])) {
-    $insert = "INSERT INTO payments (booking_id, amount, payment_method, transaction_id, created_at) 
-               VALUES ('$bookingId', '$totalAmount', 'Pay at Host', '$transactionId', NOW())";
+    // Get the workspace_id from the booking data
+    $workspaceId = $bookingData['workspace_id'];
+    
+    $insert = "INSERT INTO payments (booking_id, workspace_id, amount, payment_method, transaction_id, created_at) 
+               VALUES ('$bookingId', '$workspaceId', '$totalAmount', 'Pay at Host', '$transactionId', NOW())";
     $run_insert = mysqli_query($connect, $insert);
 
     if ($run_insert) {
