@@ -12,10 +12,11 @@ if (!isset($_GET['booking_id'])) {
 $bookingId = mysqli_real_escape_string($connect, $_GET['booking_id']);
 
 // Fetch booking details
-$query = "SELECT b.*, r.room_name, r.`p/hr`, w.name AS workspace_name 
+$query = "SELECT b.*, r.room_name, r.`p/hr`, r.workspace_id, w.name AS workspace_name, u.email AS user_email 
           FROM bookings b
           JOIN rooms r ON b.room_id = r.room_id
           JOIN workspaces w ON r.workspace_id = w.workspace_id
+          JOIN users u ON b.user_id = u.user_id
           WHERE b.booking_id = ?";
 $stmt = $connect->prepare($query);
 if (!$stmt) {
@@ -55,10 +56,11 @@ if (isset($_POST['pay'])) {
     $amount = $totalAmount; // Use the calculated total amount
 
     // Insert payment into the payments table
-    $insert = "INSERT INTO payments (booking_id, amount, payment_method, transaction_id, created_at) 
-               VALUES ('$bookingId', '$amount', 'visa', '$transactionId', NOW())";
-    $run_insert = mysqli_query($connect, $insert);
+    $workspaceId = $bookingData['workspace_id'];
 
+    $insert = "INSERT INTO payments (booking_id, workspace_id, amount, payment_method, transaction_id, created_at) 
+    VALUES ('$bookingId', '$workspaceId', '$totalAmount', 'online', '$transactionId', NOW())";
+$run_insert = mysqli_query($connect, $insert);
     if ($run_insert) {
         header("Location: payment_success.php"); // Redirect to success page
         exit;
