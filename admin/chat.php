@@ -1,32 +1,29 @@
 <?php 
-
 # database connection file
 include 'connection.php';
 
-  if (isset($_SESSION['user_id'])) {
+if (isset($_SESSION['user_id'])) {
+    include 'app/helpers/user.php';
+    include 'app/helpers/chat.php';
+    include 'app/helpers/opened.php';
+    include 'app/helpers/timeAgo.php';
 
-  	include 'app/helpers/user.php';
-  	include 'app/helpers/chat.php';
-  	include 'app/helpers/opened.php';
-  	include 'app/helpers/timeAgo.php';
+    if (!isset($_GET['user'])) {
+        header("Location: home.php");
+        exit;
+    }
 
-  	if (!isset($_GET['user'])) {
-  		header("Location: home.php");
-  		exit;
-  	}
+    # Getting User data data
+    $chatWith = getUser($_GET['user'], $connect);
 
-  	# Getting User data data
-  	$chatWith = getUser($_GET['user'], $connect);
+    if (empty($chatWith)) {
+        header("Location: home.php");
+        exit;
+    }
 
-  	if (empty($chatWith)) {
-  		header("Location: home.php");
-  		exit;
-  	}
+    $chats = getChats($_SESSION['user_id'], $chatWith['user_id'], $connect);
 
-  	$chats = getChats($_SESSION['user_id'], $chatWith['user_id'], $connect);
-
-  	opened($chatWith['user_id'], $connect, $chats);
-
+    opened($chatWith['user_id'], $connect, $chats);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +37,6 @@ include 'connection.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
-        /* Additional CSS for file upload */
         .file-upload-wrapper {
             position: relative;
             margin-right: 10px;
@@ -199,10 +195,9 @@ include 'connection.php';
         </div>
 
         <div class="txtdiv">
-            <form class="input-group mb-3" id="chatForm" enctype="multipart/form-data">
+            <form class="input-group mb-3" id="chatForm" enctype="multipart/form-data" onsubmit="return false;">
                 <textarea cols="3" id="message" class="form-control" placeholder="Write your message.."></textarea>
                 
-                <!-- Improved file upload section -->
                 <div class="file-upload-wrapper">
                     <label class="file-upload-label">
                         <i class="fa-solid fa-paperclip"></i>
@@ -217,137 +212,229 @@ include 'connection.php';
             </form>
         </div>
     </div>
- 
 
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-<script>
-	var scrollDown = function(){
-        let chatBox = document.getElementById('chatBox');
-        chatBox.scrollTop = chatBox.scrollHeight;
-	}
+    <script>
+        var scrollDown = function(){
+            let chatBox = document.getElementById('chatBox');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
 
-	scrollDown();
+        scrollDown();
 
-	$(document).ready(function(){
-      
-		$("#sendBtn").on('click', function() {
-			var message = $("#message").val();
-			var fileInput = document.getElementById('file');
-			var file = fileInput.files[0]; 
+        // Show selected file name
+        $('#file').change(function() {
+            var fileName = $(this).val().split('\\').pop();
+            $('#file-name-display').text(fileName);
+        });
 
-			var formData = new FormData();
-			formData.append('message', message);
-			formData.append('to_user', <?=$chatWith['user_id']?>);
-			if (file) {
-				formData.append('file', file);
-			}
+        $(document).ready(function(){
+            // Prevent form submission
+            $("#chatForm").on('submit', function(e) {
+                e.preventDefault();
+            });
 
-			$.ajax({
-				url: 'app/ajax/insert.php',
-				type: 'POST',
-				data: formData,
-				processData: false,
-				contentType: false, 
-				success: function(data, status) {
-					if (status === 'success') {
-						$("#message").val("");
-						$("#file").val("");
-						$("#chatBox").append(data);
-						scrollDown();
-						location.reload();
-					} else {
-						alert("Message could not be sent.");
-					}
-				}
-			});
-		});
+            $("#sendBtn").on('click', function(e) {
+                e.preventDefault();
+                
+                var message = $("#message").val();
+                var fileInput = document.getElementById('file');
+                var file = fileInput.files[0]; 
 
+                // Only send if there's a message or a file
+                if (message.trim() !== '' || file) {
+                    var formData = new FormData();
+                    formData.append('message', message);
+                    formData.append('to_user', <?=$chatWith['user_id']?>);
+                    if (file) {
+                        formData.append('file', file);
+                    }
 
-      /** 
-      auto update last seen 
-      for logged in user
-      **/
-      let lastSeenUpdate = function(){
-      	$.get("app/ajax/update_last_seen.php");
-      }
-      lastSeenUpdate();
-      /** 
-      auto update last seen 
-      every 10 sec
-      **/
-      setInterval(lastSeenUpdate, 10000);
-
-
-
-      // auto refresh / reload
-      let fechData = function(){
-      	$.post("app/ajax/getMessage.php", 
-      		   {
-      		   	id_2: <?=$chatWith['user_id']?>
-      		   },
-      		   function(data, status){
-                  $("#chatBox").append(data);
-                  if (data != "") scrollDown();
-      		    });
-      }
-
-      fechData();
-      /** 
-      auto update last seen 
-      every 0.5 sec
-      **/
-      setInterval(fechData, 500);
-
-	      // Edit message
-			$(document).on('click', '.edit-message', function(e) {
-			e.preventDefault();
-			var messageId = $(this).data('id');
-			var messageText = $(this).closest('.rtext').find('small').text();
-
-			// Prompt for new message
-			var newMessage = prompt("Edit your message:", messageText);
-			if (newMessage != null && newMessage.trim() != "") {
-				$.post("app/ajax/editMessage.php", {
-					chat_id: messageId, 
-					new_message: newMessage
-				}, function(data, status) {
-					if (data === 'success') {
-						alert('Could not update the message.');
-					} else {
-                    	location.reload();
-                	}
-				});
-			}
-		});
-
-	  // Handle message deletion
-	  $(document).on('click', '.delete-message', function(e) {
-        e.preventDefault();
-
-        var chatId = $(this).data('id');
-
-        // Confirm deletion
-        if (confirm('Are you sure you want to delete this message?')) {
-            $.post("app/ajax/deleteMessage.php", {
-                chat_id: chatId
-            }, function(response) {
-                if (response === 'success') {
-                    location.reload();
-                } else {
-                    alert("Error: Unable to delete message.");
+                    $.ajax({
+                url: 'app/ajax/insert.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false, 
+                success: function(data, status) {
+                    if (status === 'success') {
+                        location.reload(); // Refresh the page after the message is sent
+                    } else {
+                        alert("Message could not be sent.");
+                    }
+                },
+                error: function() {
+                    alert("Error sending message.");
                 }
             });
+                }
+            });
+
+            // Auto update last seen for logged in user
+            let lastSeenUpdate = function(){
+                $.get("app/ajax/update_last_seen.php");
+            }
+            lastSeenUpdate();
+            setInterval(lastSeenUpdate, 10000);
+
+            // Auto refresh chat messages
+            let fetchData = function(){
+                $.post("app/ajax/getMessage.php", 
+                    {
+                        id_2: <?=$chatWith['user_id']?>
+                    },
+                    function(data, status){
+                        if (data) {
+                            // Only append new messages
+                            $("#chatBox").html(data);
+                            scrollDown();
+                        }
+                    });
+            }
+
+            fetchData();
+            setInterval(fetchData, 500);
+
+// Edit message handler
+$(document).on('click', '.edit-message', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var messageId = $(this).data('id');
+    var messageContainer = $(this).closest('.dropdown-menu').parent().prevAll('.rtext, .ltext').first();
+    var originalContent = messageContainer.clone();
+    
+    // Extract just the message text (excluding timestamps, icons, etc.)
+    var currentMessage = messageContainer.clone()
+        .children()
+        .remove()
+        .end()
+        .text()
+        .trim();
+
+    // Create edit form
+    var editForm = $(`
+        <div class="edit-form-container border rounded p-2 mb-1">
+            <textarea class="form-control mb-2 edit-textarea" rows="3">${currentMessage}</textarea>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-success save-edit" data-id="${messageId}">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button class="btn btn-sm btn-secondary cancel-edit">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    `);
+
+    messageContainer.replaceWith(editForm);
+    editForm.find('.edit-textarea').focus();
+    editForm.data('original', originalContent);
+});
+
+// Save edit handler with better error handling
+$(document).on('click', '.save-edit', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    var btn = $(this);
+    var messageId = btn.data('id');
+    var editForm = btn.closest('.edit-form-container');
+    var newMessage = editForm.find('textarea').val().trim();
+    
+    if (!newMessage) {
+        showAlert("Message cannot be empty", 'warning');
+        return;
+    }
+
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+    
+    $.ajax({
+        url: 'app/ajax/editMessage.php',
+        type: 'POST',
+        data: {
+            chat_id: messageId,
+            new_message: newMessage
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response && response.success) {
+                location.reload();
+            } else {
+                var errorMsg = (response && response.error) ? response.error : 'Unknown error occurred';
+                showAlert('Error: ' + errorMsg, 'danger');
+            }
+        },
+        error: function(xhr, status, error) {
+            var errorMsg = 'Request failed: ';
+            // Try to extract error message from response
+            if (xhr.responseText) {
+                if (xhr.responseText.startsWith('{')) {
+                    try {
+                        var errResponse = JSON.parse(xhr.responseText);
+                        errorMsg += errResponse.error || 'Unknown error';
+                    } catch(e) {
+                        errorMsg += 'Invalid JSON response';
+                    }
+                } else {
+                    errorMsg += xhr.responseText.substring(0, 100); // Show first 100 chars
+                }
+            } else {
+                errorMsg += error;
+            }
+            showAlert(errorMsg, 'danger');
+        },
+        complete: function() {
+            btn.prop('disabled', false).html('<i class="fas fa-save"></i> Save');
         }
     });
-    
-    });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> </body>
+});
+// Cancel edit handler
+$(document).on('click', '.cancel-edit', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var editForm = $(this).closest('.edit-form-container');
+    editForm.replaceWith(editForm.data('original'));
+});
+
+// Helper function to show alerts
+function showAlert(message, type) {
+    var alert = $(`
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `);
+    $('#bigdiv').prepend(alert);
+    setTimeout(() => alert.alert('close'), 5000);
+}
+
+            // Handle message deletion
+            $(document).on('click', '.delete-message', function(e) {
+                e.preventDefault();
+                var chatId = $(this).data('id');
+
+                if (confirm('Are you sure you want to delete this message?')) {
+                    $.post("app/ajax/deleteMessage.php", {
+                        chat_id: chatId
+                    }, function(response) {
+                        if (response === 'success') {
+                            location.reload();
+                        } else {
+                            alert("Error: Unable to delete message.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
 </html>
 <?php
-    }else{
-		header("location:index.php");
-		exit;
-	}
+} else {
+    header("location:index.php");
+    exit;
+}
 ?>
