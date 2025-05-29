@@ -1,21 +1,29 @@
+<?php
+include '../../connection.php'; // Update path as needed
 
-<?php 
-# database connection file
-include '../../connection.php';
+header('Content-Type: application/json');
 
-if (isset($_POST['chat_id']) && isset($_POST['new_message'])) {
-    $message_id = $_POST['chat_id'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Validate input
+    if (!isset($_POST['chat_id']) || !isset($_POST['new_message'])) {
+        echo json_encode(['success' => false, 'error' => 'Missing required fields']);
+        exit;
+    }
+
+    $chat_id = $_POST['chat_id'];
     $new_message = $_POST['new_message'];
 
-    $edit_message = "UPDATE `chat` 
-                    SET `message` = '$new_message',
-                        `edited` = '1'
-                    WHERE `chat_id` = '$message_id'";
-    $run_edit_message = mysqli_query($connect, $edit_message);
+    try {
+        // Update message
+        $sql = "UPDATE chat SET message = ?, edited = 1 WHERE chat_id = ?";
+        $stmt = $connect->prepare($sql);
+        $stmt->execute([$new_message, $chat_id]);
 
-    if ($run_edit_message) {
-        echo 'success';  // Return success response for AJAX
-    } else {
-        echo 'error';  // Return error if query fails
+        echo json_encode(['success' => true]);
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
     }
+} else {
+    echo json_encode(['success' => false, 'error' => 'Invalid request method']);
 }
+?>
