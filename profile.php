@@ -1,5 +1,5 @@
 <?php
-include "nav.php";
+include "connection.php";
 
 // Check if we're viewing a specific user's profile (from community page)
 if (isset($_GET['user_id'])) {
