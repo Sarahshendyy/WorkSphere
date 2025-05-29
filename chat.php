@@ -309,27 +309,119 @@ include 'connection.php';
       **/
       setInterval(fechData, 500);
 
-	      // Edit message
-			$(document).on('click', '.edit-message', function(e) {
-			e.preventDefault();
-			var messageId = $(this).data('id');
-			var messageText = $(this).closest('.rtext').find('small').text();
+	    // Edit message handler
+$(document).on('click', '.edit-message', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
-			// Prompt for new message
-			var newMessage = prompt("Edit your message:", messageText);
-			if (newMessage != null && newMessage.trim() != "") {
-				$.post("app/ajax/editMessage.php", {
-					chat_id: messageId, 
-					new_message: newMessage
-				}, function(data, status) {
-					if (data === 'success') {
-						alert('Could not update the message.');
-					} else {
-                    	location.reload();
-                	}
-				});
-			}
-		});
+    var messageId = $(this).data('id');
+    var messageContainer = $(this).closest('.dropdown-menu').parent().prevAll('.rtext, .ltext').first();
+    var originalContent = messageContainer.clone();
+    
+    // Extract just the message text (excluding timestamps, icons, etc.)
+    var currentMessage = messageContainer.clone()
+        .children()
+        .remove()
+        .end()
+        .text()
+        .trim();
+
+    // Create edit form
+    var editForm = $(`
+        <div class="edit-form-container border rounded p-2 mb-1">
+            <textarea class="form-control mb-2 edit-textarea" rows="3">${currentMessage}</textarea>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-success save-edit" data-id="${messageId}">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button class="btn btn-sm btn-secondary cancel-edit">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    `);
+
+    messageContainer.replaceWith(editForm);
+    editForm.find('.edit-textarea').focus();
+    editForm.data('original', originalContent);
+});
+
+// Save edit handler with better error handling
+$(document).on('click', '.save-edit', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    var btn = $(this);
+    var messageId = btn.data('id');
+    var editForm = btn.closest('.edit-form-container');
+    var newMessage = editForm.find('textarea').val().trim();
+    
+    if (!newMessage) {
+        showAlert("Message cannot be empty", 'warning');
+        return;
+    }
+
+    btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+    
+    $.ajax({
+        url: 'app/ajax/editMessage.php',
+        type: 'POST',
+        data: {
+            chat_id: messageId,
+            new_message: newMessage
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response && response.success) {
+                location.reload();
+            } else {
+                var errorMsg = (response && response.error) ? response.error : 'Unknown error occurred';
+                showAlert('Error: ' + errorMsg, 'danger');
+            }
+        },
+        error: function(xhr, status, error) {
+            var errorMsg = 'Request failed: ';
+            // Try to extract error message from response
+            if (xhr.responseText) {
+                if (xhr.responseText.startsWith('{')) {
+                    try {
+                        var errResponse = JSON.parse(xhr.responseText);
+                        errorMsg += errResponse.error || 'Unknown error';
+                    } catch(e) {
+                        errorMsg += 'Invalid JSON response';
+                    }
+                } else {
+                    errorMsg += xhr.responseText.substring(0, 100); // Show first 100 chars
+                }
+            } else {
+                errorMsg += error;
+            }
+            showAlert(errorMsg, 'danger');
+        },
+        complete: function() {
+            btn.prop('disabled', false).html('<i class="fas fa-save"></i> Save');
+        }
+    });
+});
+// Cancel edit handler
+$(document).on('click', '.cancel-edit', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var editForm = $(this).closest('.edit-form-container');
+    editForm.replaceWith(editForm.data('original'));
+});
+
+// Helper function to show alerts
+function showAlert(message, type) {
+    var alert = $(`
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `);
+    $('#bigdiv').prepend(alert);
+    setTimeout(() => alert.alert('close'), 5000);
+}
 
 	  // Handle message deletion
 	  $(document).on('click', '.delete-message', function(e) {
