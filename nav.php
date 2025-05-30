@@ -1,108 +1,78 @@
-<?php
-include "connection.php";
-$user_id = $_SESSION['user_id'];
-
-
-$select = "SELECT *
-           FROM `users` 
-           INNER JOIN `role` ON `users`.`role_id` = `role`.`role_id` 
-           WHERE `user_id` = $user_id";
-$result = mysqli_query($connect, $select);
-$fetch = mysqli_fetch_assoc($result);
-?>
+<?php include './connection.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Boxicons -->
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- My CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/nav.css">
-
-    <title>WorkSphere</title>
-    <link rel="icon" type="image/x-icon" href="./img/keklogo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- links -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="./css/nav.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- SIDEBAR -->
-<section id="sidebar">
-    <a href="landing.php" class="brand">
-        <i class='bx bxl-slack'></i>
-        <span class="text">WorkSphere</span>
-    </a>
-    <ul class="side-menu top">
-        <li <?php if(basename($_SERVER['PHP_SELF']) == 'profile.php') echo 'class="active"' ?>>
-            <a href="profile.php">
-                <i class='bx bxs-user-detail'></i>
-                <span class="text">Profile</span>
-            </a>
-        </li>
-        <li <?php if(basename($_SERVER['PHP_SELF']) == 'chat.php') echo 'class="active"' ?>>
-            <a href="chat.php">
-                <i class='bx bx-chat'></i>
-                <span class="text">Chat</span>
-            </a>
-        </li>
-        <li <?php if(basename($_SERVER['PHP_SELF']) == 'calendar.php') echo 'class="active"' ?>>
-            <a href="calendar.php">
-                <i class='bx bxs-calendar' ></i>
-                <span class="text">Calendar</span>
-            </a>
-        </li>
-        <li <?php if(basename($_SERVER['PHP_SELF']) == 'my_bookings.php') echo 'class="active"' ?>>
-            <a href="my_bookings.php">
-                <i class='bx bxs-contact'></i>
-                <span class="text">My Bookings</span>
-            </a>
-        </li>
-        <li <?php if(basename($_SERVER['PHP_SELF']) == 'community.php') echo 'class="active"' ?>>
-            <a href="community.php">
-                <i class='bx bx-globe'></i>
-                <span class="text">Our Community</span>
-            </a>
-        </li>
-        <li <?php if(basename($_SERVER['PHP_SELF']) == 'workspaces_list.php') echo 'class="active"' ?>>
-            <a href="workspaces_list.php">
-                <i class='bx bx-buildings' ></i>
-                <span class="text">All Workspaces</span>
-            </a>
-        </li>
-        <?php
-            if (isset($fetch['role_id']) && $fetch['role_id'] != 3 && $fetch['role_id'] != 4) {
-            ?>
-                <li <?php if(basename($_SERVER['PHP_SELF'])== './workspace/listing_workspaces.php') echo 'class="active"' ?>>
-                    <a href="./workspace/listing_workspaces.php">
-                        <i class='bx bx-list-plus'></i>
-                        <span class="text">List Your Workspace</span>
-                    </a>
-                </li>
-            <?php
-            }
-            ?>
-    </ul>
-</section>
-    <!-- CONTENT -->
-    <section id="content">
-        <!-- NAVBAR -->
-        <nav>
-            <i class='bx bx-menu' ></i>
-            <a href="landing.php" class="nav-link">Home</a>
 
-            <input type="checkbox" id="switch-mode" hidden>
-            <a href="profile.php" class="profile">
-                <img src="./img/<?php echo !empty($fetch['image']) ? $fetch['image'] : 'default.png'; ?>" alt="Profile Image">
-            </a>
-        </nav>
-        <main>
-        </main>
-        <!-- bootstrap js link -->
-        <script src="js/bootstrap.min.js"></script>
-        <script src="./js/script.js"></script>
-    </section>
+<!-- Top Header -->
+<div class="top-header">
+  <div class="contact d-flex align-items-center">
+    <i class="fas fa-phone me-2"></i>012-201-77444
+  </div>
+  <div class="top-actions">
+    <a href="contact_us.php" class="angled-section get-touch">
+      <i class="fas fa-comments me-2"></i> Get in Touch
+    </a>
+    <a href="#" class="angled-section book-tour">
+      <i class="fas fa-calendar-alt me-2"></i> Book a Tour
+    </a>
+  </div>
+  <div class="social-icons">
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+  </div>
+</div>
+
+<!-- Logo & Navigation bottom-->
+<div class="logo-bar">
+  <div class="logo">
+    <img src="./img/SCCI_Logo.png" alt="Logo">
+    <p>SCCI Workspaces</p>
+  </div>
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 bottom-nav">
+        <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="my_bookings.php">My Bookings</a></li>
+        <li class="nav-item"><a class="nav-link" href="workspaces_list.php">Workspaces</a></li>
+        <li class="nav-item"><a class="nav-link" href="community.php">Community</a></li>
+
+        <li class="nav-item dropdown">
+          <span id="moreDropdown" class="nav-link more-link" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+            More
+          </span>
+          <ul class="dropdown-menu more-dropdown-menu" aria-labelledby="moreDropdown">
+            <li><a class="dropdown-item" href="chat.php">Chat</a></li>
+            <li><a class="dropdown-item" href="calendar.php">Calendar</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="profile.php">
+            <i class="fas fa-user profile-icon"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div id="scroll-line"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./js/nav.js"></script>
+
+ 
 </body>
 </html>
