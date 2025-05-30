@@ -1,43 +1,42 @@
-/* --- Imports & Variables (Optional) --- */
+/* --- Imports & Variables --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
 :root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --success-color: #28a745;
-    --info-color: #17a2b8;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-    --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --font-family: 'Poppins', Arial, sans-serif; /* Modern font */
-    --border-radius: 6px; /* Consistent border radius */
-    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07); /* Softer default shadow */
+    --primary-color: #071739;
+    --secondary-color: #4B6382;
+    --info-color: #A4B5C4;
+    --light-color: #CDD5DB;
+    --accent-warm: #A68868;
+    --accent-light: #E3C39D;
+    --font-family: 'Poppins', Arial, sans-serif;
+
+    --border-radius: 6px;
+    --box-shadow: 0 4px 15px rgba(7, 23, 57, 0.15);
     --transition-speed: 0.3s;
 }
 
 /* --- General Styles --- */
 body {
-    font-family: var(--font-family);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height */
     background-color: var(--light-color);
     margin: 0;
     padding: 0;
-    color: var(--dark-color);
-    line-height: 1.6;
 }
 
+
 .container {
-    background-color: #fff;
-    padding: 35px; /* Generous padding */
+    width: 100%;
+    max-width: 850px;
+    background-color: #fdfdfd;
+    padding: 35px;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-    margin-left: 30px; /* Sidebar width + gap */
-    margin-top: 24px;
-    margin-right: 40px;
-    margin-bottom: 35px;
-    max-width: 850px;
-    transition: margin-left var(--transition-speed) ease; /* Smooth transition if sidebar collapses */
+    margin: auto; /* removes side spacing */
 }
+
 
 /* --- Profile Section --- */
 .profile {
@@ -45,23 +44,23 @@ body {
 }
 
 .profile-pic {
-    display: inline-block; /* Allows centering and hover effects */
-    position: relative; /* For potential future pseudo-elements */
+    display: inline-block;
+    position: relative;
     margin-bottom: 30px;
 }
 
 .profile-pic img {
-    width: 160px; /* Slightly larger */
+    width: 160px;
     height: 160px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid #fff; /* White border to lift it off background */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12); /* Enhanced shadow */
+    border: 5px solid var(--light-color);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 }
 
 .profile-pic img:hover {
-    transform: scale(1.05) rotate(2deg); /* Subtle scale and rotate on hover */
+    transform: scale(1.05) rotate(2deg);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
 }
 
@@ -73,56 +72,55 @@ body {
     font-size: 28px;
     margin-bottom: 20px;
     font-weight: 600;
-    color: var(--dark-color);
-    border-bottom: 1px solid #eee; /* Subtle separator */
+    color: var(--primary-color);
+    border-bottom: 1px solid #e0e0e0;
     padding-bottom: 15px;
 }
 
 .profile-info p {
     font-size: 16px;
-    color: var(--secondary-color); /* Slightly lighter text for details */
+    color: var(--secondary-color);
     margin: 12px 0;
-    display: flex; /* Align icon and text */
-    align-items: center; /* Vertically center icon with text */
+    display: flex;
+    align-items: center;
 }
 
 .profile-info p strong {
-    color: var(--dark-color); /* Darker label */
+    color: var(--primary-color);
     margin-right: 8px;
     font-weight: 500;
-    min-width: 100px; /* Align labels somewhat */
+    min-width: 100px;
     display: inline-block;
 }
 
-/* --- Icons using FontAwesome --- */
 .profile-info p.info-item::before {
-    font-family: "Font Awesome 5 Free"; /* Ensure this matches your FA version */
-    font-weight: 900; /* Use the solid style */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
     margin-right: 12px;
-    color: var(--primary-color); /* Icon color */
     font-size: 1.1em;
-    width: 20px; /* Fixed width for alignment */
+    width: 20px;
     text-align: center;
+    color: var(--accent-light);
 }
 
 /* Specific Icons */
-.profile-info p.email::before    { content: "\f0e0"; color: #DB4437;} /* Envelope - Google Red */
-.profile-info p.phone::before    { content: "\f095"; color: #4CAF50;} /* Phone - Green */
-.profile-info p.age::before      { content: "\f1fd"; } /* Birthday Cake */
-.profile-info p.location::before { content: "\f3c5"; color: #FFC107;} /* Map Marker - Yellow */
-.profile-info p.zone::before     { content: "\f57d"; color: #9c27b0;} /* Map Marked Alt - Purple */
-.profile-info p.job::before      { content: "\f0b1"; color: #607D8B;} /* Briefcase - Blue Grey */
-.profile-info p.company::before  { content: "\f1ad"; color: #03A9F4;} /* Building - Light Blue */
-.profile-info p.type::before     { content: "\f02b"; color: #795548;} /* Tag - Brown */
-.profile-info p.contact::before  { content: "\f2bb"; color: #FF9800;} /* Address Card - Orange */
-.profile-info p.portfolio::before{ content: "\f15c"; color: #E91E63;} /* File Alt - Pink */
+.profile-info p.email::before    { content: "\f0e0"; color: #DB4437; }
+.profile-info p.phone::before    { content: "\f095"; color: #4CAF50; }
+.profile-info p.age::before      { content: "\f1fd"; }
+.profile-info p.location::before { content: "\f3c5"; color: var(--accent-light); }
+.profile-info p.zone::before     { content: "\f57d"; color: #9c27b0; }
+.profile-info p.job::before      { content: "\f0b1"; color: #607D8B; }
+.profile-info p.company::before  { content: "\f1ad"; color: #03A9F4; }
+.profile-info p.type::before     { content: "\f02b"; color: #795548; }
+.profile-info p.contact::before  { content: "\f2bb"; color: #FF9800; }
+.profile-info p.portfolio::before{ content: "\f15c"; color: #E91E63; }
 
 .profile-info p.portfolio a {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 500;
+    position: relative;
     transition: color var(--transition-speed) ease;
-    position: relative; /* For underline effect */
 }
 .profile-info p.portfolio a::after {
     content: '';
@@ -135,90 +133,66 @@ body {
     transition: width var(--transition-speed) ease;
 }
 .profile-info p.portfolio a:hover {
-    color: #0056b3; /* Darker blue */
+    color: var(--secondary-color);
 }
 .profile-info p.portfolio a:hover::after {
     width: 100%;
 }
 
-
-/* --- Button Styles --- */
+/* --- Buttons --- */
 .profile-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     margin-top: 35px;
     padding-top: 25px;
-    border-top: 1px solid #eee; /* Separator before buttons */
+    border-top: 1px solid #eee;
 }
 
-/* Use a common .btn class and specific modifiers */
 .profile-actions .btn {
-    display: inline-flex; /* Align icon and text if added later */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 25px; /* Slightly larger padding */
+    padding: 12px 25px;
     color: #fff;
-    text-decoration: none;
     border: none;
     border-radius: var(--border-radius);
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color var(--transition-speed) ease,
-                box-shadow var(--transition-speed) ease,
-                transform var(--transition-speed) ease;
+    transition: all var(--transition-speed) ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
-    overflow: hidden; /* For ripple effect maybe later */
-    z-index: 1;
 }
 
-.profile-actions .btn:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-    transform: translateY(-3px); /* Lift effect */
-}
-
-.profile-actions .btn:active {
-    transform: translateY(-1px) scale(0.98); /* Press effect */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Specific button colors */
 .profile-actions .btn-edit { background-color: var(--primary-color); }
-.profile-actions .btn-edit:hover { background-color: #0056b3; }
+.profile-actions .btn-edit:hover { background-color: #10244f; }
 
-.profile-actions .btn-add { background-color: var(--success-color); }
-.profile-actions .btn-add:hover { background-color: #218838; }
+.profile-actions .btn-add { background-color: var(--accent-warm); }
+.profile-actions .btn-add:hover { background-color: #8b6e4d; }
 
 .profile-actions .btn-update { background-color: var(--info-color); }
-.profile-actions .btn-update:hover { background-color: #138496; }
+.profile-actions .btn-update:hover { background-color: #8aa2b3; }
 
-
-/* --- Modal Styles --- */
+/* --- Modals --- */
 .modal {
-    display: none; /* Initially hidden */
+    display: none;
     position: fixed;
     z-index: 1050;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.65); /* Slightly darker overlay */
-    /* Animation Properties */
+    background-color: rgba(0, 0, 0, 0.65);
     opacity: 0;
     visibility: hidden;
     transition: opacity var(--transition-speed) ease, visibility 0s linear var(--transition-speed);
 }
-/* Class added by JS to show modal */
 .modal.show {
-    display: block; /* Need block for layout */
+    display: block;
     opacity: 1;
     visibility: visible;
-    transition: opacity var(--transition-speed) ease, visibility 0s linear 0s;
+    transition-delay: 0s;
 }
-
 .modal-content {
     background-color: #fff;
     margin: 40px auto;
@@ -226,27 +200,23 @@ body {
     border-radius: var(--border-radius);
     width: 90%;
     max-width: 550px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    position: relative;
-    /* Animation */
+    box-shadow: 0 10px 30px rgba(7, 23, 57, 0.25);
     transform: scale(0.95) translateY(-20px);
     transition: transform var(--transition-speed) ease;
 }
 .modal.show .modal-content {
-     transform: scale(1) translateY(0);
+    transform: scale(1) translateY(0);
 }
-
 #passwordModal .modal-content {
     max-width: 480px;
 }
 
 .modal-content h2 {
     font-size: 24px;
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: var(--dark-color);
+    color: var(--primary-color);
     text-align: center;
     font-weight: 600;
+    margin-top: 0;
     border-bottom: 1px solid #eee;
     padding-bottom: 15px;
 }
@@ -254,13 +224,12 @@ body {
 .modal-content form {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* Small gap between label and input */
+    gap: 5px;
 }
 
 .modal-content label {
     font-size: 14px;
     color: var(--secondary-color);
-    margin-bottom: 0; /* Reduce space, handled by gap */
     font-weight: 500;
 }
 
@@ -269,8 +238,8 @@ body {
 .modal-content input[type="file"] {
     width: 100%;
     padding: 12px 15px;
-    margin-bottom: 15px; /* Space below each input group */
-    border: 1px solid #ced4da;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
     border-radius: var(--border-radius);
     font-size: 15px;
     box-sizing: border-box;
@@ -278,14 +247,14 @@ body {
 }
 
 .modal-content input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: var(--info-color);
+    box-shadow: 0 0 0 0.2rem rgba(164, 181, 196, 0.3);
     outline: none;
 }
 
 .modal-content input[type="submit"],
 .modal-content button[type="button"] {
-    background-color: var(--success-color);
+    background-color: var(--accent-warm);
     color: #fff;
     border: none;
     padding: 12px 20px;
@@ -293,130 +262,99 @@ body {
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
     margin-top: 10px;
-    align-self: flex-end; /* Align submit button right */
+    align-self: flex-end;
+    transition: all var(--transition-speed) ease;
 }
-
 .modal-content input[type="submit"]:hover {
-    background-color: #218838;
+    background-color: #8b6e4d;
     transform: scale(1.02);
 }
 
-#addContactInfoBtn { /* Add Contact Button styling */
+#addContactInfoBtn {
     background-color: var(--info-color);
-    align-self: flex-start; /* Align left */
-    margin-top: 5px;
-    margin-bottom: 15px;
+    align-self: flex-start;
+    margin: 5px 0 15px 0;
     padding: 10px 15px;
     font-size: 14px;
 }
 #addContactInfoBtn:hover {
-    background-color: #138496;
+    background-color: #8aa2b3;
     transform: scale(1.02);
 }
 
-/* Close Button */
 .close {
     color: var(--secondary-color);
     position: absolute;
     top: 15px;
     right: 20px;
     font-size: 30px;
-    font-weight: 300; /* Lighter close icon */
+    font-weight: 300;
     line-height: 1;
     opacity: 0.8;
     cursor: pointer;
-    transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    transition: all var(--transition-speed) ease;
 }
-
-.close:hover,
-.close:focus {
-    color: var(--dark-color);
-    text-decoration: none;
-    opacity: 1;
-    transform: rotate(90deg); /* Rotate effect on hover */
+.close:hover {
+    color: var(--primary-color);
+    transform: rotate(90deg);
 }
 
 .error-message {
-    color: var(--danger-color);
+    color: #dc3545;
     font-size: 0.88em;
-    display: block;
-    margin-top: -10px;
-    margin-bottom: 10px;
+    margin: -10px 0 10px;
     font-weight: 400;
 }
 
-/* --- Responsive Design --- */
-@media (max-width: 992px) {
-    .container {
-        margin-left: 40px; /* Adjust margin if sidebar collapses partially or is smaller */
-    }
-}
-
+/* --- Responsive --- */
 @media (max-width: 768px) {
-     .container {
-         margin-left: 20px;
-         margin-right: 20px;
-         padding: 25px;
-     }
-     .profile-info h1 {
-         font-size: 24px;
-     }
-     .profile-info p strong {
-         min-width: 80px; /* Reduce label width */
-     }
-      .profile-actions {
-         justify-content: center;
-         gap: 10px;
-     }
-     .profile-actions .btn {
-         width: calc(50% - 10px); /* Two buttons per row approx */
-         padding: 10px 15px;
-     }
-      .modal-content {
-        margin: 10% auto;
+    .container {
+        margin: 20px;
+        padding: 25px;
     }
+    .profile-info h1 { font-size: 24px; }
+    .profile-info p strong { min-width: 80px; }
+    .profile-actions {
+        justify-content: center;
+        gap: 10px;
+    }
+    .profile-actions .btn {
+        width: calc(50% - 10px);
+    }
+    .modal-content { margin: 10% auto; }
 }
 
 @media (max-width: 600px) {
     .container {
-        margin-left: 15px;
-        margin-right: 15px;
+        margin: 15px;
         padding: 20px;
     }
     .profile-pic img {
         width: 120px;
         height: 120px;
     }
-    .profile-info h1 {
-        font-size: 22px;
-    }
+    .profile-info h1 { font-size: 22px; }
     .profile-info p {
         font-size: 14px;
-        flex-direction: column; /* Stack icon/label and value */
+        flex-direction: column;
         align-items: flex-start;
         margin: 15px 0;
     }
     .profile-info p.info-item::before {
-        margin-bottom: 5px; /* Space between icon and text */
-        margin-right: 0;
+        margin-bottom: 5px;
     }
-     .profile-info p strong {
-         margin-bottom: 3px;
-         min-width: auto; /* Don't force alignment */
-     }
-     .profile-actions .btn {
-         width: 100%; /* Full width buttons */
-         font-size: 14px;
-     }
-     .modal-content {
+    .profile-actions .btn {
+        width: 100%;
+        font-size: 14px;
+    }
+    .modal-content {
         margin: 5% auto;
         padding: 20px;
     }
-     .modal-content input[type="submit"],
-     .modal-content button[type="button"] {
-         width: 100%; /* Full width modal buttons */
-         align-self: center;
-     }
+    .modal-content input[type="submit"],
+    .modal-content button[type="button"] {
+        width: 100%;
+        align-self: center;
+    }
 }
