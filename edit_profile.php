@@ -69,7 +69,15 @@ if (isset($_POST['update'])) {
     <title>Edit Profile</title>
 </head>
 <body>
+
+
 <div class="container">
+    <div class="back-button-wrapper">
+        <a href="profile.php" class="back-button" title="Back to Profile">
+            <i class="fas fa-times"></i>
+        </a>
+    </div>
+
         <div class="profile">
             <!-- Form starts BEFORE the profile picture section if pic is part of the form -->
             <form action="edit_profile.php" method="post" enctype="multipart/form-data">
