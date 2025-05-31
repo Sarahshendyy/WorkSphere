@@ -21,7 +21,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh; /* Full viewport height */
-    background-color: var(--light-color);
+    background-color: #f4f7f6; /* Light, neutral background */
     margin: 0;
     padding: 0;
 }
