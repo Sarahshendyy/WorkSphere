@@ -115,3 +115,23 @@ input[type="submit"]:hover {
 #profile-image-input {
     display: none;
 }
+.back-button-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.back-button {
+    color: var(--navy);
+    font-size: 16px;
+    padding: 6px 9px;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: var(--steel-blue);
+    color: white;
+}
