@@ -67,15 +67,24 @@ button[type="button"]:hover {
 }
 
 .room {
+    position: relative;
     background-color: #F5F7F9;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
     border-left: 5px solid #071739;
+    overflow: hidden; 
 }
 
 input[type="file"] {
-    display: none;
+    background-color: #F9F9F9;
+    color: #071739;
+    padding: 10px;
+    border: 1px solid #A4B5C4;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
 }
 
 .custom-file-label {
@@ -94,3 +103,194 @@ input[type="file"] {
     color: #071739;
 }
 
+.file-upload-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.file-input {
+    padding: 10px 12px;
+    font-size: 15px;
+    border: 1px solid #A4B5C4;
+    border-radius: 10px;
+    background-color: #F9F9F9;
+    color: #071739;
+    cursor: pointer;
+}
+
+.file-input::file-selector-button {
+    background-color: #A68868;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin-right: 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.file-input::file-selector-button:hover {
+    background-color: #E3C39D;
+    color: #071739;
+}
+
+.success-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 100%;
+    height: 100vh;
+    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.success-msg {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.success-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.success-content h2 {
+    margin: 0;
+    color: #071739;
+    font-size: 24px;
+    border-bottom: 2px solid #e3c39d;
+    padding-bottom: 5px;
+}
+
+.success-content a {
+    text-decoration: none;
+    color: #071739;
+    font-size: 20px;
+}
+
+.success-msg .fa-circle-check {
+    font-size: 40px;
+    color: green;
+}
+
+.success-container p {
+    font-size: 17px;
+    color: #212a3e;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.success-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    padding: 30px 40px;
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+}
+
+.success-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #071739;
+    margin: 0;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #e3c39d;
+    width: fit-content;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 8px 12px; 
+    background-color: #A68868; 
+    color: white;
+    border: none;
+    border-radius: 8px; 
+    font-size: 18px;
+    text-decoration: none;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; 
+    height: 30px; 
+}
+
+.close-btn:hover {
+    background-color: #E3C39D; 
+    color: #071739;
+}
+
+.remove-room-btn {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background-color: #b03a3a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.remove-room-btn:hover {
+    background-color: #e74c3c;
+}
+
+.remove-room-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #b03a3a;
+    font-size: 18px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.remove-room-icon:hover {
+    color: #e74c3c;
+}
+
+input[type="text"],
+input[type="number"],
+textarea,
+select,
+.file-input {
+    width: 95%; 
+    max-width: 95%; 
+    box-sizing: border-box;
+}
+
+.file-upload-wrapper {
+    width: 95%;
+    margin-top: 10px;
+}
