@@ -28,6 +28,7 @@ body {
 
 
 .container {
+    position: relative;
     width: 100%;
     max-width: 850px;
     background-color: #fdfdfd;
@@ -358,3 +359,19 @@ body {
         align-self: center;
     }
 }
+.back-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: var(--light-grey);
+    color: var(--navy);
+    font-size: 16px;
+    padding: 6px 9px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+  
+}
+
+
