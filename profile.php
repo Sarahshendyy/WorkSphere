@@ -109,6 +109,11 @@ if (isset($_POST['update_password'])) {
 </head>
 <body>
     <div class="container">
+    <div class="back-button-wrapper">
+    <button class="back-button" onclick="window.history.back()" >
+        <i class="fas fa-times"></i>
+    </button>
+</div>
         <div class="profile">
             <?php if (!empty($fetch['image'])){ ?>
                 <div class="profile-pic">

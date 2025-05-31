@@ -72,11 +72,12 @@ if (isset($_POST['update'])) {
 
 
 <div class="container">
-    <div class="back-button-wrapper">
-        <a href="profile.php" class="back-button" title="Back to Profile">
-            <i class="fas fa-times"></i>
-        </a>
-    </div>
+<div class="back-button-wrapper">
+    <button class="back-button" onclick="window.history.back()" >
+        <i class="fas fa-times"></i>
+    </button>
+</div>
+
 
         <div class="profile">
             <!-- Form starts BEFORE the profile picture section if pic is part of the form -->
