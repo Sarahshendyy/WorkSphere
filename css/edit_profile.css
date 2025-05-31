@@ -1,173 +1,117 @@
-       /* General Styles */
-       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh; /* Use min-height to handle content longer than viewport */
-        padding: 20px 0; /* Add some padding top/bottom */
-    }
+:root {
+    --navy: #071739;
+    --muted-blue: #4B6382;
+    --steel-blue: #A4B5C4;
+    --light-grey: #CDD5DB;
+    --taupe: #A68868;
+    --beige: #E3C39D;
+}
 
-    .container {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 500px; /* Your original max-width */
-        box-sizing: border-box; /* Include padding in width calculation */
-    }
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--light-grey);
+}
 
-    .profile {
-        text-align: center;
-    }
+.container {
+    max-width: 700px;
+    margin: 60px auto;
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.06);
+}
 
-    .profile-pic {
-         /* Ensure the container div itself takes up space */
-         margin-bottom: 20px;
-    }
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-    .profile-pic img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        object-fit: cover; /* Ensures image covers the area without distortion */
-        border: 2px solid #eee; /* Optional: adds a subtle border */
-    }
+.profile-pic-container {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin-bottom: 20px;
+}
 
-    .profile-info h1 {
-        font-size: 24px;
-        margin-bottom: 20px; /* Reduced margin slightly */
-        color: #333;
-    }
+.profile-pic img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--steel-blue);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-    /* Form Styles */
-    form {
-        display: flex;
-        flex-direction: column;
-    }
+.camera-icon-label {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background-color: var(--taupe);
+    color: white;
+    padding: 6px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    label.labels{
-        font-size: 14px;
-        color: #555;
-        margin-bottom: 5px;
-        text-align: left;
-        font-weight: bold; /* Make labels slightly bolder */
-        margin-right: 85%;
-    }
+.camera-icon-label i {
+    font-size: 12px;
+}
 
-    input[type="text"],
-    input[type="email"],
-    input[type="number"],
-    input[type="file"],
-    select {
-        width: 100%; /* Full width */
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 14px;
-        box-sizing: border-box; /* Include padding in width calculation */
-    }
+.profile-info {
+    width: 100%;
+    margin-top: 10px;
+}
 
-    input[type="file"] {
-        padding: 5px; /* Keep specific padding for file input */
-         border: none; /* Often styled differently */
-         background-color: #f9f9f9;
-    }
+.profile-info h1 {
+    text-align: center;
+    color: var(--navy);
+    font-size: 26px;
+    margin-bottom: 30px;
+}
 
-    select {
-        appearance: none; /* Remove default system appearance */
-        background-color: #fff;
-        cursor: pointer;
-         background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); /* Basic dropdown arrow */
-         background-repeat: no-repeat;
-         background-position: right 10px center;
-         background-size: 10px 10px;
-         padding-right: 30px; /* Make space for the arrow */
-    }
+form label {
+    display: block;
+    font-weight: 600;
+    margin: 12px 0 5px;
+    color: var(--navy);
+}
 
-    input[type="submit"] {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        padding: 12px; /* Slightly more padding */
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin-top: 10px; /* Add some space before the button */
-    }
+input[type="text"],
+input[type="email"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--steel-blue);
+    background-color: #f9f9f9;
+    margin-bottom: 5px;
+}
 
-    input[type="submit"]:hover {
-        background-color: #0056b3;
-    }
+input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-top: 25px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
 
-    /* Responsive Design */
-    @media (max-width: 600px) {
-        body {
-            /* Adjust body padding for smaller screens if needed */
-             padding: 10px 0;
-        }
-        .container {
-            padding: 15px;
-             margin: 10px; /* Add margin so container doesn't touch edges */
-             width: auto; /* Let it adjust based on margin/padding */
-        }
+input[type="submit"]:hover {
+    background-color: var(--muted-blue);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
 
-        .profile-pic img {
-            width: 80px;
-            height: 80px;
-        }
-
-        .profile-info h1 {
-            font-size: 20px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="number"],
-        input[type="file"],
-        select {
-            padding: 8px;
-            font-size: 13px; /* Slightly larger font */
-        }
-
-        input[type="submit"] {
-            padding: 10px; /* Adjust padding */
-            font-size: 15px;
-        }
-    }
-    /* Style the label that will contain the icon */
-        label.camera-icon-label {
-            display: block; /* Place it below the image */
-            text-align: center;
-            margin-top: 5px; /* Space between image and icon */
-            cursor: pointer;
-            color: #007bff; /* Icon color */
-            font-size: 1.5em; /* Icon size */
-            transition: color 0.3s ease;
-        }
-
-        label.camera-icon-label:hover {
-            color: #0056b3; /* Darker color on hover */
-        }
-
-        /* Hide the actual file input */
-        input#profile-image-input {
-            display: none;
-        }
-
-         /* Responsive adjustments for the picture part */
-         @media (max-width: 600px) {
-            .profile-pic img#profile-pic-preview {
-                width: 80px;
-                height: 80px;
-            }
-            label.camera-icon-label {
-                font-size: 1.3em; /* Slightly smaller icon on small screens */
-            }
-         }
+#profile-image-input {
+    display: none;
+}
