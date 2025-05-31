@@ -88,7 +88,7 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List a Workspace</title>
-    <link rel="stylesheet" href="./css/listing_workspace.css">
+    <link rel="stylesheet" href="./css/listing_workspaces.css">
 </head>
 <body>
 
@@ -148,8 +148,11 @@ if (isset($_POST['submit'])) {
                 <input type="number" step="0.01" name="rooms[0][price_hr]" required>
 
                 <label>Room Images:</label>
+                <label class="custom-file-label">
+                Choose Files
                 <input type="file" name="room_images[0][]" multiple>
-            </div>
+                    </label>
+                </div>
         </div>
         
         <button type="button" onclick="addRoom()">Add Another Room</button>
@@ -166,14 +169,14 @@ function addRoom() {
 
     roomDiv.innerHTML = `
         <label>Room Name:</label>
-        <input type="text" name="rooms[\${roomCount}][name]" required>
+        <input type="text" name="rooms[${roomCount}][name]" required>
 
         <label>Seats:</label>
-        <input type="number" name="rooms[\${roomCount}][seats]" required>
+        <input type="number" name="rooms[${roomCount}][seats]" required>
         <br><br>
 
         <label>Type:</label>
-        <select name="rooms[\${roomCount}][type]" required>
+        <select name="rooms[${roomCount}][type]" required>
             <option value="">-- Select Room Type --</option>
             <?php foreach ($room_types as $type): ?>
                 <option value="<?php echo $type['type_id']; ?>">
@@ -184,18 +187,22 @@ function addRoom() {
         <br><br>
 
         <label>Status:</label>
-        <input type="text" name="rooms[\${roomCount}][status]" required>
+        <input type="text" name="rooms[${roomCount}][status]" required>
 
         <label>Price per Hour:</label>
-        <input type="number" step="0.01" name="rooms[\${roomCount}][price_hr]" required>
+        <input type="number" step="0.01" name="rooms[${roomCount}][price_hr]" required>
 
         <label>Room Images:</label>
-        <input type="file" name="room_images[\${roomCount}][]" multiple>
+        <label class="custom-file-label">
+            Choose Files
+            <input type="file" name="room_images[${roomCount}][]" multiple>
+        </label>
     `;
 
     document.getElementById("rooms").appendChild(roomDiv);
     roomCount++;
 }
+
 </script>
 
 </body>
