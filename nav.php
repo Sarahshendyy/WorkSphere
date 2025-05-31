@@ -36,7 +36,7 @@
 <div class="logo-bar">
   <div class="logo">
     <img src="./img/SCCI_Logo.png" alt="Logo">
-    <p>SCCI Workspaces</p>
+    <p>WORKSPHERE</p>
   </div>
   <nav class="navbar navbar-expand-lg navbar-light">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
@@ -56,6 +56,7 @@
           <ul class="dropdown-menu more-dropdown-menu" aria-labelledby="moreDropdown">
             <li><a class="dropdown-item" href="chat.php">Chat</a></li>
             <li><a class="dropdown-item" href="calendar.php">Calendar</a></li>
+            <li><a class="dropdown-item" href="fav_workspaces.php">Favourites</a></li>
           </ul>
         </li>
 

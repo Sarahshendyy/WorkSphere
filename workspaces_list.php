@@ -1,17 +1,12 @@
 <?php
+include "nav.php";
 
-include "connection.php";
-
-$order_by = "workspaces.workspace_id"; // Default sorting
+$order_by = "workspaces.workspace_id";
 if (!empty($_POST['sort'])) {
     $sort_option = $_POST['sort'];
-    if ($sort_option == 'highest_price') {
-        $order_by = "starting_price DESC";
-    } elseif ($sort_option == 'lowest_price') {
-        $order_by = "starting_price ASC";
-    } elseif ($sort_option == 'highest_rating') {
-        $order_by = "avg_rating DESC";
-    }
+    if ($sort_option == 'highest_price') $order_by = "starting_price DESC";
+    elseif ($sort_option == 'lowest_price') $order_by = "starting_price ASC";
+    elseif ($sort_option == 'highest_rating') $order_by = "avg_rating DESC";
 }
 
 $select_ws = "SELECT workspaces.*, 
@@ -28,214 +23,317 @@ $select_ws = "SELECT workspaces.*,
               GROUP BY workspaces.workspace_id
               ORDER BY $order_by";
 $run_select_ws = mysqli_query($connect, $select_ws);
-
 $run_select_search = null;
-if (isset($_POST['search']) && !empty($_POST['text'])) {
-    $text = mysqli_real_escape_string($connect, $_POST['text']);
+if (!empty($_POST['text'])) {
+    $search = mysqli_real_escape_string($connect, $_POST['text']);
     $select_search = "SELECT workspaces.*, 
-                       zone.zone_name, 
-                       rooms.images, 
-                       COALESCE(AVG(reviews.rating), 0) AS avg_rating,
-                       MIN(rooms.`p/hr`) AS starting_price
-                  FROM `workspaces` 
-                  JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
-                  LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
-                  LEFT JOIN `bookings` ON `rooms`.`room_id` = `bookings`.`room_id`
-                  LEFT JOIN `reviews` ON `bookings`.`booking_id` = `reviews`.`booking_id`
-                  WHERE (`workspaces`.`name` LIKE '%$text%' 
-                     OR `workspaces`.`location` LIKE '%$text%' 
-                     OR `zone`.`zone_name` LIKE '%$text%')
-                     AND `Availability`=2
-                  GROUP BY workspaces.workspace_id
-                  ORDER BY $order_by";
-    $run_select_search = mysqli_query($connect, $select_search);
+                             zone.zone_name, 
+                             rooms.images, 
+                             COALESCE(AVG(reviews.rating), 0) AS avg_rating,
+                             MIN(rooms.`p/hr`) AS starting_price
+                      FROM `workspaces` 
+                      JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
+                      LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
+                      LEFT JOIN `bookings` ON `rooms`.`room_id` = `bookings`.`room_id`
+                      LEFT JOIN `reviews` ON `bookings`.`booking_id` = `reviews`.`booking_id`
+                      WHERE `Availability`=2 AND (
+                          workspaces.name LIKE '%$search%' OR 
+                          workspaces.location LIKE '%$search%' OR
+                          zone.zone_name LIKE '%$search%'
+                      )
+                      GROUP BY workspaces.workspace_id
+                      ORDER BY $order_by";
+   $run_select_ws = mysqli_query($connect, $select_ws);
+
+   $run_select_search = null;
+   if (isset($_POST['search']) && !empty($_POST['text'])) {
+       $text = mysqli_real_escape_string($connect, $_POST['text']);
+       $select_search = "SELECT workspaces.*, 
+                          zone.zone_name, 
+                          rooms.images, 
+                          COALESCE(AVG(reviews.rating), 0) AS avg_rating,
+                          MIN(rooms.`p/hr`) AS starting_price
+                     FROM `workspaces` 
+                     JOIN `rooms` ON `workspaces`.`workspace_id` = `rooms`.`workspace_id`
+                     LEFT JOIN `zone` ON `workspaces`.`zone_id` = `zone`.`zone_id`
+                     LEFT JOIN `bookings` ON `rooms`.`room_id` = `bookings`.`room_id`
+                     LEFT JOIN `reviews` ON `bookings`.`booking_id` = `reviews`.`booking_id`
+                     WHERE (`workspaces`.`name` LIKE '%$text%' 
+                        OR `workspaces`.`location` LIKE '%$text%' 
+                        OR `zone`.`zone_name` LIKE '%$text%')
+                        AND `Availability`=2
+                     GROUP BY workspaces.workspace_id
+                     ORDER BY $order_by";
+       $run_select_search = mysqli_query($connect, $select_search);
+   }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Workspace Listings</title>
-    <link rel="stylesheet" href="css/workspaces.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Workspace Listings</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #071739;
+      --secondary-color: #4B6382;
+      --info-color: #A4B5C4;
+      --light-color: #CDD5DB;
+      --accent-warm: #A68868;
+      --accent-light: #E3C39D;
+      --radius: 14px;
+      --shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      --font-family: 'Poppins', sans-serif;
+    }
 
-    <style>
-        /* Center search and sort */
-        .search-sort-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin: 30px auto;
-            max-width: 60%;
-        }
+    body {
+      font-family: var(--font-family);
+      background-color: var(--light-color);
+      margin: 0;
+      padding: 0;
+    }
 
-        .search-sort-container input,
-        .search-sort-container select {
-            width: 100%;
-            max-width: 250px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
+    .search-sort-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  margin: 30px auto;
+  max-width: 1000px;
+}
 
-        /* Adjust workspace cards */
-        .container {
-            margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
+.search-sort-container form {
+  flex: 1;
+  min-width: 220px;
+}
 
-        .workspace-card {
-            width: 300px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
+.search-sort-container input,
+.search-sort-container select {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--info-color);
+  width: 100%;
+  background-color: #fff;
+}
 
-        .workspace-card:hover {
-            transform: translateY(-5px);
-        }
+    
 
-        .card-body h2 {
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 20px auto 10px;
+    }
 
-        .card-body h3,
-        .card-body h4,
-        .card-body p {
-            font-size: 14px;
-        }
-        
-        .favorite-icon {
-            cursor: pointer;
-            font-size: 20px;
-            color: #ccc;
-            margin-left: 15px;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            padding: 5px;
-        }
+    .filter-chip {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
 
-        .favorite-icon.active {
-            color: #ff4757;
-        }
-        
-        .favorite-icon i.fa-solid {
-            color: #ff4757;
-        }
-    </style>
+    .filter-chip:hover {
+      background-color: var(--accent-warm);
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding-bottom: 60px;
+    }
+
+    .workspace-card {
+      width: 300px;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.3s;
+      position: relative;
+    }
+
+    .workspace-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .carousel-inner img {
+      height: 200px;
+      object-fit: cover;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      transition: transform 0.2s;
+    }
+
+    .carousel-control-prev:hover .carousel-control-prev-icon,
+    .carousel-control-next:hover .carousel-control-next-icon {
+      transform: scale(1.2);
+    }
+
+    .card-body {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .card-body h2 {
+      font-size: 18px;
+      color: var(--primary-color);
+      margin-bottom: 6px;
+      text-transform: capitalize;
+    }
+
+    .card-body h3 {
+      font-size: 15px;
+      color: var(--secondary-color);
+      margin-bottom: 6px;
+    }
+
+    .card-body h4 {
+      font-size: 14px;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+    }
+
+    .card-body p.rating {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .card-body p.rating i {
+      color: gold;
+    }
+
+    .view-details {
+      background: var(--primary-color);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+      transition: background 0.3s ease;
+    }
+
+    .view-details:hover {
+      background: var(--accent-warm);
+    }
+
+    .favorite-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #ffffff;
+  border-radius: 50%;
+  padding: 6px;
+  font-size: 18px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  color: var(--primary-color); /* Darker color */
+  transition: 0.2s ease;
+  z-index: 10;
+}
+
+.favorite-icon.active i {
+  color: #ff4757;
+}
+
+.favorite-icon:hover {
+  background-color: var(--accent-light);
+  color: #ff4757;
+}
+  </style>
 </head>
-
 <body>
 
-    <!-- Search & Sort Container -->
-    <div class="search-sort-container">
-        <form method="post" class="d-flex w-100">
-            <input class="form-control" type="search" id="searchText" name="text" placeholder="Search by name or zone">
-        </form>
-        <form method="post">
-            <select class="form-select" name="sort" id="sort" onchange="this.form.submit()">
-                <option value="">Sort By</option>
-                <option value="highest_price" <?php echo (!empty($_POST['sort']) && $_POST['sort'] == 'highest_price') ? 'selected' : ''; ?>>Highest Price</option>
-                <option value="lowest_price" <?php echo (!empty($_POST['sort']) && $_POST['sort'] == 'lowest_price') ? 'selected' : ''; ?>>Lowest Price</option>
-                <option value="highest_rating" <?php echo (!empty($_POST['sort']) && $_POST['sort'] == 'highest_rating') ? 'selected' : ''; ?>>Highest Rating</option>
-            </select>
-        </form>
+<div class="search-sort-container">
+  <form method="post">
+  <input type="text" id="searchText" name="text" class="form-control" placeholder="Search by name or zone">
+
+  </form>
+  <form method="post">
+    <select name="sort" class="form-select" onchange="this.form.submit()">
+      <option value="">Sort By</option>
+      <option value="highest_price">Highest Price</option>
+      <option value="lowest_price">Lowest Price</option>
+      <option value="highest_rating">Highest Rating</option>
+    </select>
+  </form>
+</div>
+
+
+<div class="container">
+<?php
+  $result_set = isset($_POST['search']) ? $run_select_search : $run_select_ws;
+  if ($result_set && mysqli_num_rows($result_set) > 0) {
+      foreach ($result_set as $index => $row) {
+        $carouselId = "carousel" . $index;
+        $is_favorite = false;
+        if (isset($_SESSION['user_id'])) {
+            $user_id = $_SESSION['user_id'];
+            $workspace_id = $row['workspace_id'];
+            $check_query = "SELECT * FROM favourite WHERE user_id = '$user_id' AND workspace_id = '$workspace_id'";
+            $check_result = mysqli_query($connect, $check_query);
+            $is_favorite = mysqli_num_rows($check_result) > 0;
+        }
+?>
+  <div class="workspace-card">
+    <div class="favorite-icon <?php echo $is_favorite ? 'active' : ''; ?>" onclick="toggleFavorite(this, <?php echo $row['workspace_id']; ?>)">
+      <i class="<?php echo $is_favorite ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
     </div>
-
-    <div class="container">
+    <div id="<?php echo $carouselId; ?>" class="carousel slide">
+      <div class="carousel-inner">
         <?php
-        $result_set = isset($_POST['search']) ? $run_select_search : $run_select_ws;
-        if ($result_set && mysqli_num_rows($result_set) > 0) {
-            foreach ($result_set as $index => $row) {
-                $carouselId = "carouselExampleIndicators" . $index; 
-                
-                // Check if this workspace is already a favorite for this user
-                $is_favorite = false;
-                if (isset($_SESSION['user_id'])) {
-                    $user_id = $_SESSION['user_id'];
-                    $workspace_id = $row['workspace_id'];
-                    $check_query = "SELECT * FROM favourite WHERE user_id = '$user_id' AND workspace_id = '$workspace_id'";
-                    $check_result = mysqli_query($connect, $check_query);
-                    $is_favorite = mysqli_num_rows($check_result) > 0;
-                }
-                ?>
-                
-                <div class="workspace-card position-relative">
-                    <div class="favorite-icon <?php echo $is_favorite ? 'active' : ''; ?>" onclick="toggleFavorite(this, <?php echo $row['workspace_id']; ?>)">
-                        <i class="<?php echo $is_favorite ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
-                    </div>
-                    <a href="workspace_details.php?ws_id=<?php echo $row["workspace_id"]; ?>">
-                        <div class="card">
-                            <?php
-                            $workspace_id = $row['workspace_id'];
-                            $img_query = "SELECT `images` FROM `rooms` WHERE `workspace_id` = '$workspace_id'";
-                            $run_img = mysqli_query($connect, $img_query);
-                            ?>
-
-                            <div id="<?php echo $carouselId; ?>" class="carousel slide">
-                                <div class="carousel-inner">
-                                    <?php
-                                    $first = true;
-                                    while ($imag = mysqli_fetch_assoc($run_img)) {
-                                        $images = explode(',', $imag['images']);
-                                        foreach ($images as $image) {
-                                            $image = trim($image);
-                                            ?>
-                                            <div class="carousel-item <?php echo $first ? 'active' : ''; ?>">
-                                                <img src="<?php echo $image; ?>" class="d-block w-100" alt="Workspace Image">
-                                            </div>
-                                            <?php
-                                            $first = false;
-                                        }
-                                    }
-                                    ?>
-                                </div>
-
-                                <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $carouselId; ?>" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon"></span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $carouselId; ?>" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon"></span>
-                                </button>
-                            </div>
-
-                            <div class="card-body text-center">
-                                <h2><?php echo htmlspecialchars($row['name']); ?></h2>
-                                <h3><?php echo htmlspecialchars($row['zone_name']); ?></h3>
-                                <h4>Starting from <?php echo htmlspecialchars($row['starting_price']); ?> EGP/hour</h4>
-                                <p class="rating">Rating: <?php echo number_format($row['avg_rating'], 1); ?> / 5</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <?php
+        $img_query = "SELECT `images` FROM `rooms` WHERE `workspace_id` = '{$row['workspace_id']}'";
+        $run_img = mysqli_query($connect, $img_query);
+        $first = true;
+        while ($imag = mysqli_fetch_assoc($run_img)) {
+            foreach (explode(',', $imag['images']) as $image) {
+                echo '<div class="carousel-item ' . ($first ? 'active' : '') . '">
+                        <img src="./img/' . trim($image) . '" class="d-block w-100" alt="">
+                      </div>';
+                $first = false;
             }
-        } else {
-            echo "<p class='text-center'>No workspaces found.</p>";
         }
         ?>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#<?php echo $carouselId; ?>" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#<?php echo $carouselId; ?>" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
     </div>
+    <div class="card-body">
+      <h2><?php echo htmlspecialchars($row['name']); ?></h2>
+      <h3><?php echo htmlspecialchars($row['zone_name']); ?></h3>
+      <h4>From <?php echo htmlspecialchars($row['starting_price']); ?> EGP/hour</h4>
+      <p class="rating"><i class="fas fa-star"></i> <?php echo number_format($row['avg_rating'], 1); ?> / 5</p>
+      <a href="workspace_details.php?ws_id=<?php echo $row['workspace_id']; ?>" class="view-details">View Details</a>
+    </div>
+  </div>
+<?php }} else echo "<p class='text-center'>No workspaces found.</p>"; ?>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
 
-    <script>
-        $(document).ready(function () {
+$(document).ready(function () {
             $("#searchText").on("input", function () {
                 var searchText = $(this).val();
                 if (searchText === "") {
@@ -255,38 +353,23 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
             });
         });
 
-        function toggleFavorite(icon, workspaceId) {
-            <?php if(!isset($_SESSION['user_id'])): ?>
-                window.location.href = 'login.php';
-                return;
-            <?php endif; ?>
-            
-            $.ajax({
-                url: "toggle_favorite.php",
-                type: "POST",
-                data: { workspace_id: workspaceId },
-                dataType: "json",
-                success: function(response) {
-                    if (response.status === 'success') {
-                        icon.classList.toggle('active');
-                        const heartIcon = icon.querySelector('i');
-                        
-                        if (response.action === 'added') {
-                            heartIcon.classList.remove('fa-regular');
-                            heartIcon.classList.add('fa-solid');
-                        } else {
-                            heartIcon.classList.remove('fa-solid');
-                            heartIcon.classList.add('fa-regular');
-                        }
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function() {
-                    alert("An error occurred while processing your request.");
-                }
-            });
+
+
+function toggleFavorite(icon, workspaceId) {
+    <?php if (!isset($_SESSION['user_id'])): ?>
+        window.location.href = 'login.php';
+        return;
+    <?php endif; ?>
+    $.post("toggle_favorite.php", { workspace_id: workspaceId }, function(response) {
+        if (response.status === 'success') {
+            icon.classList.toggle('active');
+            icon.querySelector('i').classList.toggle('fa-solid');
+            icon.querySelector('i').classList.toggle('fa-regular');
+        } else {
+            alert(response.message);
         }
-    </script>
+    }, 'json');
+}
+</script>
 </body>
 </html>
