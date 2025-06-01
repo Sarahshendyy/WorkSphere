@@ -1,14 +1,14 @@
 /* CSS Variables */
 :root {
-  --primary-color: #007bff;
-  --secondary-color: #555;
-  --background-color: #f8f7e5;
-  --text-color: #333;
-  --light-background: #e0f0ff;
-  --warning-color: #ff9800;
-  --warning-background: #fff3e0;
-  --danger-color: #dc3545;
-  --danger-background: #fde2e2;
+  --primary-color: #071739;           /* Deep Navy */
+  --secondary-color: #4B6382;         /* Slate Blue */
+  --background-color: #CDD5DB;        /* Soft Gray Blue */
+  --text-color: #071739;              /* Same as primary for contrast */
+  --light-background: #A4B5C4;        /* Light Sky Blue */
+  --warning-color: #A68868;           /* Muted Brown */
+  --warning-background: #E3C39D;      /* Soft Beige */
+  --danger-color: #dc3545;            /* Keeping standard red for clear warning */
+  --danger-background: #fde2e2;       /* Keeping default light red */
   --font-family: "Poppins", sans-serif;
 }
 
