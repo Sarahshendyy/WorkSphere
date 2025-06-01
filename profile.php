@@ -19,7 +19,9 @@ $fetch = mysqli_fetch_assoc($run_select);
 
 // Check if the current user is viewing their own profile
 $is_own_profile = ($_SESSION['user_id'] == $viewed_user_id);
+
 // Handle form submission for adding business
+
 if (isset($_POST['add_business'])) {
     $company_name = mysqli_real_escape_string($connect, $_POST['company_name']);
     $company_type = mysqli_real_escape_string($connect, $_POST['company_type']);
@@ -28,43 +30,39 @@ if (isset($_POST['add_business'])) {
     // Convert the contact info array to a comma-separated string
     $contact_info_str = implode(", ", $contact_info);
 
-    // Handle file upload
-    $portfolio_path = '';
-    if (isset($_FILES['portfolio']) && $_FILES['portfolio']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = './files/';
-        
-        $file_name = basename($_FILES['portfolio']['name']);
-        $file_tmp = $_FILES['portfolio']['tmp_name'];
-        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-        
+    // Handle portfolio upload (logic similar to edit_profile)
+    $portfolio = '';
+    if (isset($_FILES['portfolio']) && $_FILES['portfolio']['name']) {
+        $portfolio_name = $_FILES['portfolio']['name'];
+        $portfolio_tmp = $_FILES['portfolio']['tmp_name'];
+        $portfolio_path = "./files/" . basename($portfolio_name);
+
         // Validate file type
-        $allowed_extensions = ['pdf', 'doc', 'docx', 'ppt', 'pptx'];
+        $allowed_extensions = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'txt', 'jpg', 'png'];
+        $file_ext = strtolower(pathinfo($portfolio_name, PATHINFO_EXTENSION));
         if (in_array($file_ext, $allowed_extensions)) {
-            // Generate unique filename
-            $unique_name = uniqid() . '_' . $file_name;
-            $target_path = $upload_dir . $unique_name;
-            
-            if (move_uploaded_file($file_tmp, $target_path)) {
-                $portfolio_path = $target_path;
+            if (move_uploaded_file($portfolio_tmp, $portfolio_path)) {
+                $portfolio = $portfolio_name;
             } else {
                 echo "<script>alert('Error uploading portfolio file.');</script>";
             }
         } else {
-            echo "<script>alert('Invalid file type. Only PDF, DOC, DOCX, PPT, PPTX are allowed.');</script>";
+            echo "<script>alert('Invalid file type. Allowed: PDF, DOC, DOCX, PPT, PPTX, TXT, JPG, PNG');</script>";
         }
     }
 
-    // Update role_id to 2 and include portfolio path
-$update_query = "UPDATE `users` 
-SET `company_name`='$company_name', `company_type`='$company_type', 
-    `contact_info`='$contact_info_str', `role_id`=2, `portfolio`='$portfolio_path' 
-WHERE `user_id`='$viewed_user_id'";
-$run_update = mysqli_query($connect, $update_query);
+    // Update role_id to 2 and include portfolio name (not path, for consistency)
+    $update_query = "UPDATE `users` 
+    SET `company_name`='$company_name', `company_type`='$company_type', 
+        `contact_info`='$contact_info_str', `role_id`=2, `portfolio`='$portfolio' 
+    WHERE `user_id`='$viewed_user_id'";
+    $run_update = mysqli_query($connect, $update_query);
     if ($run_update) {
         header("Location: profile.php");
         exit();
-    } 
+    }
 }
+
 
 // Handle form submission for updating password
 if (isset($_POST['update_password'])) {
@@ -150,7 +148,7 @@ if (isset($_POST['update_password'])) {
                     <p class="info-item contact"><strong>Contact Info:</strong> <?php echo htmlspecialchars($fetch['contact_info']); ?></p>
                 <?php } ?>
                 <?php if (!empty($fetch['portfolio'])){ ?>
-                    <p class="info-item portfolio"><strong>Portfolio:</strong> <a href="<?php echo htmlspecialchars($fetch['portfolio']); ?>" target="_blank">View Portfolio</a></p>
+                    <p class="info-item portfolio"><strong>Portfolio:</strong> <a href="./files/<?php echo htmlspecialchars($fetch['portfolio']); ?>" target="_blank">View Portfolio</a></p>
                 <?php } ?>
 
                 <?php if ($is_own_profile){ ?>
