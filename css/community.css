@@ -6,14 +6,14 @@
 }
 
 :root {
-    --color1: #f8f7e5;
-    --color2: #c18d52;
-    --color3: #081b1b;
-    --color4: #203b37;
-    --color5: #5a8f76;
-    --color6: #96cdb0;
+    --color1: #CDD5DB; /* very light gray-blue (background) */
+    --color2: #A68868; /* warm brown (secondary elements) */
+    --color3: #071739; /* dark navy (text, headers) */
+    --color4: #071739; /* dark navy (button background start) */
+    --color5: #4B6382; /* medium blue-gray (button background end, highlights) */
+    --color6: #A4B5C4; /* light blue-gray (lighter accents) */
     --border-radius: 12px; /* Consistent border radius */
-    --box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15); /* Consistent box shadow */
+    --box-shadow: 0px 2px 6px rgba(7, 23, 57, 0.15); /* Consistent box shadow */
     --transition: all 0.3s ease-in-out; /* Consistent transition */
 }
 
@@ -21,7 +21,7 @@
 body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     background-color: var(--color1);
-    color: #444;
+    color: var(--color3);
     line-height: 1.6;
 }
 
@@ -66,7 +66,7 @@ body {
     font-size: 16px;
     font-weight: 600;
     transition: var(--transition);
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 6px rgba(7, 23, 57, 0.2);
 }
 
 .buttons button:hover {
@@ -79,7 +79,7 @@ body {
 }
 
 .button-link {
-    color: white;
+    color: var(--color1);
     text-decoration: none;
     display: inline-block;
 }
@@ -136,7 +136,7 @@ body {
 
 /* Post Section */
 .post-card {
-    background: var(--color1);
+    background: #F0ECE3;
     padding: 15px;
     border-radius: var(--border-radius);
     margin-bottom: 15px;
@@ -161,9 +161,11 @@ body {
     margin-top: 10px;
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
+
+/* Delete Post Button */
 .delete-post-btn {
-    background-color: #e74c3c; /* Reddish color for deletion */
-    color: white;
+    background-color: var(--color2); /* warm brown */
+    color: var(--color1);
     border: none;
     padding: 8px 12px;
     font-size: 14px;
@@ -175,17 +177,19 @@ body {
 }
 
 .delete-post-btn:hover {
-    background-color: #c0392b; /* Darker shade on hover */
+    background-color: #8c6d55; /* slightly darker brown */
 }
 
 .delete-post-btn i {
     margin-right: 5px; /* Space between icon and text */
 }
+
 /* Hover effects */
 .post-content img:hover {
     transform: scale(1.03);
-   
 }
+
+/* Post Reactions */
 .post-react {
     display: flex;
     justify-content: space-around;
@@ -194,7 +198,8 @@ body {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
-/*  Like button style */
+
+/* Like button style */
 .like-button {
     background: none;
     border: none;
@@ -212,7 +217,7 @@ body {
     color: var(--color5);
 }
 
-/*  Comment button style */
+/* Comment button style */
 .comment-btn {
     background: none;
     border: none;
@@ -230,7 +235,6 @@ body {
     color: var(--color5);
 }
 
-
 /* Comment Section */
 .comment-form {
     display: none;
@@ -245,12 +249,12 @@ body {
 .comment-input-container .text {
     width: 100%;
     padding: 12px 50px 12px 15px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--color5);
     border-radius: 24px; /* More rounded */
     font-size: 14px;
     outline: none;
     resize: none;
-    background: #f9f9f9;
+    background: var(--color1);
     transition: border-color 0.3s ease;
 }
 
@@ -274,7 +278,7 @@ body {
 .comment-input-container .text:focus {
     border-color: var(--color5);
     background: #fff;
-    box-shadow: 0 0 8px rgba(90, 143, 118, 0.3);
+    box-shadow: 0 0 8px rgba(75, 99, 130, 0.3);
 }
 
 /* Placeholder Styling */
@@ -293,9 +297,9 @@ body {
     max-height: 250px;
     overflow-y: auto;
     padding: 12px;
-    background-color: #f9f9f9;
+    background-color: var(--color1);
     border-radius: var(--border-radius);
-    border: 1px solid #ddd;
+    border: 1px solid var(--color5);
     transition: var(--transition);
 }
 
@@ -329,11 +333,13 @@ body {
 }
 
 .comment:hover {
-    background: rgba(90, 143, 118, 0.1);
+    background: rgba(75, 99, 130, 0.1);
 }
-.comment-content{
+
+.comment-content {
     width: 100%;
 }
+
 .comment strong {
     color: var(--color3);
     font-weight: 600;
@@ -380,9 +386,11 @@ body {
 .delete-icon:hover {
     color: red;
 }
-.no-comments{
+
+.no-comments {
     text-align: center;
 }
+/* popup */
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -415,6 +423,7 @@ body {
     .post-react button {
         font-size: 16px;
     }
+    
     .comment-input-container .text {
         padding: 10px 40px 10px 12px;
         font-size: 13px;
