@@ -1,5 +1,5 @@
 <?php
-include "connection.php";
+include "nav.php";
 $user_id = $_SESSION['user_id'];
 
 // Function to display status
