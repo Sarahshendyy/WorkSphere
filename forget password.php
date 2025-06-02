@@ -30,22 +30,23 @@ if(isset($_POST['submit']))
             $runubdate = mysqli_query($connect, $update);
             if ($runubdate) {
                 $massage = "
-                <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
-                    <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                        <h1>Password Reset Successful</h1>
-                    </div>
-                    <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
-                        <p style='color: #00000a;'>Dear <span style='color: #fda521;'> $user_name</span>,</p>
-                        <p style='color: #00000a;'>Your password has been successfully reset. You can now log in to your account using your new password.</p>
-                        <p style='color: #00000a;'>If you did not request this change, please contact our support team immediately.</p>
-                        <p style='color: #00000a;'>Best regards,<br>The WorkSphere Team</p>
-                    </div>
-                    <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
-                        <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-                        <p style='color: #fffffa;'>Email: <a href='mailto:worksphere04@gmail.com' style='color: #fda521;'>worksphere04@gmail.com</a></p>
-                    </div>
-                </body>
-                ";
+    <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #CDD5DB; color: #071739;'>
+        <div style='background-color: #071739; padding: 20px; text-align: center; color: #CDD5DB;'>
+            <h1>Password Reset Successful</h1>
+        </div>
+        <div style='padding: 20px; background-color: #CDD5DB; color: #071739;'>
+            <p>Dear <span style='color: #E3C39D;'>$user_name</span>,</p>
+            <p>Your password has been successfully reset. You can now log in to your account using your new password.</p>
+            <p>If you did not request this change, please contact our support team immediately.</p>
+            <p>Best regards,<br>The WorkSphere Team</p>
+        </div>
+        <div style='background-color: #071739; padding: 10px; text-align: center; color: #CDD5DB;'>
+            <p>For support and updates, please visit our website or contact us via email.</p>
+            <p>Email: <a href='mailto:worksphere04@gmail.com' style='color: #E3C39D; text-decoration: none;'>worksphere04@gmail.com</a></p>
+        </div>
+    </body>
+";
+
 
                 $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
                 $mail->addAddress($email);

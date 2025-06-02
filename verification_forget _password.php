@@ -43,23 +43,24 @@ if (isset($_POST['resend'])){
      if(mysqli_num_rows($runselect)>0){
      $rand1=rand(10000,99999);
      $massage = "
-     <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
-         <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-             <h1>Password Reset Request</h1>
-         </div>
-         <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
-             <p style='color: #00000a;'>Dear <span style='color: #fda521;'> $user_name</span>,</p>
-             <p style='color: #00000a;'>We've received a request to reset your password. Please use the OTP that we've resent below to complete the process:</p>
-             <p style='color: #00000a; text-align: center; font-size: 24px; font-weight: bold; color: #fda521;'>$rand1</p>
-             <p style='color: #00000a;'>If you did not request a password reset, please ignore this email or contact our support team for assistance.</p>
-             <p style='color: #00000a;'>Best regards,<br>The WorkSphere Team</p>
-         </div>
-         <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
-             <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-             <p style='color: #fffffa;'>Email: <a href='mailto:worksphere04@gmail.com' style='color: #fda521;'>worksphere04@gmail.com</a></p>
-         </div>
-     </body>
-     ";
+<body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #CDD5DB; color: #071739;'>
+    <div style='background-color: #071739; padding: 20px; text-align: center; color: #CDD5DB;'>
+        <h1>Password Reset Request</h1>
+    </div>
+    <div style='padding: 20px; background-color: #CDD5DB; color: #071739;'>
+        <p>Dear <span style='color:rgb(207, 158, 97);'>$user_name</span>,</p>
+        <p>We've received a request to reset your password. Please use the OTP that we've resent below to complete the process:</p>
+        <p style='text-align: center; font-size: 24px; font-weight: bold; color: #E3C39D;'>$rand1</p>
+        <p>If you did not request a password reset, please ignore this email or contact our support team for assistance.</p>
+        <p>Best regards,<br>The WorkSphere Team</p>
+    </div>
+    <div style='background-color: #071739; padding: 10px; text-align: center; color: #CDD5DB;'>
+        <p>For support and updates, please visit our website or contact us via email.</p>
+        <p>Email: <a href='mailto:worksphere04@gmail.com' style='color:rgb(218, 166, 103); text-decoration: none;'>worksphere04@gmail.com</a></p>
+    </div>
+</body>
+";
+
      $_SESSION['otp'] = $rand1;
 
      $old_time=time();  // AS IT IS

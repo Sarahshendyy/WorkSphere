@@ -63,29 +63,30 @@ if (isset($_POST['pay_at_host'])) {
         // Send email to the user
         $subject = "Your Booking Confirmation";
         $message = "
-            <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
-                <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                    <h1>Your Booking is Confirmed!</h1>
-                </div>
-                <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
-                    <p style='color: #00000a;'>Dear Valued Customer,</p>
-                    <p style='color: #00000a;'>Thank you for booking with Deskify! Below are the details of your booking:</p>
-                    <p style='color: #00000a;'><strong>Workspace:</strong> $workspaceName</p>
-                    <p style='color: #00000a;'><strong>Room:</strong> $roomName</p>
-                    <p style='color: #00000a;'><strong>Date:</strong> $date</p>
-                    <p style='color: #00000a;'><strong>Time:</strong> $startTime to $endTime</p>
-                    <p style='color: #00000a;'><strong>Total Amount:</strong> $" . number_format($totalAmount, 2) . "</p>
-                    <p style='color: #00000a;'><strong>Transaction ID:</strong> $transactionId</p>
-                    <p style='color: #00000a;'>Please provide the above Transaction ID at the reception to access your booking.</p>
-                    <p style='color: #00000a;'>If you have any questions, feel free to contact us.</p>
-                    <p style='color: #00000a;'>Best regards,<br>The Deskify Team</p>
-                </div>
-                <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
-                    <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-                    <p style='color: #fffffa;'>Email: <a href='mailto:deskify0@gmail.com' style='color: #fda521;'>deskify0@gmail.com</a></p>
-                </div>
-            </body>
-        ";
+    <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #CDD5DB; color: #071739;'>
+        <div style='background-color: #071739; padding: 20px; text-align: center; color: #CDD5DB;'>
+            <h1>Your Booking is Confirmed!</h1>
+        </div>
+        <div style='padding: 20px; background-color: #CDD5DB; color: #071739;'>
+            <p>Dear Valued Customer,</p>
+            <p>Thank you for booking with Deskify! Below are the details of your booking:</p>
+            <p><strong>Workspace:</strong> $workspaceName</p>
+            <p><strong>Room:</strong> $roomName</p>
+            <p><strong>Date:</strong> $date</p>
+            <p><strong>Time:</strong> $startTime to $endTime</p>
+            <p><strong>Total Amount:</strong> $" . number_format($totalAmount, 2) . "</p>
+            <p><strong>Transaction ID:</strong> $transactionId</p>
+            <p>Please provide the above Transaction ID at the reception to access your booking.</p>
+            <p>If you have any questions, feel free to contact us.</p>
+            <p>Best regards,<br>The Deskify Team</p>
+        </div>
+        <div style='background-color: #071739; padding: 10px; text-align: center; color: #CDD5DB;'>
+            <p>For support and updates, please visit our website or contact us via email.</p>
+            <p>Email: <a href='mailto:deskify0@gmail.com' style='color: #E3C39D; text-decoration: none;'>deskify0@gmail.com</a></p>
+        </div>
+    </body>
+";
+
 
         // Use your mail function to send the email
         $mail->setFrom('deskify0@gmail.com', 'Deskify');
