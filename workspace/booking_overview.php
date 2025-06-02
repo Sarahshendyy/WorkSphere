@@ -108,7 +108,7 @@ if (isset($_POST['booking_id'])) {
                             <p style='color: #00000a;'>Thank you for choosing our workspace! We hope you had a great experience.</p>
                             <p style='color: #00000a;'>We would love to hear your feedback. Please take a moment to review your booking:</p>
                             <p style='text-align: center;'>
-                                <a href='http://localhost/graduation/review.php?booking_id=$booking_id' 
+                                <a href='http://localhost/WorkSphere-main/review.php?booking_id=$booking_id' 
                                    style='display: inline-block; padding: 10px 20px; background-color: #fda521; color: #fffffa; 
                                           text-decoration: none; font-weight: bold; border-radius: 5px;'>
                                     Leave a Review
