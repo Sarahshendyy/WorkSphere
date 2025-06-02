@@ -6,7 +6,6 @@ $database= "grad_proj";
 
 $connect=mysqli_connect($localhost,$username,$password,$database);
 
-session_start();
 ob_start(); // CRUC
 
 if(isset($_POST['logout'])){
