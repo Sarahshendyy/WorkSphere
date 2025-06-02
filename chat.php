@@ -29,6 +29,7 @@ include 'connection.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/chat.css">
     <link rel="icon" href="img/keklogo.png">
@@ -76,6 +77,11 @@ include 'connection.php';
 </head>
 <body class="d-flex justify-content-center align-items-center vh-100">
     <div class="w-400 shadow p-4 rounded" id="bigdiv">
+        <div style="display: flex; justify-content: flex-end;">
+            <button onclick="window.location.href='indexx.php'" title="Back to Home" style="background: none; border: none; font-size: 1.7rem; color: #071739; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
         <div class="d-flex align-items-center" id="frstdiv">
             <h3 class="display-4 fs-sm m-2">
                 <?=$chatWith['name']?> <br>
