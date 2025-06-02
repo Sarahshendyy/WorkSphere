@@ -1,154 +1,144 @@
-/* Customize the calendar header */
-body {
-    /* background-image: url(...) */
-    background-color: var(--light-grey, #CDD5DB);
+/* FullCalendar Container */
+#calendar {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 /* Calendar Header */
-.fc-header {
+.fc-header-toolbar {
     background-color: var(--taupe, #A68868);
     color: #fff;
-    padding: 10px;
-    border-bottom: 1px solid var(--taupe, #A68868);
+    padding: 14px 24px;
+    border-bottom: 2px solid var(--beige, #E3C39D);
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 4px 8px rgba(10, 114, 115, 0.15);
+    font-weight: 600;
+    margin-bottom: 0 !important;
 }
 
-.fc-header-toolbar {
-    padding: 10px;
+/* Calendar Body */
+.fc-view-container {
+    background-color: var(--white, #fff);
+    border: 1.5px solid var(--steel-blue, #A4B5C4);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 8px 22px rgba(7, 23, 57, 0.06);
+}
+
+/* Day headers */
+.fc-day-header {
+    background-color: var(--taupe, #A68868) !important;
+    color: white !important;
+    padding: 10px 0;
+    border: none !important;
+    font-weight: 600;
+}
+
+/* Day cells */
+.fc-day {
+    background-color: var(--light-grey, #CDD5DB);
+    border: 1px solid var(--steel-blue, #A4B5C4) !important;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.7);
+    padding: 8px;
+    min-height: 100px;
+    transition: background-color 0.3s ease;
+}
+
+.fc-day:hover {
+    background-color: var(--beige, #E3C39D);
+    cursor: pointer;
+}
+
+/* Day numbers */
+.fc-day-number {
+    font-weight: 700;
+    color: var(--navy, #071739);
+    margin: 4px;
+    float: right;
+}
+
+/* Today's cell */
+.fc-today {
+    background-color: var(--beige, #E3C39D) !important;
 }
 
 /* Buttons */
 .fc-button {
-    background-color: var(--taupe, #A68868);
-    color: var(--beige, #E3C39D);
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    background-color: var(--taupe, #A68868) !important;
+    color: var(--beige, #E3C39D) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 8px 16px !important;
+    font-size: 1rem !important;
+    box-shadow: 0 3px 8px rgba(10, 114, 115, 0.25) !important;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+    height: auto !important;
 }
 
 .fc-button:hover {
-    background-color: var(--navy, #071739);
-    color: var(--beige, #E3C39D);
+    background-color: var(--navy, #071739) !important;
+    color: var(--beige, #E3C39D) !important;
+    box-shadow: 0 6px 20px rgba(7, 23, 57, 0.4) !important;
 }
 
 .fc-button:active {
-    background-color: var(--muted-blue, #4B6382);
-}
-
-/* Calendar Body */
-.fc-body {
-    background-color: var(--white, #fff);
-    border: 1px solid var(--steel-blue, #A4B5C4);
-}
-
-.fc-day-grid {
-    background-color: var(--white, #fff);
-    border: 1px solid var(--steel-blue, #A4B5C4);
-}
-
-.fc-day {
-    padding: 10px;
-    border-bottom: 1px solid var(--steel-blue, #A4B5C4);
-}
-
-.fc-day:hover {
-    background-color: var(--light-grey, #CDD5DB);
-}
-
-/* Events */
-.fc-event {
-    background-color: var(--navy, #071739);
-    color: var(--beige, #E3C39D);
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.fc-event:hover {
-    background-color: var(--muted-blue, #4B6382);
-}
-
-.fc-event:active {
-    background-color: var(--steel-blue, #A4B5C4);
-}
-
-/* Event text */
-.fc-event-time {
-    font-size: 14px;
-    color: var(--muted-blue, #4B6382);
-}
-
-.fc-event-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: var(--navy, #071739);
+    background-color: var(--muted-blue, #4B6382) !important;
+    box-shadow: none !important;
+    transform: translateY(1px) !important;
 }
 
 /* Today button */
 .fc-today-button {
-    background-color: var(--taupe, #A68868);
-    color: var(--beige, #E3C39D);
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    opacity: 1;
-    transition: background-color 0.3s ease;
+    background-color: var(--muted-blue, #4B6382) !important;
+    box-shadow: 0 4px 14px rgba(75, 99, 130, 0.5) !important;
 }
 
 .fc-today-button:hover {
-    background-color: var(--taupe, #A68868);
+    background-color: var(--navy, #071739) !important;
+    box-shadow: 0 6px 22px rgba(7, 23, 57, 0.6) !important;
 }
 
-.fc-today-button:active {
-    background-color: var(--taupe, #A68868);
-    color: var(--beige, #E3C39D);
+/* Events */
+.fc-event {
+    background-color: var(--navy, #071739) !important;
+    color: var(--beige, #E3C39D) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 4px 6px !important;
+    margin: 2px 0 !important;
+    font-size: 0.9rem !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 6px rgba(7, 23, 57, 0.35) !important;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
 }
 
-/* Headings */
-h1 {
-    text-align: center;
-    color: var(--taupe, #A68868);
+.fc-event:hover {
+    background-color: var(--muted-blue, #4B6382) !important;
+    box-shadow: 0 4px 12px rgba(75, 99, 130, 0.55) !important;
 }
 
-h2 {
-    color: var(--taupe, #A68868);
+/* Event container */
+.fc-day-grid-event {
+    margin: 1px 2px !important;
 }
 
-/* Day number */
-span.fc-day-number {
-    color: var(--navy, #071739);
-}
-
-/* Container padding */
-.container {
-    padding: 50px;
-}
-
-/* Navigation arrows */
-.fc-icon-right-single-arrow {
-    color: var(--taupe, #A68868);
-}
-
-.fc-icon-left-single-arrow {
-    color: var(--taupe, #A68868);
-}
-
-/* Tooltip style */
+/* Tooltipster */
 .tooltipster-base {
     font-size: 12px;
-    background-color: var(--light-grey, #CDD5DB);
+    background-color: var(--white, #fff);
     border: 1px solid var(--steel-blue, #A4B5C4);
-    padding: 5px;
+    border-radius: 10px;
+    padding: 10px 14px;
+    box-shadow: 0 6px 20px rgba(7, 23, 57, 0.15);
     color: var(--navy, #071739);
+    max-width: 220px;
+    word-wrap: break-word;
 }
 
-/* Content height fix */
-.fc-content {
+/* Adjust calendar height */
+.fc-day-grid-container {
     height: auto !important;
 }
