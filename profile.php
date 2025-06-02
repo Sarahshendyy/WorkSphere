@@ -106,62 +106,119 @@ if (isset($_POST['update_password'])) {
 
 </head>
 <body>
-    <div class="container">
-    <div class="back-button-wrapper">
-    <button class="back-button" onclick="window.history.back()" >
-        <i class="fas fa-times"></i>
+   <div class="container">
+   <div class="back-button-wrapper" style="display: flex; gap: 10px; align-items: center;">
+    <button class="back-button" onclick="window.location.href='edit_profile.php'" title="Edit Profile" aria-label="Edit Profile">
+        <i class="fas fa-user-edit icon"></i>
     </button>
+
+    <?php if ($is_own_profile) { ?>
+        <button id="openPasswordModalBtn" class="back-button" title="Update Password" aria-label="Update Password">
+            <i class="fas fa-key icon"></i>
+        </button>
+    <?php } ?>
 </div>
-        <div class="profile">
+
+    <div class="profile">
+        <!-- New: Left column for profile picture and password button -->
+        <div class="profile-image-section">
             <?php if (!empty($fetch['image'])){ ?>
                 <div class="profile-pic">
-                    <img src="img/<?php echo $fetch['image']; ?>" alt="Profile Picture">
+                    <img src="./img/<?php echo $fetch['image']; ?>" alt="Profile Picture">
                 </div>
             <?php } ?>
-            <div class="profile-info">
-                <h1><?php echo htmlspecialchars($fetch['name']); ?></h1>
 
-                <!-- Add classes like "info-item email", "info-item phone", etc. -->
-                <p class="info-item email"><strong>Email:</strong> <?php echo htmlspecialchars($fetch['email']); ?></p>
-                <p class="info-item phone"><strong>Phone:</strong> <?php echo htmlspecialchars($fetch['phone']); ?></p>
+        </div>
 
-                <?php if ($is_own_profile && !empty($fetch['age'])){ ?>
-                    <p class="info-item age"><strong>Age:</strong> <?php echo htmlspecialchars($fetch['age']); ?></p>
-                <?php } ?>
-                <?php if ($is_own_profile && !empty($fetch['location'])){ ?>
-                    <p class="info-item location"><strong>Address:</strong> <?php echo htmlspecialchars($fetch['location']); ?></p>
-                <?php } ?>
-                <?php if ($is_own_profile && !empty($fetch['zone_name'])){ ?>
-                    <p class="info-item zone"><strong>Zone:</strong> <?php echo htmlspecialchars($fetch['zone_name']); ?></p>
-                <?php } ?>
+        <!-- Right column for profile information -->
+        <div class="profile-info">
+            <h1><?php echo htmlspecialchars($fetch['name']); ?></h1>
 
-                <?php if (!empty($fetch['job_title'])){ ?>
-                    <p class="info-item job"><strong>Job Title:</strong> <?php echo htmlspecialchars($fetch['job_title']); ?></p>
-                <?php } ?>
-                <?php if (!empty($fetch['company_name'])){ ?>
-                    <p class="info-item company"><strong>Company:</strong> <?php echo htmlspecialchars($fetch['company_name']); ?></p>
-                <?php } ?>
-                <?php if (!empty($fetch['company_type'])){ ?>
-                    <p class="info-item type"><strong>Type:</strong> <?php echo htmlspecialchars($fetch['company_type']); ?></p>
-                <?php } ?>
-                <?php if (!empty($fetch['contact_info'])){ ?>
-                    <p class="info-item contact"><strong>Contact Info:</strong> <?php echo htmlspecialchars($fetch['contact_info']); ?></p>
-                <?php } ?>
-                <?php if (!empty($fetch['portfolio'])){ ?>
-                    <p class="info-item portfolio"><strong>Portfolio:</strong> <a href="./files/<?php echo htmlspecialchars($fetch['portfolio']); ?>" target="_blank">View Portfolio</a></p>
-                <?php } ?>
+            <?php
+            // Helper function to generate a standard info item paragraph
+            function render_info_item($class_name, $label, $value) {
+                if (!isset($value) || $value === '') return ''; // Check for null or empty string
+                return '<p class="info-item ' . htmlspecialchars($class_name) . '"><strong>' . htmlspecialchars($label) . ':</strong> ' . htmlspecialchars($value) . '</p>';
+            }
 
-                <?php if ($is_own_profile){ ?>
-                    <div class="profile-actions">
-                        <a href="edit_profile.php" class="btn btn-edit">Edit Profile</a>
-                        <?php if ($fetch['role_id'] != 2){ ?>
-                            <button id="openModalBtn" class="btn btn-add">Add Your Business</button>
-                        <?php } ?>
-                        <button id="openPasswordModalBtn" class="btn btn-update">Update Password</button>
-                    </div>
-                <?php } ?>
-            </div>
-                </div>
+            // Helper function specifically for the portfolio link
+            function render_portfolio_item($class_name, $label, $filename) {
+                if (empty($filename)) return '';
+                return '<p class="info-item ' . htmlspecialchars($class_name) . '"><strong>' . htmlspecialchars($label) . ':</strong> <a href="./files/' . htmlspecialchars($filename) . '" target="_blank">View Portfolio</a></p>';
+            }
+
+            $info_groups = [];
+
+            // Group 1: Email & Phone
+            $email_html = render_info_item('email', 'Email', $fetch['email'] ?? null);
+            $phone_html = render_info_item('phone', 'Phone', $fetch['phone'] ?? null);
+            if ($email_html || $phone_html) {
+                $info_groups[] = [$email_html, $phone_html];
+            }
+
+            // Group 2: Age & Address (only if it's the user's own profile)
+            if ($is_own_profile) {
+                $age_html = render_info_item('age', 'Age', $fetch['age'] ?? null);
+                $location_html = render_info_item('location', 'Address', $fetch['location'] ?? null);
+                if ($age_html || $location_html) {
+                    $info_groups[] = [$age_html, $location_html];
+                }
+            }
+            
+            // Group 3: Zone (only if own profile and not empty) & Job Title
+            $zone_html = '';
+            if ($is_own_profile && !empty($fetch['zone_name'])) {
+                 $zone_html = render_info_item('zone', 'Zone', $fetch['zone_name']);
+            }
+            $job_title_html = render_info_item('job', 'Job Title', $fetch['job_title'] ?? null);
+            if ($zone_html || $job_title_html) {
+                $info_groups[] = [$zone_html, $job_title_html];
+            }
+
+            // Group 4: Company Name & Company Type
+            $company_name_html = render_info_item('company', 'Company', $fetch['company_name'] ?? null);
+            $company_type_html = render_info_item('type', 'Type', $fetch['company_type'] ?? null);
+            if ($company_name_html || $company_type_html) {
+                $info_groups[] = [$company_name_html, $company_type_html];
+            }
+
+            // Group 5: Contact Info & Portfolio
+            $portfolio_html = render_portfolio_item('portfolio', 'Portfolio', $fetch['portfolio'] ?? null);
+            $contact_info_html = render_info_item('contact', 'Contact Info', $fetch['contact_info'] ?? null);
+            if ($contact_info_html || $portfolio_html) {
+                $info_groups[] = [$portfolio_html,$contact_info_html];
+            }
+
+            // Render all groups
+            foreach ($info_groups as $group) {
+                $item1_html = $group[0] ?? '';
+                $item2_html = $group[1] ?? '';
+
+                // Only create an info-pair div if at least one item in the group exists
+                if ($item1_html || $item2_html) {
+                    echo '<div class="info-pair">';
+                    echo $item1_html; // Will render nothing if empty
+                    echo $item2_html; // Will render nothing if empty
+                    echo '</div>';
+                }
+            }
+            ?>
+            
+           <?php if ($is_own_profile) { ?>
+    <div class="profile-actions">
+        <?php if ($fetch['role_id'] != 2) { ?>
+            <button id="openModalBtn" class="btn btn-add">Add Your Business</button>
+        <?php } ?>
+        <?php if ($fetch['role_id'] == 1 || $fetch['role_id'] == 2) { ?>
+            <button id="listWorkspaceBtn" class="btn btn-add" onclick="window.location.href='./workspace/listing_workspaces.php'">
+                List Your Workspace
+            </button>
+        <?php } ?>
+    </div>
+<?php } ?>
+
+
+
 
 
                 <!-- Only show the modals if it's the user's own profile -->
