@@ -1,28 +1,15 @@
 <?php include './connection.php'; ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- links -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="./css/nav.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
-<body>
-
 <!-- Top Header -->
 <div class="top-header">
   <div class="contact d-flex align-items-center">
     <i class="fas fa-phone me-2"></i>012-201-77444
   </div>
   <div class="top-actions">
-    <a href="about_us.php" class="angled-section get-touch">
-      <i class="fas fa-comments me-2"></i> About Us
+    <a href="contact_us.php" class="angled-section get-touch">
+      <i class="fas fa-comments me-2"></i> Get in Touch
     </a>
-    <a href="workspaces_list.php" class="angled-section book-tour">
-      <i class="fas fa-calendar-alt me-2"></i> Book a Workspace
+    <a href="#" class="angled-section book-tour">
+      <i class="fas fa-calendar-alt me-2"></i> Book a Tour
     </a>
   </div>
   <div class="social-icons">
@@ -36,7 +23,7 @@
 <div class="logo-bar">
   <div class="logo">
     <img src="./img/SCCI_Logo.png" alt="Logo">
-    <p>WORKSPHERE</p>
+    <p>SCCI Workspaces</p>
   </div>
   <nav class="navbar navbar-expand-lg navbar-light">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
@@ -56,7 +43,6 @@
           <ul class="dropdown-menu more-dropdown-menu" aria-labelledby="moreDropdown">
             <li><a class="dropdown-item" href="chat.php">Chat</a></li>
             <li><a class="dropdown-item" href="calendar.php">Calendar</a></li>
-            <li><a class="dropdown-item" href="fav_workspaces.php">Favourites</a></li>
           </ul>
         </li>
 
@@ -70,10 +56,3 @@
   </nav>
   <div id="scroll-line"></div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="./js/nav.js"></script>
-
- 
-</body>
-</html>
