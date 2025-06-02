@@ -1,5 +1,5 @@
 <?php
-include 'connection.php';
+include 'nav.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
