@@ -1,152 +1,144 @@
 .vh-100 {
-	min-height: 100vh;
+    min-height: 100vh;
 }
 .w-400 {
-	width: 80%;
+    width: 80%;
 }
 .fs-xs {
-	font-size: 1rem;
+    font-size: 1rem;
 }
 .w-10 {
-	width: 10%;
+    width: 10%;
 }
 a {
-	text-decoration: none;
+    text-decoration: none;
+    color: #4B6382; /* Muted Blue */
 }
 .fs-big {
-	font-size: 5rem !important;
+    font-size: 5rem !important;
 }
 .online {
-	width: 10px;
-	height: 10px;
-	background: green;
-	border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background: #071739; /* Navy */
+    border-radius: 50%;
 }
 .w-15 {
-	width: 15%;
+    width: 15%;
 }
 .fs-sm {
-	font-size: 1.4rem;
+    font-size: 1.4rem;
 }
 small {
-	color: black;
-	font-size: 0.7rem;
-	text-align: right;
+    color: #e0e5ee; /* Darker Muted Blue */
+    font-size: 0.7rem;
+    text-align: right;
 }
 .chat-box {
-	overflow-y: auto;
-	overflow-x: hidden;
-	max-height: 50vh;
-	background-image: url(../img/desktop-wallpaper-message-background-whatsapp-message-background.jpg);
-	/* background-size: cover;
-	background-repeat: no-repeat; */
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 50vh;
+    background-image: url(../img/desktop-wallpaper-message-background-whatsapp-message-background.jpg);
 }
 .rtext {
     width: auto;
-    background: #075E54;
-    color: white;
-    max-width: 50%;
-}
-
-.ltext {
-	width: auto;
-    background: #3289c8;
+    background: #A68868; /* Taupe */
     color: #fff;
     max-width: 50%;
+    padding: 8px 12px;
+    border-radius: 12px;
 }
-/* width */
+.ltext {
+    width: auto;
+    background: #4B6382; /* Muted Blue */
+    color: #fff;
+    max-width: 50%;
+    padding: 8px 12px;
+    border-radius: 12px;
+}
+/* Scrollbar */
 *::-webkit-scrollbar {
-  width: 3px;
+  width: 4px;
 }
-
-/* Track */
 *::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #CDD5DB; /* Light Grey */
 }
-
-/* Handle */
 *::-webkit-scrollbar-thumb {
-  background: #aaa;
+  background: #394867; /* Darker Muted Blue */
 }
-
-/* Handle on hover */
 *::-webkit-scrollbar-thumb:hover {
-  background: #3289c8;
+  background: #071739; /* Navy */
 }
-
 textarea {
-	resize: none;
+    resize: none;
+    border: 1.5px solid #A4B5C4; /* Steel Blue */
+    border-radius: 8px;
+    padding: 8px;
+    font-family: 'Poppins', sans-serif;
 }
-
-/*message_status*/
-
+/* Dropdown items */
 .dropdown-item {
     display: block;
     width: 100%;
     padding: .25rem 1rem;
-    clear: both;
-    font-weight: 400;
-    color: #075E54;
-    text-align: inherit;
-    text-decoration: none;
-    white-space: nowrap;
+    font-weight: 500;
+    color: #4B6382; /* Muted Blue */
     background-color: transparent;
     border: 0;
+    cursor: pointer;
 }
-.dropdown-item:hover{
-	background-color:#3289c8 ;
-	color: white;
+.dropdown-item:hover {
+    background-color: #A68868; /* Taupe */
+    color: #fff;
 }
-li{
-	color: white;
+li {
+    color: #071739; /* Navy */
 }
-a{
-	color: #34B7F1;
+h3 {
+    color: #071739; /* Navy */
 }
-h3{
-	color: black;
-	
+#frstdiv {
+    box-shadow:
+        rgba(255, 255, 255, 0) 10px 20px 54px 55px,
+        rgba(0, 0, 0, 0.12) 0px -12px 30px,
+        rgba(0, 0, 0, 0.12) 0px 4px 6px,
+        rgba(0, 0, 0, 0.17) 0px 12px 13px,
+        rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
-#frstdiv{
-	/* background-image: url(../img/download.jpg); */
-	box-shadow: rgba(255, 255, 255, 0) 10px 20px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-}
-#bigdiv{
-background-image: url(../img/desktop-wallpaper-message-background-whatsapp-message-background.jpg);
-/* background-size: cover;
-	background-repeat: no-repeat; */
-height: 100%;
-width: 100%;
+#bigdiv {
+    background-image: url(../img/desktop-wallpaper-message-background-whatsapp-message-background.jpg);
+    height: 100%;
+    width: 100%;
 }
 .link-dark {
-    color: white;
+    color: #071739; /* Navy */
 }
 #icon {
     margin-left: -6%;
     position: absolute;
     margin-top: 20px;
-    /* height: 15px; */
 }
-.file{
-	display: none;
+.file {
+    display: none;
     visibility: hidden;
 }
 button#dropdownMenuButton1 {
     background: none;
-    color: black;
+    color: #071739; /* Navy */
     border: none;
 }
 .input-group .btn {
     position: relative;
     z-index: 2;
-    background-color: #075E54;
-    border-color: #075E54;
+    background-color: #A68868; /* Taupe */
+    border-color: #A68868;
+    color: #fff;
 }
 .w-15 {
     width: 8%;
 }
-.w-25{
-	width: 15% !important;
+.w-25 {
+    width: 15% !important;
 }
 .rounded-circle {
     border-radius: 50% !important;
@@ -154,23 +146,22 @@ button#dropdownMenuButton1 {
 img, svg {
     vertical-align: middle;
     height: 80%;
-    /* width: 64%; */
 }
-.txtdiv{
-	margin-top: 3%;
+.txtdiv {
+    margin-top: 3%;
 }
 .link-dark {
-    color: black;
+    color: #394867; /* Darker Muted Blue */
 }
-#scndtxt{
-	color: white;
+#scndtxt {
+    color: beige; /* Beige */
 }
 .edittxt {
     font-size: 13px;
     margin-top: 28px;
 }
 #eyeicon {
-    color: gold;
+    color: beige; /* Beige */
     font-size: 11px;
     float: inline-end;
 }
@@ -178,27 +169,24 @@ img, svg {
     font-size: 1.4rem;
     font-weight: bold;
 }
-#containerdiv{
-	background-image:url(../img/desktop-wallpaper-message-background-whatsapp-message-background.jpg) ;
+#containerdiv {
+    background-image: url(../img/desktop-wallpaper-message-background-whatsapp-message-background.jpg);
     margin: auto;
 }
-#firstcont{
-	background-image: url(../img/desktop-wallpaper-message-background-whatsapp-message-background.jpg);
-	/* background-size: cover; */
-	/* background-repeat: no-repeat; */
+#firstcont {
+    background-image: url(../img/desktop-wallpaper-message-background-whatsapp-message-background.jpg);
 }
-
 .list-group-item {
     position: relative;
     display: block;
     padding: .5rem 1rem;
-    color: #212529;
+    color: #071739; /* Navy */
     text-decoration: none;
     background: transparent;
-    border: 1px solid black;
+    border: 1px solid #A4B5C4; /* Steel Blue */
 }
-   /* Additional CSS for file upload */
-   .file-upload-wrapper {
+/* Additional CSS for file upload */
+.file-upload-wrapper {
     position: relative;
     margin-right: 10px;
 }
@@ -206,14 +194,14 @@ img, svg {
     display: flex;
     align-items: center;
     padding: 6px 12px;
-    background-color: #6c757d;
-    color: white;
+    background-color: #4B6382; /* Muted Blue */
+    color: #fff;
     border-radius: 4px;
     cursor: pointer;
     margin-right: 5px;
 }
 .file-upload-label:hover {
-    background-color: #5a6268;
+    background-color: #071739; /* Navy */
 }
 .file-upload-input {
     position: absolute;
