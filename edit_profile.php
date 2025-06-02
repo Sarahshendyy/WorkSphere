@@ -1,7 +1,11 @@
 <?php
 include "connection.php";
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'] ?? null;
+if (!$user_id) {
+    header("Location: login.php");
+    exit;
+}
 
 // Fetch user data with zone information
 $select_user = "SELECT `users`.*, `zone`.`zone_name` 
@@ -11,7 +15,7 @@ $select_user = "SELECT `users`.*, `zone`.`zone_name`
 $run_select = mysqli_query($connect, $select_user);
 $fetch = mysqli_fetch_assoc($run_select);
 
-// Fetch all zones for the dropdown
+// Fetch all zones for dropdown
 $select_zones = "SELECT * FROM `zone`";
 $run_zones = mysqli_query($connect, $select_zones);
 $zones = mysqli_fetch_all($run_zones, MYSQLI_ASSOC);
@@ -24,12 +28,10 @@ if (isset($_POST['update'])) {
     $job_title = mysqli_real_escape_string($connect, $_POST['job_title']);
     $zone_id = mysqli_real_escape_string($connect, $_POST['zone_id']);
 
-    // For company fields (role_id == 2)
     $company_name = isset($_POST['company_name']) ? mysqli_real_escape_string($connect, $_POST['company_name']) : $fetch['company_name'];
     $contact_info = isset($_POST['contact_info']) ? mysqli_real_escape_string($connect, $_POST['contact_info']) : $fetch['contact_info'];
     $company_type = isset($_POST['company_type']) ? mysqli_real_escape_string($connect, $_POST['company_type']) : $fetch['company_type'];
 
-    // Handle portfolio upload (role_id == 2)
     $portfolio = $fetch['portfolio'];
     if (isset($_FILES['portfolio']) && $_FILES['portfolio']['name']) {
         $portfolio_name = $_FILES['portfolio']['name'];
@@ -40,7 +42,6 @@ if (isset($_POST['update'])) {
         }
     }
 
-    // Handle image upload
     if ($_FILES['image']['name']) {
         $image_name = $_FILES['image']['name'];
         $image_tmp = $_FILES['image']['tmp_name'];
@@ -56,7 +57,6 @@ if (isset($_POST['update'])) {
         $image_sql = "";
     }
 
-    // Build update query
     $update_profile = "UPDATE `users` SET 
         `name`='$name', 
         `email`='$email', 
@@ -66,7 +66,6 @@ if (isset($_POST['update'])) {
         `zone_id`='$zone_id', 
         $image_sql";
 
-    // If user is company, add company fields
     if ($fetch['role_id'] == 2) {
         $update_profile .= "
         `company_name`='$company_name',
@@ -75,7 +74,6 @@ if (isset($_POST['update'])) {
         `portfolio`='$portfolio',";
     }
 
-    // Remove trailing comma and add WHERE
     $update_profile = rtrim($update_profile, ',') . " WHERE `user_id`='$user_id'";
 
     $run_update = mysqli_query($connect, $update_profile);
@@ -92,83 +90,111 @@ if (isset($_POST['update'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/edit_profile.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Edit Profile</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Edit Profile</title>
+<link rel="stylesheet" href="./css/edit_profile.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+/>
 </head>
 <body>
 
 <div class="container">
-<div class="back-button-wrapper">
-    <button class="back-button" onclick="window.history.back()" >
-        <i class="fas fa-times"></i>
+  <div class="back-button-wrapper">
+    <button class="back-button" onclick="window.history.back()">
+      <i class="fas fa-times"></i>
     </button>
+  </div>
+
+  <div class="profile">
+    <form action="edit_profile.php" method="post" enctype="multipart/form-data">
+
+      <div class="profile-pic-container">
+        <div class="profile-pic">
+          <img src="./img/<?php echo htmlspecialchars($fetch['image'] ?: 'default.png'); ?>" alt="Profile Picture" id="profile-pic-preview" />
+        </div>
+        <input type="file" name="image" id="profile-image-input" accept="image/png, image/jpeg, image/gif" />
+        <label for="profile-image-input" class="camera-icon-label" title="Change profile picture">
+          <i class="fas fa-camera"></i>
+        </label>
+      </div>
+
+      <div class="profile-info">
+        <h1>Edit Profile</h1>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($fetch['name']); ?>" required />
+          </div>
+          <div class="input-group">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($fetch['email']); ?>" required />
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="age">Age:</label>
+            <input type="number" name="age" id="age" value="<?php echo htmlspecialchars($fetch['age'] ?? ''); ?>" />
+          </div>
+          <div class="input-group">
+            <label for="address">Address:</label>
+            <input type="text" name="address" id="address" value="<?php echo htmlspecialchars($fetch['location'] ?? ''); ?>" />
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="zone_id">Zone:</label>
+            <select name="zone_id" id="zone_id" required>
+              <?php foreach ($zones as $zone) { ?>
+                <option value="<?php echo $zone['zone_id']; ?>" <?php echo ($zone['zone_id'] == $fetch['zone_id']) ? 'selected' : ''; ?>>
+                  <?php echo htmlspecialchars($zone['zone_name']); ?>
+                </option>
+              <?php } ?>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="job_title">Job Title:</label>
+            <input type="text" name="job_title" id="job_title" value="<?php echo htmlspecialchars($fetch['job_title'] ?? ''); ?>" />
+          </div>
+        </div>
+
+        <?php if ($fetch['role_id'] == 2) { ?>
+          <div class="input-row">
+            <div class="input-group">
+              <label for="company_name">Company Name:</label>
+              <input type="text" name="company_name" id="company_name" value="<?php echo htmlspecialchars($fetch['company_name'] ?? ''); ?>" />
+            </div>
+            <div class="input-group">
+              <label for="contact_info">Contact Info:</label>
+              <input type="text" name="contact_info" id="contact_info" value="<?php echo htmlspecialchars($fetch['contact_info'] ?? ''); ?>" />
+            </div>
+          </div>
+
+          <div class="input-row">
+            <div class="input-group">
+              <label for="company_type">Company Type:</label>
+              <input type="text" name="company_type" id="company_type" value="<?php echo htmlspecialchars($fetch['company_type'] ?? ''); ?>" />
+            </div>
+            <div class="input-group">
+              <label for="portfolio">Portfolio (PDF, DOC, etc):</label>
+              <input type="file" name="portfolio" id="portfolio" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png" />
+              <?php if (!empty($fetch['portfolio'])): ?>
+                <a href="./files/<?php echo htmlspecialchars($fetch['portfolio']); ?>" target="_blank" class="portfolio-link">View Current Portfolio</a>
+              <?php endif; ?>
+            </div>
+          </div>
+        <?php } ?>
+
+        <input type="submit" name="update" value="Update Profile" />
+      </div>
+    </form>
+  </div>
 </div>
 
-    <div class="profile">
-        <form action="edit_profile.php" method="post" enctype="multipart/form-data">
-            <div class="profile-pic-container">
-                <div class="profile-pic">
-                    <img src="./img/<?php echo $fetch['image']; ?>" alt="Profile Picture" id="profile-pic-preview">
-                </div>
-                <input type="file" name="image" id="profile-image-input" accept="image/png, image/jpeg, image/gif">
-                <label for="profile-image-input" name="image" class="camera-icon-label" title="Change profile picture">
-                    <i class="fas fa-camera"></i>
-                </label>
-            </div>
-            <div class="profile-info">
-                <h1>Edit Profile</h1>
-                <label class="labels" for="name">Name:</label>
-                <input type="text" name="name" id="name" value="<?php echo $fetch['name']; ?>" required>
-                <br>
-                <label class="labels" for="email">Email:</label>
-                <input type="email" name="email" id="email" value="<?php echo $fetch['email']; ?>" required>
-                <br>
-                <label class="labels" for="age">Age:</label>
-                <input type="number" name="age" id="age" value="<?php echo !empty($fetch['age']) ? $fetch['age'] : ''; ?>">
-                <br>
-                <label class="labels" for="address">Address:</label>
-                <input type="text" name="address" id="address" value="<?php echo !empty($fetch['location']) ? $fetch['location'] : ''; ?>">
-                <br>
-                <label class="labels" for="zone_id">Zone:</label>
-                <select name="zone_id" id="zone_id" required>
-                    <?php foreach ($zones as $zone){ ?>
-                        <option value="<?php echo $zone['zone_id']; ?>" 
-                            <?php echo ($zone['zone_id'] == $fetch['zone_id']) ? 'selected' : ''; ?>>
-                            <?php echo $zone['zone_name']; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-                <br>
-                <label class="labels" for="job_title">Job-Title:</label>
-                <input type="text" name="job_title" id="job_title" value="<?php echo !empty($fetch['job_title']) ? $fetch['job_title'] : ''; ?>">
-                <br>
-
-                <?php if ($fetch['role_id'] == 2) { ?>
-                    <label class="labels" for="company_name">Company Name:</label>
-                    <input type="text" name="company_name" id="company_name" value="<?php echo !empty($fetch['company_name']) ? $fetch['company_name'] : ''; ?>">
-                    <br>
-                    <label class="labels" for="contact_info">Contact Info:</label>
-                    <input type="text" name="contact_info" id="contact_info" value="<?php echo !empty($fetch['contact_info']) ? $fetch['contact_info'] : ''; ?>">
-                    <br>
-                    <label class="labels" for="company_type">Company Type:</label>
-                    <input type="text" name="company_type" id="company_type" value="<?php echo !empty($fetch['company_type']) ? $fetch['company_type'] : ''; ?>">
-                    <br>
-                    <label class="labels" for="portfolio">Portfolio (PDF, DOC, etc):</label>
-                    <input type="file" name="portfolio" id="portfolio" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png">
-                    <?php if (!empty($fetch['portfolio'])): ?>
-                        <br>
-                        <a href="./files/<?php echo $fetch['portfolio']; ?>" target="_blank">View Current Portfolio</a>
-                    <?php endif; ?>
-                    <br>
-                <?php } ?>
-
-                <input type="submit" name="update" value="Update Profile">
-            </div>
-        </form>
-    </div>
-</div>
 </body>
 </html>
