@@ -1,12 +1,5 @@
 <?php
-include "connection.php";
-session_start();
-$user_id = $_SESSION['user_id'];
-
-if(!isset($_SESSION['user_id'])){
-    echo "<script>alert('You must be logged in to access this page.'); window.location.href='signup&login.php';</script>";
-  
-}
+include "./nav.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,5 +13,6 @@ if(!isset($_SESSION['user_id'])){
 <form method="post">
     <button class="" type="submit" name="logout">Logout</button>
 </form>
+<?php include 'footer.php';?>
 </body>
 </html>
