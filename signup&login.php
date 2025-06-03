@@ -1,6 +1,6 @@
 <?php
 include 'mail.php';
-session_start();
+
 
 $Smsg = '';
 if (isset($_POST['sign-btn']))
