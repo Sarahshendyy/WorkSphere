@@ -64,12 +64,18 @@
             <li><a class="dropdown-item" href="calendar.php">Calendar</a></li>
           </ul>
         </li>
-
+        <?php if(isset($_SESSION['user_id'])) { ?>
         <li class="nav-item">
           <a class="nav-link" href="profile.php">
             <i class="fas fa-user profile-icon"></i>
           </a>
         </li>
+        <?php } else { ?>
+        <li class="nav-item">
+          <a class="nav-link" href="signup&login.php">Login</a>
+        </li>
+        <?php } ?>
+        
       </ul>
     </div>
   </nav>
