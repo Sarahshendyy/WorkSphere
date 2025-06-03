@@ -1,4 +1,4 @@
-<?php include './connection.php'; ?>
+<?php include 'connection.php';?>
 <!-- Top Header -->
 <div class="top-header">
   <div class="contact d-flex align-items-center">
@@ -55,4 +55,13 @@
     </div>
   </nav>
   <div id="scroll-line"></div>
+  <script>
+    window.onscroll = () => {
+  const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  document.getElementById("scroll-line").style.width = scrolled + "%";
+};
+
+  </script>
 </div>
