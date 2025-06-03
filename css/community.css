@@ -15,7 +15,21 @@
     --border-radius: 12px; /* Consistent border radius */
     --box-shadow: 0px 2px 6px rgba(7, 23, 57, 0.15); /* Consistent box shadow */
     --transition: all 0.3s ease-in-out; /* Consistent transition */
+
+     --deep-navy: #071739;
+ --steel-blue: #4B6382;
+ --sky-blue: #A4B5C4;
+ --cloud-grey: #CDD5DB;
+ --warm-taupe: #A68868;
+ --beige-cream: #E3C39D;
+ --text-color: var(--deep-navy);
+ --accent-color: var(--warm-taupe);
+ --background-color: var(--cloud-grey);
+ --highlight-color: var(--steel-blue);
 }
+/* nav */
+
+
 
 /* General Styles */
 body {
