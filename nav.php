@@ -1,5 +1,24 @@
 <?php include 'connection.php';?>
 <!-- Top Header -->
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- links -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lancelot&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+      <link href="./css/nav.css" rel="stylesheet">
+
+ </head>
+ <body>
+  
+ </body>
+ </html>
 <div class="top-header">
   <div class="contact d-flex align-items-center">
     <i class="fas fa-phone me-2"></i>012-201-77444
@@ -31,7 +50,7 @@
     </button>
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 bottom-nav">
-        <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="indexx.php">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="my_bookings.php">My Bookings</a></li>
         <li class="nav-item"><a class="nav-link" href="workspaces_list.php">Workspaces</a></li>
         <li class="nav-item"><a class="nav-link" href="community.php">Community</a></li>
@@ -55,13 +74,5 @@
     </div>
   </nav>
   <div id="scroll-line"></div>
-  <script>
-    window.onscroll = () => {
-  const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-  const scrolled = (winScroll / height) * 100;
-  document.getElementById("scroll-line").style.width = scrolled + "%";
-};
-
-  </script>
+  <script src="./js/nav.js"></script>
 </div>
