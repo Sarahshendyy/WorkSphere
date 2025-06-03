@@ -1,6 +1,6 @@
 <?php
-include './connection.php';
-session_start();
+include 'connection.php';
+
 if(!isset($_SESSION['user_id'])){
      header("location: signup&login.php");
 }
@@ -168,13 +168,284 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete_post') {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="./css/nav.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/community.css">
     <title>Community</title>
+    <style>
+    body {
+  margin: 0;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background-color: var(--background-color);
+}
+
+    .top-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: stretch;
+  background: transparent;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  animation: slideDown 0.6s ease-in-out;
+}
+
+.contact, .top-actions, .social-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
+.contact { justify-content: flex-start; }
+.social-icons { justify-content: flex-end; }
+
+.angled-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: white;
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+  transition: transform 0.3s ease;
+  width: 50%;
+}
+
+.get-touch { background: var(--beige-cream); }
+.book-tour { background: var(--steel-blue); }
+
+.angled-section:hover { transform: scale(1.03); }
+
+.social-icons a {
+  color: var(--text-color);
+  margin-left: 15px;
+  transition: color 0.3s;
+  font-weight: bold;
+}
+
+.social-icons a:last-child { color: var(--accent-color); }
+
+.logo-bar {
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--accent-color);
+  animation: fadeIn 0.8s ease-in;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  backdrop-filter: blur(3px);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo img {
+  height: 45px;
+  object-fit: contain;
+}
+
+.logo p {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.bottom-nav {
+  background: transparent;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.bottom-nav .nav-link {
+  color: var(--text-color) !important;
+  font-weight: 500;
+  position: relative;
+  display: inline-block;
+  transition: color 0.3s;
+  padding: 6px 10px;
+  font-size: 0.95rem;
+}
+
+.bottom-nav .nav-link:hover {
+  color: var(--accent-color) !important;
+}
+
+.bottom-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-color);
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s;
+}
+
+.bottom-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+.dropdown-menu {
+  animation: dropdownFade 0.4s ease-in-out;
+  margin-top: 10px;
+  padding: 10px 0;
+  background-color: #FFFFFF;
+  border: 1px solid var(--sky-blue);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.dropdown-menu a {
+  color: var(--text-color) !important;
+  padding: 10px 20px;
+  display: block;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.dropdown-menu a:hover {
+  background: #e9ecef;
+  color: #007bff;
+}
+
+.profile-icon {
+  font-size: 1.2rem;
+  margin-left: 10px;
+  color: var(--text-color);
+}
+
+#scroll-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(to right, var(--deep-navy), var(--beige-cream));
+  z-index: 1000;
+  transition: width 0.2s ease-out;
+  width: 0;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .angled-section {
+    clip-path: none;
+    margin: 0.25rem 0;
+    flex: 1;
+    width: 100%;
+  }
+
+  .top-header {
+    grid-template-columns: 1fr;
+  }
+
+  .top-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bottom-nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+
+
+</style>
 </head>
 
+
 <body>
-    <?php include './nav.php'; ?>
+
+
+<div class="top-header">
+  <div class="contact d-flex align-items-center">
+    <i class="fas fa-phone me-2"></i>012-201-77444
+  </div>
+  <div class="top-actions">
+    <a href="contact_us.php" class="angled-section get-touch">
+      <i class="fas fa-comments me-2"></i> Get in Touch
+    </a>
+    <a href="#" class="angled-section book-tour">
+      <i class="fas fa-calendar-alt me-2"></i> Book a Tour
+    </a>
+  </div>
+  <div class="social-icons">
+    <a href="#"><i class="fab fa-facebook-f"></i></a>
+    <a href="#"><i class="fab fa-instagram"></i></a>
+    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+  </div>
+</div>
+
+<!-- Logo & Navigation bottom-->
+<div class="logo-bar">
+  <div class="logo">
+    <img src="./img/SCCI_Logo.png" alt="Logo">
+    <p>SCCI Workspaces</p>
+  </div>
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainN
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 bottom-nav">
+        <li class="nav-item"><a class="nav-link" href="indexx.php">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="my_bookings.php">My Bookings</a></li>
+        <li class="nav-item"><a class="nav-link" href="workspaces_list.php">Workspaces</a></li>
+        <li class="nav-item"><a class="nav-link" href="community.php">Community</a></li>
+
+       <li class="nav-item dropdown">
+         <span id="moreDropdown" class="nav-link more-link" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+           More
+         </span>
+         <ul class="dropdown-menu more-dropdown-menu" aria-labelledby="moreDropdown">
+           <li><a class="dropdown-item" href="chat.php">Chat</a></li>
+           <li><a class="dropdown-item" href="calendar.php">Calendar</a></li>
+         </ul>
+       </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="profile.php">
+            <i class="fas fa-user profile-icon"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div id="scroll-line"></div>
+
+</div>
+
+    
+ 
 
     <div class="container">
         <!-- header -->
@@ -300,10 +571,25 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete_post') {
             <?php } ?>
         </main>
     </div>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="./js/community.js"></script>
+        <script src="./js/nav.js"></script>
+
+
+    
     <?php include 'footer.php';?>
+      
+  
+  
+  
+  
+  
+  
+  
+
+  
 </body>
 </html>
