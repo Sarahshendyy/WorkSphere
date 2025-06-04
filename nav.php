@@ -24,11 +24,11 @@
     <i class="fas fa-phone me-2"></i>012-201-77444
   </div>
   <div class="top-actions">
-    <a href="contact_us.php" class="angled-section get-touch">
-      <i class="fas fa-comments me-2"></i> Get in Touch
+    <a href="about_us.php" class="angled-section get-touch">
+      <i class="fas fa-comments me-2"></i> About Us
     </a>
-    <a href="#" class="angled-section book-tour">
-      <i class="fas fa-calendar-alt me-2"></i> Book a Tour
+    <a href="workspaces_list.php" class="angled-section book-tour">
+      <i class="fas fa-calendar-alt me-2"></i> Book a Workspace
     </a>
   </div>
   <div class="social-icons">
@@ -42,7 +42,7 @@
 <div class="logo-bar">
   <div class="logo">
     <img src="./img/SCCI_Logo.png" alt="Logo">
-    <p>SCCI Workspaces</p>
+    <p>WorkSohere</p>
   </div>
   <nav class="navbar navbar-expand-lg navbar-light">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
@@ -62,6 +62,7 @@
           <ul class="dropdown-menu more-dropdown-menu" aria-labelledby="moreDropdown">
             <li><a class="dropdown-item" href="chat.php">Chat</a></li>
             <li><a class="dropdown-item" href="calendar.php">Calendar</a></li>
+           <li><a class="dropdown-item" href="fav_workspaces.php">Favourites</a></li>
           </ul>
         </li>
         <?php if(isset($_SESSION['user_id'])) { ?>
