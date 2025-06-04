@@ -121,8 +121,8 @@ body {
 }
 
 .status.ongoing {
-  color: var(--warning-color);
-  background: var(--warning-background);
+  color: #ff9800;
+  background: #fff3e0;
 }
 
 .status.canceled {
