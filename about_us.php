@@ -235,14 +235,72 @@ h5[style*="color: #4B6382"] {
                 </div>
             </div>
             
-            <!-- <svg viewBox="0 0 1265 144" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 1265 144" xmlns="http://www.w3.org/2000/svg">
                 <path fill="#ffffff" d="M 0 40 C 164 40 164 20 328 20 L 328 20 L 328 0 L 0 0 Z" stroke-width="0"></path>
                 <path fill="#ffffff" d="M 327 20 C 445.5 20 445.5 89 564 89 L 564 89 L 564 0 L 327 0 Z" stroke-width="0"></path>
                 <path fill="#ffffff" d="M 563 89 C 724.5 89 724.5 48 886 48 L 886 48 L 886 0 L 563 0 Z" stroke-width="0"></path>
                 <path fill="#ffffff" d="M 885 48 C 1006.5 48 1006.5 67 1128 67 L 1128 67 L 1128 0 L 885 0 Z" stroke-width="0"></path>
                 <path fill="#ffffff" d="M 1127 67 C 1196 67 1196 0 1265 0 L 1265 0 L 1265 0 L 1127 0 Z" stroke-width="0"></path>
-            </svg> -->
+            </svg>
         </section>
+
+
+        <!-- Services Section -->
+<section id="services" class="services-section py-5" style="background-color:rgb(151, 169, 184);">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 style="color: #071739;">Our Services</h2>
+            <p style="color:rgb(249, 250, 252);">Explore the flexible workspace solutions that make WorkSphere the best choice for professionals, businesses, and startups.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="service-card p-4 bg-white rounded shadow">
+                    <i class="fa fa-desktop service-icon" style="color: #4B6382; font-size: 3rem;"></i>
+                    <h4 class="mt-3" style="color: #4B6382;">Coworking Spaces</h4>
+                    <p >Access modern coworking spaces with flexible booking options that fit your schedule and budget.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card p-4 bg-white rounded shadow">
+                    <i class="fa fa-briefcase service-icon" style="color: #4B6382; font-size: 3rem;"></i>
+                    <h4 class="mt-3" style="color: #4B6382;">Private Offices</h4>
+                    <p>Rent private offices equipped with all amenities for a focused and professional work environment.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card p-4 bg-white rounded shadow">
+                    <i class="fa fa-calendar-check service-icon" style="color: #4B6382; font-size: 3rem;"></i>
+                    <h4 class="mt-3" style="color: #4B6382;">Meeting Rooms</h4>
+                    <p>Book fully equipped meeting rooms to host business meetings, workshops, or presentations.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-5">
+            <div class="col-md-4">
+                <div class="service-card p-4 bg-white rounded shadow">
+                    <i class="fa fa-calendar service-icon" style="color: #4B6382; font-size: 3rem;"></i>
+                    <h4 class="mt-3" style="color: #4B6382;">Event Spaces</h4>
+                    <p>Host corporate events, training sessions, or networking meetups in spacious, modern venues.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card p-4 bg-white rounded shadow">
+                    <i class="fa fa-users service-icon" style="color: #4B6382; font-size: 3rem;"></i>
+                    <h4 class="mt-3" style="color: #4B6382;">Community & Networking</h4>
+                    <p>Join a community of professionals and entrepreneurs, and collaborate with others in your industry.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="service-card p-4 bg-white rounded shadow">
+                    <i class="fa fa-cogs service-icon" style="color: #4B6382; font-size: 3rem;"></i>
+                    <h4 class="mt-3" style="color: #4B6382;">Additional Services</h4>
+                    <p>Benefit from services like high-speed internet, printing, and administrative support to help your business grow.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
         <!-- Customer Segments Section -->
         <section class="container my-5 ">
