@@ -65,7 +65,7 @@
         © <span class="year">2025</span> WorkSphere. ALL RIGHTS RESERVED.
       </div>
 
-      <a href="home.php" class="back-to-top"><i class="fas fa-arrow-up"></i> GO BACK TO Home</a>
+      <a href="indexx.php" class="back-to-top"><i class="fas fa-arrow-up"></i> GO BACK TO Home</a>
     </div>
   </footer>
 
