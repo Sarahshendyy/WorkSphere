@@ -108,11 +108,10 @@ if (isset($_POST['update_password'])) {
 <body>
    <div class="container">
    <div class="back-button-wrapper" style="display: flex; gap: 10px; align-items: center;">
-    <button class="back-button" onclick="window.location.href='edit_profile.php'" title="Edit Profile" aria-label="Edit Profile">
-        <i class="fas fa-user-edit icon"></i>
-    </button>
-
     <?php if ($is_own_profile) { ?>
+        <button class="back-button" onclick="window.location.href='edit_profile.php'" title="Edit Profile" aria-label="Edit Profile">
+            <i class="fas fa-user-edit icon"></i>
+        </button>
         <button id="openPasswordModalBtn" class="back-button" title="Update Password" aria-label="Update Password">
             <i class="fas fa-key icon"></i>
         </button>
