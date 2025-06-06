@@ -18,8 +18,8 @@
       <div class="footer-section contact-info">
         <h3>CONTACT US</h3>
         <h2>GET IN TOUCH.</h2>
-        <p class="footer-description">Creating digital experiences that drive results. [Your Location]-based web solutions tailored to your business needs.</p>
-        
+<p class="footer-description">Providing seamless and flexible workspace 
+                      solutions to help you work anywhere, anytime. Tailored to meet the needs of remote workers, freelancers, and businesses.</p>        
         <div class="contact-details">
           
           
@@ -34,17 +34,17 @@
           <div class="detail-item">
             <i class="fas fa-envelope"></i>
             <span class="detail-label">CONTACT</span>
-            <span class="detail-value">CONTACT@YOURDOMAIN.COM</span>
+            <span class="detail-value">worksphere04@gmail.com</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-life-ring"></i>
             <span class="detail-label">SUPPORT</span>
-            <span class="detail-value">HELP@YOURDOMAIN.COM</span>
+            <span class="detail-value">worksphere04@gmail.com</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-server"></i>
-            <span class="detail-label">STATUS</span>
-            <a href="/status" class="detail-value">STATUS PAGE</a>
+           <span class="detail-label">ABOUT</span>
+            <a href="./about_us.php" class="detail-value">ABOUT-US PAGE</a>
           </div>
         </div>
       </div>
@@ -56,9 +56,9 @@
 
     <div class="footer-bottom">
       <nav class="footer-nav">
-        <a href="#home.php"><i class="fas fa-home"></i> HOME</a>
+         <a href="indexx.php"><i class="fas fa-home"></i> HOME</a>
         <a href="#services"><i class="fas fa-cog"></i> SERVICES</a>
-        <a href="#contact"><i class="fas fa-envelope"></i> CONTACT</a>
+        <a href="about_us.php"><i class="fas fa-envelope"></i> ABOUT-US</a>
       </nav>
 
       <div class="copyright">
