@@ -57,7 +57,7 @@
     <div class="footer-bottom">
       <nav class="footer-nav">
          <a href="indexx.php"><i class="fas fa-home"></i> HOME</a>
-        <a href="#services"><i class="fas fa-cog"></i> SERVICES</a>
+        <a href="about_us.php#services"><i class="fas fa-cog"></i> SERVICES</a>
         <a href="about_us.php"><i class="fas fa-envelope"></i> ABOUT-US</a>
       </nav>
 
