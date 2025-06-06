@@ -97,52 +97,28 @@ if (!empty($_POST['text'])) {
     }
 
     .search-sort-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
-  margin: 30px auto;
-  max-width: 1000px;
-}
-
-.search-sort-container form {
-  flex: 1;
-  min-width: 220px;
-}
-
-.search-sort-container input,
-.search-sort-container select {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--info-color);
-  width: 100%;
-  background-color: #fff;
-}
-
-    
-
-    .filter-bar {
       display: flex;
-      justify-content: center;
-      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
-      margin: 20px auto 10px;
+      gap: 20px;
+      padding: 20px;
+      margin: 30px auto;
+      max-width: 1000px;
     }
 
-    .filter-chip {
-      background-color: var(--secondary-color);
-      color: white;
-      padding: 6px 14px;
-      border-radius: 50px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.3s;
+    .search-sort-container form {
+      flex: 1;
+      min-width: 220px;
     }
 
-    .filter-chip:hover {
-      background-color: var(--accent-warm);
+    .search-sort-container input,
+    .search-sort-container select {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--info-color);
+      width: 100%;
+      background-color: #fff;
     }
 
     .container {
@@ -165,22 +141,6 @@ if (!empty($_POST['text'])) {
 
     .workspace-card:hover {
       transform: translateY(-6px);
-    }
-
-    .carousel-inner img {
-      height: 200px;
-      object-fit: cover;
-      border-radius: var(--radius) var(--radius) 0 0;
-    }
-
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-      transition: transform 0.2s;
-    }
-
-    .carousel-control-prev:hover .carousel-control-prev-icon,
-    .carousel-control-next:hover .carousel-control-next-icon {
-      transform: scale(1.2);
     }
 
     .card-body {
@@ -234,36 +194,41 @@ if (!empty($_POST['text'])) {
     }
 
     .favorite-icon {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: #ffffff;
-  border-radius: 50%;
-  padding: 6px;
-  font-size: 18px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  color: var(--primary-color); /* Darker color */
-  transition: 0.2s ease;
-  z-index: 10;
-}
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #ffffff;
+      border-radius: 50%;
+      padding: 6px;
+      font-size: 18px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      color: var(--primary-color); /* Darker color */
+      transition: 0.2s ease;
+      z-index: 10;
+    }
 
-.favorite-icon.active i {
-  color: #ff4757;
-}
+    .favorite-icon.active i {
+      color: #ff4757;
+    }
 
-.favorite-icon:hover {
-  background-color: var(--accent-light);
-  color: #ff4757;
-}
+    .favorite-icon:hover {
+      background-color: var(--accent-light);
+      color: #ff4757;
+    }
+
+    .distance {
+      font-size: 14px;
+      color: var(--accent-warm);
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 
 <div class="search-sort-container">
   <form method="post">
-  <input type="text" id="searchText" name="text" class="form-control" placeholder="Search by name or zone">
-
+    <input type="text" id="searchText" name="text" class="form-control" placeholder="Search by name or zone">
   </form>
   <form method="post">
     <select name="sort" class="form-select" onchange="this.form.submit()">
@@ -274,7 +239,6 @@ if (!empty($_POST['text'])) {
     </select>
   </form>
 </div>
-
 
 <div class="container">
 <?php
@@ -291,7 +255,7 @@ if (!empty($_POST['text'])) {
             $is_favorite = mysqli_num_rows($check_result) > 0;
         }
 ?>
-  <div class="workspace-card">
+  <div class="workspace-card" data-latitude="<?php echo $row['latitude']; ?>" data-longitude="<?php echo $row['longitude']; ?>">
     <div class="favorite-icon <?php echo $is_favorite ? 'active' : ''; ?>" onclick="toggleFavorite(this, <?php echo $row['workspace_id']; ?>)">
       <i class="<?php echo $is_favorite ? 'fa-solid' : 'fa-regular'; ?> fa-heart"></i>
     </div>
@@ -323,6 +287,7 @@ if (!empty($_POST['text'])) {
       <h3><?php echo htmlspecialchars($row['zone_name']); ?></h3>
       <h4>From <?php echo htmlspecialchars($row['starting_price']); ?> EGP/hour</h4>
       <p class="rating"><i class="fas fa-star"></i> <?php echo number_format($row['avg_rating'], 1); ?> / 5</p>
+      <p class="distance"></p> <!-- Distance from user will be displayed here -->
       <a href="workspace_details.php?ws_id=<?php echo $row['workspace_id']; ?>" class="view-details">View Details</a>
     </div>
   </div>
@@ -332,44 +297,56 @@ if (!empty($_POST['text'])) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-
 $(document).ready(function () {
-            $("#searchText").on("input", function () {
-                var searchText = $(this).val();
-                if (searchText === "") {
-                    location.reload();
-                    return;
-                }
-
-                $.ajax({
-                    url: "workspaces_list.php",
-                    type: "POST",
-                    data: { text: searchText, search: true },
-                    success: function (data) {
-                        var results = $(data).find('.workspace-card');
-                        $('.container').html(results);
-                    }
-                });
-            });
-        });
-
-
-
-function toggleFavorite(icon, workspaceId) {
-    <?php if (!isset($_SESSION['user_id'])): ?>
-        window.location.href = 'login.php';
-        return;
-    <?php endif; ?>
-    $.post("toggle_favorite.php", { workspace_id: workspaceId }, function(response) {
-        if (response.status === 'success') {
-            icon.classList.toggle('active');
-            icon.querySelector('i').classList.toggle('fa-solid');
-            icon.querySelector('i').classList.toggle('fa-regular');
-        } else {
-            alert(response.message);
+    $("#searchText").on("input", function () {
+        var searchText = $(this).val();
+        if (searchText === "") {
+            location.reload();
+            return;
         }
-    }, 'json');
-}
+
+        $.ajax({
+            url: "workspaces_list.php",
+            type: "POST",
+            data: { text: searchText, search: true },
+            success: function (data) {
+                var results = $(data).find('.workspace-card');
+                $('.container').html(results);
+            }
+        });
+    });
+
+    // Get user location and calculate distances
+    navigator.geolocation.getCurrentPosition(function(position) {
+        var userLat = position.coords.latitude;
+        var userLon = position.coords.longitude;
+
+        $(".workspace-card").each(function() {
+            var workspaceLat = $(this).data('latitude');
+            var workspaceLon = $(this).data('longitude');
+
+            var distance = haversine(userLat, userLon, workspaceLat, workspaceLon);
+            $(this).find('.distance').text(distance + ' km');
+        });
+    }, function() {
+        alert('Unable to retrieve your location.');
+    });
+
+    function haversine(lat1, lon1, lat2, lon2) {
+        var R = 6371; // Radius of Earth in km
+        var dLat = toRad(lat2 - lat1);
+        var dLon = toRad(lon2 - lon1);
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return (R * c).toFixed(2); // Distance in km
+    }
+
+    function toRad(deg) {
+        return deg * (Math.PI / 180);
+    }
+});
 </script>
 </body>
 </html>
