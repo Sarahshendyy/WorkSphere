@@ -1,7 +1,6 @@
 <?php 
 include("nav.php");
 
-// Get some system-wide counts (adjusted to actual tables)
 $select_workspaces = "SELECT * FROM `workspaces`";
 $run_workspaces = mysqli_query($connect, $select_workspaces);
 $num_workspaces = mysqli_num_rows($run_workspaces);
@@ -167,7 +166,7 @@ $num_bookings = mysqli_num_rows($run_bookings);
                     <div class="row align-items-center">
 
                         <div class="col-12 col-lg-6 col-xl-5 order-lg-1 ">
-                            <img class=" imgfeat2 img-fluid widthimg ms-auto" src="img/Screenshot 2024-08-04 031813.png"
+                            <img class=" imgfeat2 img-fluid widthimg ms-auto" src=src="./img/work.jpg"
                                 alt="" />
                         </div>
 
