@@ -1,6 +1,7 @@
 <?php 
 include("nav.php");
 
+// Get some system-wide counts (adjusted to actual tables)
 $select_workspaces = "SELECT * FROM `workspaces`";
 $run_workspaces = mysqli_query($connect, $select_workspaces);
 $num_workspaces = mysqli_num_rows($run_workspaces);
@@ -166,7 +167,7 @@ $num_bookings = mysqli_num_rows($run_bookings);
                     <div class="row align-items-center">
 
                         <div class="col-12 col-lg-6 col-xl-5 order-lg-1 ">
-                            <img class=" imgfeat2 img-fluid widthimg ms-auto" src=src="./img/work.jpg"
+                            <img class=" imgfeat2 img-fluid widthimg ms-auto" src="./img/work.jpg"
                                 alt="" />
                         </div>
 
@@ -231,7 +232,7 @@ $num_bookings = mysqli_num_rows($run_bookings);
                         </div>
                     </div>
                     <div class="py-1 py-lg-0 px-lg-5 w-75 w-sm-50 w-lg-100 timeline-content">
-                        <h6 class="fs-3 fw-bold text-lg-center lh-lg mb-2 text-nowrap">Sign Up on WorkSphere</h6>
+                        <h6 class="fs-3 fw-bold text-lg-center lh-lg mb-2 text-nowrap">SignUp on WorkSphere</h6>
                         <p class="text-lg-center lh-xl mb-0">Create an account and gain instant access to a wide range of workspaces.</p>
                     </div>
                 </div>
