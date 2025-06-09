@@ -33,6 +33,22 @@ if (isset($_SESSION['user_id'])) {
 	      href="./css/chat.css">
 	<link rel="icon" href="img/keklogo.png">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<style>
+		 #containerdiv {
+            margin-left: 250px; 
+        }
+				#chatList a {
+            text-decoration: none;
+        }
+        
+        #chatList a h3 {
+            color: black;
+        }
+
+        #chatList a small {
+            color: #6c757d;
+        }
+	</style>
 </head>
 <body class="d-flex
              justify-content-center
@@ -47,7 +63,7 @@ if (isset($_SESSION['user_id'])) {
 			            align-items-center" id="firstcont">
     			<div class="d-flex
     			            align-items-center">
-    			    <img src="./img/<?=$user['image']?>"
+    			    <img src="../img/<?=$user['image']?>"
     			         class="w-25 rounded-circle">
                     <h3 class="fs-xs m-2" id="frstname"><?=$user['name']?></h3> 
     			</div>
@@ -75,7 +91,7 @@ if (isset($_SESSION['user_id'])) {
 	    				   class="d-flex justify-content-between align-items-center p-2">
 	    					<div class="d-flex
 	    					            align-items-center">
-	    					    <img src="img/<?=$conversation['image']?>"
+	    					    <img src="../img/<?=$conversation['image']?>"
 	    					         class="w-10 rounded-circle">
 	    					    <h3 class="fs-xs m-2" id="thrdtxt">
 	    					    	<?=$conversation['name']?><br>
