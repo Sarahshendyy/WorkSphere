@@ -72,22 +72,8 @@ if (isset($_POST['room_name'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Rooms Management</title>
+    <link rel="stylesheet" href="css/rooms_tables.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
-    <style>
-        .room-img {
-            width: 80px;
-            height: 60px;
-            object-fit: cover;
-            margin-right: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .img-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-    </style>
 </head>
 <body>
 
@@ -146,7 +132,6 @@ if (isset($_POST['room_name'])) {
     </div>
 </div>
 
-<!-- Add Room Modal -->
 <div class="modal fade" id="addRoomModal" tabindex="-1" aria-labelledby="addRoomModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

@@ -24,7 +24,7 @@ if (isset($_POST["room_name"])) {
         if (mysqli_query($connect, $insert_query)) {
             $room_id = mysqli_insert_id($connect); 
 
-            // Handle image uploads
+            
             if (!empty($_FILES['images']['name'][0])) {
                 $imagePaths = [];
                 foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
@@ -142,33 +142,9 @@ $rooms_result = mysqli_query($connect, $rooms_query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="css/workspace_dashboard.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .dashboard-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .chart-container {
-            width: 48%;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .table-container {
-            width: 100%;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    </style>
 </head>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 
@@ -200,8 +176,10 @@ $rooms_result = mysqli_query($connect, $rooms_query);
 
 
 <script>
-    var ctx1 = document.getElementById('bookingChart').getContext('2d');
-    var bookingChart = new Chart(ctx1, {
+    const bookingColors = ['#4B6382', '#D9534F', '#E3C39D', '#CDD5DB']; // [ongoing, canceled, upcoming, completed]
+
+    const ctx1 = document.getElementById('bookingChart').getContext('2d');
+    const bookingChart = new Chart(ctx1, {
         type: 'pie',
         data: {
             labels: ['Ongoing', 'Canceled', 'Upcoming', 'Completed'],
@@ -212,28 +190,65 @@ $rooms_result = mysqli_query($connect, $rooms_query);
                     <?php echo $booking_counts['upcoming']; ?>,
                     <?php echo $booking_counts['completed']; ?>
                 ],
-                backgroundColor: ['#ffcc00', '#ff4d4d', '#66b3ff', '#4caf50']
+                backgroundColor: bookingColors,
+                borderColor: '#F9FAFB',
+                borderWidth: 2
             }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#071739'
+                    }
+                }
+            }
         }
     });
 
-    var ctx2 = document.getElementById('earningsChart').getContext('2d');
-    var earningsLabels = [];
-    var earningsData = [];
+    const ctx2 = document.getElementById('earningsChart').getContext('2d');
+    const earningsLabels = [];
+    const earningsData = [];
 
     <?php while ($earning = mysqli_fetch_assoc($earnings_result)): ?>
         earningsLabels.push("<?php echo $earning['room_name']; ?>");
-        earningsData.push(<?php echo $earning['earnings']; ?>);
+        earningsData.push(<?php echo $earning['earnings'] ?: 0; ?>);
     <?php endwhile; ?>
 
-    var earningsChart = new Chart(ctx2, {
+    const earningsChart = new Chart(ctx2, {
         type: 'bar',
         data: {
             labels: earningsLabels,
-            datasets: [{ label: 'Earnings (EGP)', data: earningsData, backgroundColor: '#66b3ff' }]
+            datasets: [{
+                label: 'Earnings (EGP)',
+                data: earningsData,
+                backgroundColor: '#4B6382',
+                borderColor: '#35506D',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: { color: '#071739' },
+                    grid: { color: '#D1D5DB' }
+                },
+                y: {
+                    ticks: { color: '#071739' },
+                    grid: { color: '#D1D5DB' }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#071739'
+                    }
+                }
+            }
         }
     });
 </script>
+
 
 </body>
 </html>

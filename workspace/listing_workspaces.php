@@ -8,7 +8,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-
 $zone_query = "SELECT * FROM zone";
 $zone_result = mysqli_query($connect, $zone_query);
 $room_type_query = "SELECT * FROM room_types";
@@ -24,9 +23,12 @@ if (isset($_POST['submit'])) {
     $description = mysqli_real_escape_string($connect, $_POST['description']);
     $price_hr = floatval($_POST['price_hr']);
     $zone_id = intval($_POST['zone_id']);
+    $latitude = floatval($_POST['latitude']);
+    $longitude = floatval($_POST['longitude']);
 
-    $insert_workspace = "INSERT INTO workspaces (user_id, name, location, description, `price/hr`, zone_id, created_at) 
-                         VALUES ('$user_id', '$name', '$location', '$description', '$price_hr', '$zone_id', NOW())";
+
+    $insert_workspace = "INSERT INTO workspaces (user_id, name, location, description, `price/hr`, zone_id, latitude, longitude, created_at) 
+                     VALUES ('$user_id', '$name', '$location', '$description', '$price_hr', '$zone_id', '$latitude', '$longitude', NOW())";
     $insertQry = mysqli_query($connect, $insert_workspace);
 
     if (!$insertQry) {
@@ -66,7 +68,7 @@ if (isset($_POST['submit'])) {
             $images = implode(",", $image_paths);
 
             $insert_room = "INSERT INTO rooms (workspace_id, room_name, seats, type_id, room_status, images, `p/hr`) 
-                            VALUES ('$workspace_id', '$room_name', '$seats', '$type_id', '$room_status', '$images', '$price_hr')";
+                VALUES ('$workspace_id', '$room_name', '$seats', '$type_id', '$room_status', '$images', '$price_hr')";
             $insertRoomQry = mysqli_query($connect, $insert_room);
 
             if (!$insertRoomQry) {
@@ -93,7 +95,7 @@ if (isset($_POST['submit'])) {
 <?php if ($successMessage): ?>
   <div class="success-container">
     <div class="success-msg">
-    <a href="indexx.php" class="close-btn"><i class="fa-solid fa-xmark"></i></a>
+    <a href="../indexx.php" class="close-btn"><i class="fa-solid fa-xmark"></i></a>
     <h2 class="success-title">Done!</h2>
       <i class="fa-solid fa-circle-check"></i>
       <p><?= $successMessage ?></p>
@@ -129,7 +131,21 @@ if (isset($_POST['submit'])) {
                 </option>
             <?php endwhile; ?>
         </select>
-    
+                
+        <label for="latitude">Latitude:</label>
+        <input type="number" step="0.000001" name="latitude" required>
+
+        <label for="longitude">Longitude:</label>
+        <input type="number" step="0.000001" name="longitude" required>
+
+       <small style="display:block; margin-top:5px; color:#4B6382;">
+        🧭 Don't know your coordinates? 
+        <a href="https://maps.google.com" target="_blank" style="color:#A68868; font-weight:600;">
+        Click here to open Google Maps
+        </a> — Navigate to your workspace, right-click the location, choose “What’s here?”, and copy the Latitude & Longitude shown.
+        </small>
+
+
 
         <h3>Rooms:</h3>
         <div id="rooms">
@@ -151,9 +167,6 @@ if (isset($_POST['submit'])) {
                     <?php endforeach; ?>
                 </select>
                 <br><br>
-
-                <label>Status:</label>
-                <input type="text" name="rooms[0][status]" required>
 
                 <label>Price per Hour:</label>
                 <input type="number" step="0.01" name="rooms[0][price_hr]" required>
@@ -195,9 +208,6 @@ function addRoom() {
                 <option value="<?php echo $type['type_id']; ?>"><?php echo $type['type_name']; ?></option>
             <?php endforeach; ?>
         </select>
-
-        <label>Status:</label>
-        <input type="text" name="rooms[${roomCount}][status]" required>
 
         <label>Price per Hour:</label>
         <input type="number" step="0.01" name="rooms[${roomCount}][price_hr]" required>

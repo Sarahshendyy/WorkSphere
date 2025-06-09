@@ -1,6 +1,6 @@
 <?php
 //include "connection.php";
-include "mail.php";
+include "../mail.php";
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -9,8 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $owner_id = $_SESSION['user_id'];
 
-$bookings_query = "
-    SELECT workspaces.*, 
+$bookings_query = "SELECT workspaces.*, 
            zone.zone_name, 
            rooms.images, 
            AVG(reviews.rating) AS avg_rating, 
@@ -45,7 +44,7 @@ if (isset($_POST['booking_id'])) {
     $booking_id = $_POST['booking_id'];
     $new_status = $_POST['status'];
 
-    // Fetch old status, total_price, and pay_method
+ 
     $fetch_booking = "
         SELECT status, total_price, pay_method 
         FROM bookings 
@@ -55,16 +54,13 @@ if (isset($_POST['booking_id'])) {
     $old_status = $booking_data['status'];
     $amount = $booking_data['total_price'];
     $pay_method = $booking_data['pay_method'];
-
-    // Update booking status
     $update_query = "UPDATE bookings SET status = '$new_status' WHERE booking_id = '$booking_id'";
     $run_update = mysqli_query($connect, $update_query);
 
     if ($run_update) {
 
-        // Insert into payments if going from upcoming to ongoing and pay at host
             if ($new_status == "ongoing" && $pay_method == "pay at host") {
-            // Get workspace_id
+            
             $workspace_query = "SELECT workspaces.workspace_id 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.room_id 
@@ -74,8 +70,6 @@ if (isset($_POST['booking_id'])) {
             $workspace_result = mysqli_query($connect, $workspace_query);
             $workspace_data = mysqli_fetch_assoc($workspace_result);
             $workspace_id = $workspace_data['workspace_id'];
-
-            // Check if payment already exists
             $payment_check = mysqli_query($connect, "SELECT * FROM payments WHERE booking_id = '$booking_id'");
             if (mysqli_num_rows($payment_check) == 0) {
             $insert_payment = "INSERT INTO `payments` VALUES (NULL,'$booking_id','$amount','paid at host',NULL,NULL,'$workspace_id')";
@@ -84,7 +78,7 @@ if (isset($_POST['booking_id'])) {
             }
 
 
-        // Send review email if completed
+    
         if ($new_status == 'completed') {
             $email_query = "SELECT users.email, users.name 
                             FROM bookings 
@@ -150,6 +144,7 @@ if (isset($_POST['booking_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Booking Overview</title>
+    <link rel="stylesheet" href="css/booking_overview.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
 </head>
 <body>
