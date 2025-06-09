@@ -1,5 +1,6 @@
 <?php
 include "connection.php";
+include "sidebar.php";
 
 // Initialize sort variables
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'date_desc';
@@ -54,23 +55,23 @@ $run_select = mysqli_query($connect, $select_bookings);
 if (isset($_POST['search'])) {
     if (mysqli_num_rows($run_select) > 0) {
         foreach ($run_select as $row) {
-            ?>
-            <tr>
-                <td><?php echo htmlspecialchars($row['booking_id']); ?></td>
-                <td><a href="../profile.php?user_id=<?php echo $row['user_id']; ?>">
-                        <?php echo htmlspecialchars($row['user_name']); ?>
-                    </a></td>
-                <td><a href="../workspace_details.php?ws_id=<?php echo $row['workspace_id']; ?>">
-                        <?php echo htmlspecialchars($row['workspace_name']); ?>
-                    </a></td>
-                <td><span class="status-badge <?php echo strtolower(htmlspecialchars($row['status'])); ?>">
-                        <?php echo htmlspecialchars($row['status']); ?>
-                    </span></td>
-                <td><?php echo htmlspecialchars($row['booking_date']); ?></td>
-                <td><?php echo number_format($row['total_price'], 2); ?> EGP</td>
-                <td><?php echo number_format($row['total_price'] * 0.15, 2); ?> EGP</td>
-            </tr>
-            <?php
+            $status_class = '';
+            switch (strtolower($row['status'])) {
+                case 'upcoming': $status_class = 'status-upcoming'; break;
+                case 'ongoing': $status_class = 'status-ongoing'; break;
+                case 'completed': $status_class = 'status-completed'; break;
+                case 'canceled': $status_class = 'status-canceled'; break;
+                default: $status_class = 'status-upcoming'; break;
+            }
+            echo '<tr>';
+            echo '<td>' . htmlspecialchars($row['booking_id']) . '</td>';
+            echo '<td><a href="../profile.php?user_id=' . htmlspecialchars($row['user_id']) . '">' . htmlspecialchars($row['user_name']) . '</a></td>';
+            echo '<td><a href="../workspace_details.php?ws_id=' . htmlspecialchars($row['workspace_id']) . '">' . htmlspecialchars($row['workspace_name']) . '</a></td>';
+            echo '<td><span class="status-badge ' . $status_class . '">' . htmlspecialchars($row['status']) . '</span></td>';
+            echo '<td>' . htmlspecialchars($row['booking_date']) . '</td>';
+            echo '<td>' . number_format($row['total_price'], 2) . ' EGP</td>';
+            echo '<td>' . number_format($row['total_price'] * 0.20, 2) . ' EGP</td>';
+            echo '</tr>';
         }
     } else {
         echo '<tr><td colspan="7" class="text-center">No bookings found</td></tr>';
@@ -86,136 +87,351 @@ if (isset($_POST['search'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bookings List</title>
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="./css/users-list.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
+        :root {
+            --primary-color: #071739;
+            --secondary-color: #4B6382;
+            --info-color: #A4B5C4;
+            --light-color: #CDD5DB;
+            --accent-warm: #A68868;
+            --accent-light: #E3C39D;
         }
 
-        .status-badge.confirmed {
-            background-color: #d4edda;
-            color: #155724;
+        body {
+            background-color: #f8f9fa;
+            font-family: 'DM Sans', sans-serif;
         }
 
-        .status-badge.pending {
-            background-color: #fff3cd;
-            color: #856404;
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
         }
 
-        .status-badge.cancelled {
-            background-color: #f8d7da;
-            color: #721c24;
+        .main-content.expanded {
+            margin-left: 70px;
         }
 
         .table-container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            background: #fff;
             padding: 20px;
-            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
 
-        .page-title {
-            color: #333;
+        .table-container h4 {
+            color: var(--primary-color);
             font-weight: 600;
             margin-bottom: 20px;
         }
 
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 12px;
+            border: none;
+        }
+
+        .table tbody td {
+            padding: 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--light-color);
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--light-color);
+        }
+
+        .table a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .table a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .status-upcoming { background-color: var(--info-color); color: var(--primary-color); }
+        .status-ongoing { background-color: var(--accent-light); color: var(--primary-color); }
+        .status-completed { background-color: var(--secondary-color); color: white; }
+        .status-canceled { background-color: var(--accent-warm); color: white; }
+
+        h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
         .search-wrapper {
             margin-bottom: 20px;
+            position: relative;
         }
 
         .search-wrapper input {
             border-radius: 20px;
             padding: 10px 20px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--light-color);
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s ease;
         }
 
-        .sort-dropdown {
-            margin-left: 10px;
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(75, 99, 130, 0.1);
         }
 
-        .sort-dropdown .btn {
+        .sort-dropdown select {
             border-radius: 20px;
             padding: 8px 15px;
+            border: 1px solid var(--light-color);
+            background-color: white;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .sort-icon {
-            margin-left: 5px;
+        .sort-dropdown select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(75, 99, 130, 0.1);
+        }
+
+        .controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+          .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: var(--primary-color);
+            padding: 20px;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .toggle-sidebar:hover {
+            color: var(--accent-light);
+        }
+
+        .sidebar.collapsed .sidebar-header h3,
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .main-content.expanded {
+                margin-left: 0;
+            }
+
+            .toggle-sidebar {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1002;
+                background-color: var(--primary-color);
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+            }
+
+            .toggle-sidebar.collapsed {
+                left: 20px;
+            }
+
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-wrapper input {
+                max-width: 100%;
+            }
+
+            .sort-dropdown select {
+                width: 100%;
+            }
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-warm);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="page-title">Bookings List</h1>
-                <div class="controls-container d-flex align-items-center">
-                    <div class="search-wrapper flex-grow-1">
-                        <input type="text" id="searchText" class="form-control"
-                            placeholder="Search by user name, workspace name, booking ID or date...">
+    <div class="main-content" id="mainContent">
+        <div class="container-fluid">
+            <h2><i class="fas fa-calendar-check"></i> Bookings List</h2>
+            
+            <div class="table-container">
+                <div class="controls-container">
+                    <div class="search-wrapper">
+                        <input type="text" id="searchText" class="form-control" placeholder="Search bookings...">
                     </div>
                     <div class="sort-dropdown">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Sort By
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li><a class="dropdown-item" href="?sort=price_asc">Price (Low to High)</a></li>
-                                <li><a class="dropdown-item" href="?sort=price_desc">Price (High to Low)</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="?sort=date_asc">Booking Date (Earliest)</a></li>
-                                <li><a class="dropdown-item" href="?sort=date_desc">Booking Date (Latest)</a></li>
-                            </ul>
-                        </div>
+                        <select class="form-select" id="sortSelect">
+                            <option value="date_desc">Date (Newest First)</option>
+                            <option value="date_asc">Date (Oldest First)</option>
+                            <option value="price_desc">Price (High to Low)</option>
+                            <option value="price_asc">Price (Low to High)</option>
+                        </select>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="table-container">
-                    <table class="table">
+                
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>Booking ID</th>
-                                <th>User Name</th>
-                                <th>Workspace Name</th>
+                                <th>Customer</th>
+                                <th>Workspace</th>
                                 <th>Status</th>
-                                <th>Booking Date
-                                    <?php if ($sort == 'date_asc'): ?>
-                                        <i class="sort-icon">↑</i>
-                                    <?php elseif ($sort == 'date_desc'): ?>
-                                        <i class="sort-icon">↓</i>
-                                    <?php endif; ?>
-                                </th>
-                                <th>Total Fees
-                                    <?php if ($sort == 'price_asc'): ?>
-                                        <i class="sort-icon">↑</i>
-                                    <?php elseif ($sort == 'price_desc'): ?>
-                                        <i class="sort-icon">↓</i>
-                                    <?php endif; ?>
-                                </th>
-                                <th>Profit (15%)</th>
+                                <th>Date</th>
+                                <th>Total Price</th>
+                                <th>Admin Profit (20%)</th>
                             </tr>
                         </thead>
-                        <tbody id="usersTable">
+                        <tbody id="bookingsTableBody">
                             <?php
                             if (mysqli_num_rows($run_select) > 0) {
                                 foreach ($run_select as $row) {
@@ -228,13 +444,12 @@ if (isset($_POST['search'])) {
                                         <td><a href="../workspace_details.php?ws_id=<?php echo $row['workspace_id']; ?>">
                                                 <?php echo htmlspecialchars($row['workspace_name']); ?>
                                             </a></td>
-                                        <td><span
-                                                class="status-badge <?php echo strtolower(htmlspecialchars($row['status'])); ?>">
+                                        <td><span class="status-badge <?php echo strtolower(htmlspecialchars($row['status'])); ?>">
                                                 <?php echo htmlspecialchars($row['status']); ?>
                                             </span></td>
                                         <td><?php echo htmlspecialchars($row['booking_date']); ?></td>
-                                        <td><?php echo number_format($row['total_price']); ?> EGP</td>
-                                        <td><?php echo number_format($row['total_price'] * 0.15); ?> EGP</td>
+                                        <td><?php echo number_format($row['total_price'], 2); ?> EGP</td>
+                                        <td><?php echo number_format($row['total_price'] * 0.20, 2); ?> EGP</td>
                                     </tr>
                                     <?php
                                 }
@@ -249,42 +464,46 @@ if (isset($_POST['search'])) {
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sidebar.js"></script>
     <script>
-        $(document).ready(function () {
-            // Dynamic search with debounce
-            var searchTimeout;
-            $("#searchText").on("input", function () {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(function () {
-                    var searchText = $(this).val();
-                    if (searchText.length === 0) {
-                        // If search is empty, reload the full page to reset
-                        location.reload();
-                        return;
+        $(document).ready(function() {
+            // Search functionality
+            $("#searchText").on("keyup", function() {
+                var searchText = $(this).val();
+                var sortValue = $("#sortSelect").val();
+                
+                $.ajax({
+                    url: "bookings_list.php",
+                    method: "POST",
+                    data: {
+                        search: true,
+                        text: searchText,
+                        sort: sortValue
+                    },
+                    success: function(response) {
+                        $("#bookingsTableBody").html(response);
                     }
+                });
+            });
 
-                    $.ajax({
-                        url: "<?php echo $_SERVER['PHP_SELF']; ?>",
-                        type: "POST",
-                        data: {
-                            text: searchText,
-                            search: true
-                        },
-                        beforeSend: function () {
-                            $("#usersTable").html('<tr><td colspan="7" class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>');
-                        },
-                        success: function (data) {
-                            $("#usersTable").html(data);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Search error:", error);
-                            $("#usersTable").html('<tr><td colspan="7" class="text-center">Error loading results</td></tr>');
-                        }
-                    });
-                }.bind(this), 300);
+            // Sort functionality
+            $("#sortSelect").on("change", function() {
+                var searchText = $("#searchText").val();
+                var sortValue = $(this).val();
+                
+                $.ajax({
+                    url: "bookings_list.php",
+                    method: "POST",
+                    data: {
+                        search: true,
+                        text: searchText,
+                        sort: sortValue
+                    },
+                    success: function(response) {
+                        $("#bookingsTableBody").html(response);
+                    }
+                });
             });
         });
     </script>

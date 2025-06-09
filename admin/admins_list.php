@@ -2,6 +2,7 @@
 // include "connection.php";
 
 include '../mail.php';
+include "sidebar.php";
 
 // Handle Add Admin
 if (isset($_POST['add_admin'])) {
@@ -125,67 +126,372 @@ $run_select = mysqli_query($connect, $select_users);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin List</title>
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="./css/users-list.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Admins List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        :root {
+            --primary-color: #071739;
+            --secondary-color: #4B6382;
+            --info-color: #A4B5C4;
+            --light-color: #CDD5DB;
+            --accent-warm: #A68868;
+            --accent-light: #E3C39D;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        .table-container {
+            width: 100%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .table-container h4 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 12px;
+            border: none;
+        }
+        .table tbody td {
+            padding: 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--light-color);
+        }
+        .table tbody tr:hover {
+            background-color: var(--light-color);
+        }
+        .table a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .table a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+            min-width: 100px;
+        }
+        .status-active { background-color: var(--secondary-color); color: white; }
+        .controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .table-container {
+                padding: 10px;
+            }
+        }
+        .action-buttons a.btn {
+            border-radius: 20px !important;
+            padding: 6px 18px !important;
+            font-size: 0.95rem !important;
+            font-weight: 500 !important;
+            margin-right: 6px;
+            transition: all 0.2s;
+            box-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .action-buttons .btn-danger {
+            background-color: #d9534f !important;
+            color: white !important;
+            border: none !important;
+        }
+        .action-buttons .btn-danger:hover {
+            background-color: #b52a1d !important;
+            color: #fff !important;
+        }
+        .search-wrapper input {
+            border-radius: 20px;
+            padding: 10px 20px;
+            border: 1px solid var(--light-color);
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s ease;
+        }
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(75, 99, 130, 0.1);
+        }
+        #addAdminBtn {
+            border-radius: 20px;
+            padding: 10px 28px;
+            font-weight: 600;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            transition: all 0.2s;
+            box-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #addAdminBtn:hover, #addAdminBtn:focus {
+            background-color: var(--secondary-color);
+            color: #fff;
+        }
+         .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: var(--primary-color);
+            padding: 20px;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
 
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .toggle-sidebar:hover {
+            color: var(--accent-light);
+        }
+
+        .sidebar.collapsed .sidebar-header h3,
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .main-content.expanded {
+                margin-left: 0;
+            }
+
+            .toggle-sidebar {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1002;
+                background-color: var(--primary-color);
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+            }
+
+            .toggle-sidebar.collapsed {
+                left: 20px;
+            }
+
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-wrapper input {
+                max-width: 100%;
+            }
+
+            .sort-dropdown select {
+                width: 100%;
+            }
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-warm);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="page-title">Admins List</h1>
+    <div class="main-content" id="mainContent">
+        <div class="container-fluid">
+            <h2><i class="fas fa-user-shield"></i> Admins List</h2>
                 <div class="controls-container">
                     <div class="search-wrapper">
                         <input type="text" id="searchText" class="form-control" placeholder="Search by name, email or phone...">
-                    </div>
-                    <button id="addAdminBtn" class="btn btn-primary">Add Admin</button>
                 </div>
+                <button id="addAdminBtn" class="btn btn-primary" style="border-radius: 20px; padding: 8px 24px; font-weight: 500;"><i class="fas fa-user-plus"></i> Add Admin</button>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
                 <div class="table-container">
-                    <table class="table">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="usersTable">
+                        <tbody id="adminsTable">
                             <?php
                             $counter = 1;
                             if (mysqli_num_rows($run_select) > 0) {
                                 foreach ($run_select as $row) {
-                                    ?>
-                                    <tr>
-                                        <td><?php echo $counter++; ?></td>
-                                        <td><?php echo htmlspecialchars($row['name']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['phone']); ?></td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <a href="?action=delete&id=<?php echo $row['user_id']; ?>" class="btn btn-danger btn-sm delete-btn">Delete</a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <?php
+                                    $status_class = 'status-badge status-active';
+                                    echo '<tr>';
+                                    echo '<td>' . $counter++ . '</td>';
+                                    echo '<td><a href="../profile.php?user_id=' . htmlspecialchars($row['user_id']) . '">' . htmlspecialchars($row['name']) . '</a></td>';
+                                    echo '<td>' . htmlspecialchars($row['email']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row['phone']) . '</td>';
+                                    echo '<td><span class="' . $status_class . '">Active</span></td>';
+                                    echo '<td>';
+                                    echo '<div class="action-buttons">';
+                                    echo '<a href="?action=delete&id=' . htmlspecialchars($row['user_id']) . '" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</a>';
+                                    echo '</div>';
+                                    echo '</td>';
+                                    echo '</tr>';
                                 }
                             } else {
-                                echo '<tr><td colspan="5" class="text-center">No users found</td></tr>';
+                                echo '<tr><td colspan="5" class="text-center">No admins found</td></tr>';
                             }
                             ?>
                         </tbody>
@@ -194,7 +500,8 @@ $run_select = mysqli_query($connect, $select_users);
             </div>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sidebar.js"></script>
     <script>
         $(document).ready(function () {
             // Add Admin Button Click Handler
@@ -213,8 +520,7 @@ $run_select = mysqli_query($connect, $select_users);
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone</label>
-                                <input type="tel" class="form-control" id="phone" name="phone" 
-                                       pattern="[0-9]{11}" title="Please enter exactly 11 digits" required>
+                                <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{11}" title="Please enter exactly 11 digits" required>
                             </div>
                         </form>
                     `,
@@ -222,11 +528,15 @@ $run_select = mysqli_query($connect, $select_users);
                     confirmButtonText: 'Add Admin',
                     cancelButtonText: 'Cancel',
                     focusConfirm: false,
+                    customClass: {
+                        popup: 'swal2-popup',
+                        confirmButton: 'swal2-confirm',
+                        cancelButton: 'swal2-cancel'
+                    },
                     preConfirm: () => {
                         const name = Swal.getPopup().querySelector('#name').value.trim();
                         const email = Swal.getPopup().querySelector('#email').value.trim();
                         const phone = Swal.getPopup().querySelector('#phone').value.trim();
-
                         if (!name) {
                             Swal.showValidationMessage('Name is required');
                             return false;
@@ -251,7 +561,6 @@ $run_select = mysqli_query($connect, $select_users);
                             Swal.showValidationMessage('Phone must contain only numbers');
                             return false;
                         }
-
                         return { name, email, phone };
                     }
                 }).then((result) => {
@@ -263,7 +572,6 @@ $run_select = mysqli_query($connect, $select_users);
                                 Swal.showLoading();
                             }
                         });
-                        
                         // First check if email exists via AJAX
                         $.ajax({
                             url: 'check_email.php',
@@ -327,45 +635,76 @@ $run_select = mysqli_query($connect, $select_users);
                     type: "POST",
                     data: { text: searchText, search: true },
                     success: function (data) {
-                        var results = $(data).find("#usersTable").html();
-                        $("#usersTable").html(results);
+                        var results = $(data).find("#adminsTable").html();
+                        $("#adminsTable").html(results);
                     }
                 });
             });
 
-            // SweetAlert confirmation for delete buttons
-            $(document).on('click', '.delete-btn', function (e) {
+            // SweetAlert2 confirmation for delete buttons
+            $(document).on('click', '.btn-danger', function(e) {
                 e.preventDefault();
                 var deleteUrl = $(this).attr('href');
-
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    text: "This admin will be permanently deleted!",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-warm').trim() || '#A68868',
+                    cancelButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--light-color').trim() || '#CDD5DB',
+                    confirmButtonText: 'Yes, delete',
+                    cancelButtonText: 'Cancel',
+                    customClass: {
+                        popup: 'swal2-popup',
+                        confirmButton: 'swal2-confirm',
+                        cancelButton: 'swal2-cancel'
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = deleteUrl;
                     }
                 });
             });
-
-            <?php if (isset($_SESSION['delete_status'])): ?>
-                Swal.fire({
-                    icon: '<?php echo $_SESSION['delete_status']; ?>',
-                    title: '<?php echo $_SESSION['delete_message']; ?>',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-                <?php
-                unset($_SESSION['delete_status']);
-                unset($_SESSION['delete_message']);
-                ?>
-            <?php endif; ?>
         });
     </script>
+    <style>
+        .swal2-popup {
+            font-family: 'DM Sans', sans-serif;
+            border-radius: 10px;
+        }
+        .swal2-title {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .swal2-html-container {
+            color: var(--secondary-color);
+        }
+        .swal2-confirm {
+            background-color: var(--accent-warm) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 5px !important;
+            padding: 10px 20px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+        }
+        .swal2-confirm:hover {
+            background-color: var(--accent-light) !important;
+            color: var(--primary-color) !important;
+        }
+        .swal2-cancel {
+            background-color: var(--light-color) !important;
+            color: var(--primary-color) !important;
+            border: none !important;
+            border-radius: 5px !important;
+            padding: 10px 20px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+        }
+        .swal2-cancel:hover {
+            background-color: var(--info-color) !important;
+            color: white !important;
+        }
+    </style>
 </body>
 </html>

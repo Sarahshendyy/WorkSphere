@@ -434,7 +434,7 @@ function showAlert(message, type) {
 </html>
 <?php
 } else {
-    header("location:index.php");
+    // header("location:index.php");
     exit;
 }
 ?>

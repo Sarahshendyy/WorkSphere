@@ -1,6 +1,7 @@
 <?php
 
 include '../mail.php';
+include "sidebar.php";
 
 // Handle "Hold" action
 if (isset($_GET['action']) && $_GET['action'] == 'hold' && isset($_GET['id'])) {
@@ -16,29 +17,26 @@ if (isset($_GET['action']) && $_GET['action'] == 'hold' && isset($_GET['id'])) {
     $update_status = "UPDATE `users` SET `action` = 'hold' WHERE `user_id` = $user_id";
     if (mysqli_query($connect, $update_status)) {
         // Send email notification
-        $message = " 
-        <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
-            <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                <h1>Account Status Update: <span style='color: #fda521;'>On Hold</span></h1>
+        $message = "
+        <body style='font-family: DM Sans, Arial, sans-serif; margin: 0; padding: 0; background-color: #CDD5DB; color: #071739;'>
+            <div style='background-color: #071739; padding: 20px; text-align: center; color: #E3C39D;'>
+                <h1 style='margin: 0; font-size: 2rem;'>Account Status Update: <span style='color: #A68868;'>On Hold</span></h1>
             </div>
-            <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
-                <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$name</span>,</p>
-                <p style='color: #00000a;'>We regret to inform you that your WorkSphere account has been temporarily placed on hold by our administration team.</p>
-                
-                <p style='color: #00000a;'><strong>What this means:</strong></p>
+            <div style='padding: 20px; background-color: #fff; color: #071739;'>
+                <p>Dear <span style='color: #A68868;'>$name</span>,</p>
+                <p>We regret to inform you that your WorkSphere account has been temporarily placed on hold by our administration team.</p>
+                <p><strong>What this means:</strong></p>
                 <ul>
-                    <li style='color: #00000a'>You won't be able to access certain platform features</li>
-                    <li style='color: #00000a'>You'll receive further communication about next steps</li>
+                    <li>You won't be able to access certain platform features</li>
+                    <li>You'll receive further communication about next steps</li>
                 </ul>
-                
-                <p style='color: #00000a;'>If you believe this action was taken in error or would like to appeal this decision, please contact our support team immediately.</p>
-                
-                <p style='color: #fda521;'>We hope to resolve this matter soon.</p>
-                <p style='color: #00000a;'>Best regards,<br>The WorkSphere Admin Team</p>
+                <p>If you believe this action was taken in error or would like to appeal this decision, please contact our support team immediately.</p>
+                <p style='color: #E3C39D;'>We hope to resolve this matter soon.</p>
+                <p>Best regards,<br>The WorkSphere Admin Team</p>
             </div>
-            <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
-                <p style='color: #fffffa;'>For support or questions, please contact:</p>
-                <p style='color: #fffffa;'>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #fda521;'>admin-support@worksphere04@gmail.com</a></p>
+            <div style='background-color: #4B6382; padding: 10px; text-align: center; color: #fff;'>
+                <p>For support or questions, please contact:</p>
+                <p>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #A68868;'>admin-support@worksphere04@gmail.com</a></p>
             </div>
         </body>";
         
@@ -71,29 +69,26 @@ if (isset($_GET['action']) && $_GET['action'] == 'unhold' && isset($_GET['id']))
     $update_status = "UPDATE `users` SET `action` = 'active' WHERE `user_id` = $user_id";
     if (mysqli_query($connect, $update_status)) {
         // Send email notification
-        $message = " 
-        <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
-            <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                <h1>Account Status Update: <span style='color: #fda521;'>Reactivated</span></h1>
+        $message = "
+        <body style='font-family: DM Sans, Arial, sans-serif; margin: 0; padding: 0; background-color: #CDD5DB; color: #071739;'>
+            <div style='background-color: #071739; padding: 20px; text-align: center; color: #E3C39D;'>
+                <h1 style='margin: 0; font-size: 2rem;'>Account Status Update: <span style='color: #A68868;'>Reactivated</span></h1>
             </div>
-            <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
-                <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$name</span>,</p>
-                <p style='color: #00000a;'>We're pleased to inform you that your WorkSphere account has been reactivated and all restrictions have been lifted.</p>
-                
-                <p style='color: #00000a;'><strong>What this means:</strong></p>
+            <div style='padding: 20px; background-color: #fff; color: #071739;'>
+                <p>Dear <span style='color: #A68868;'>$name</span>,</p>
+                <p>We're pleased to inform you that your WorkSphere account has been reactivated and all restrictions have been lifted.</p>
+                <p><strong>What this means:</strong></p>
                 <ul>
-                    <li style='color: #00000a'>Full access to all platform features has been restored</li>
-                    <li style='color: #00000a'>You can continue using WorkSphere as normal</li>
+                    <li>Full access to all platform features has been restored</li>
+                    <li>You can continue using WorkSphere as normal</li>
                 </ul>
-                
-                <p style='color: #00000a;'>We appreciate your patience and understanding during this process.</p>
-                
-                <p style='color: #fda521;'>Welcome back to WorkSphere!</p>
-                <p style='color: #00000a;'>Best regards,<br>The WorkSphere Admin Team</p>
+                <p>We appreciate your patience and understanding during this process.</p>
+                <p style='color: #E3C39D;'>Welcome back to WorkSphere!</p>
+                <p>Best regards,<br>The WorkSphere Admin Team</p>
             </div>
-            <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
-                <p style='color: #fffffa;'>For any questions, please contact:</p>
-                <p style='color: #fffffa;'>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #fda521;'>admin-support@worksphere04@gmail.com</a></p>
+            <div style='background-color: #4B6382; padding: 10px; text-align: center; color: #fff;'>
+                <p>For any questions, please contact:</p>
+                <p>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #A68868;'>admin-support@worksphere04@gmail.com</a></p>
             </div>
         </body>";
         
@@ -126,29 +121,25 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     $delete_user = "DELETE FROM `users` WHERE `user_id` = $user_id";
     if (mysqli_query($connect, $delete_user)) {
         // Send email notification
-        $message = " 
-        <body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #fffffa; color: #00000a;'>
-            <div style='background-color: #0a7273; padding: 20px; text-align: center; color: #fffffa;'>
-                <h1>Account Status Update: <span style='color: #fda521;'>Deleted</span></h1>
+        $message = "
+        <body style='font-family: DM Sans, Arial, sans-serif; margin: 0; padding: 0; background-color: #CDD5DB; color: #071739;'>
+            <div style='background-color: #071739; padding: 20px; text-align: center; color: #E3C39D;'>
+                <h1 style='margin: 0; font-size: 2rem;'>Account Status Update: <span style='color: #A68868;'>Deleted</span></h1>
             </div>
-            <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
-                <p style='color: #00000a;'>Dear <span style='color: #fda521;'>$name</span>,</p>
-                <p style='color: #00000a;'>This is to formally notify you that your WorkSphere account has been permanently deleted from our system.</p>
-                
-                <p style='color: #00000a;'><strong>What this means:</strong></p>
+            <div style='padding: 20px; background-color: #fff; color: #071739;'>
+                <p>Dear <span style='color: #A68868;'>$name</span>,</p>
+                <p>This is to formally notify you that your WorkSphere account has been permanently deleted from our system.</p>
+                <p><strong>What this means:</strong></p>
                 <ul>
-                    <li style='color: #00000a'>All your account data has been removed from our platform</li>
-                   
+                    <li>All your account data has been removed from our platform</li>
                 </ul>
-                
-                <p style='color: #00000a;'>If you believe this action was taken in error, please contact our support team immediately as we may be able to restore your account within a limited time frame.</p>
-                
-                <p style='color: #00000a;'>We appreciate the time you spent with WorkSphere.</p>
-                <p style='color: #00000a;'>Best regards,<br>The WorkSphere Admin Team</p>
+                <p>If you believe this action was taken in error, please contact our support team immediately as we may be able to restore your account within a limited time frame.</p>
+                <p>We appreciate the time you spent with WorkSphere.</p>
+                <p>Best regards,<br>The WorkSphere Admin Team</p>
             </div>
-            <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
-                <p style='color: #fffffa;'>For urgent matters, please contact:</p>
-                <p style='color: #fffffa;'>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #fda521;'>admin-support@worksphere04@gmail.com</a></p>
+            <div style='background-color: #4B6382; padding: 10px; text-align: center; color: #fff;'>
+                <p>For urgent matters, please contact:</p>
+                <p>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #A68868;'>admin-support@worksphere04@gmail.com</a></p>
             </div>
         </body>";
         
@@ -168,36 +159,41 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
 }
 // Check if it's a search or filter request
 $filter_role = isset($_POST['filter_role']) ? $_POST['filter_role'] : '';
-//the search 
+$sort = isset($_POST['sort']) ? $_POST['sort'] : '';
+$order_by = '';
+if ($sort === 'bookings_asc') {
+    $order_by = ' ORDER BY total_bookings ASC';
+} else {
+    $order_by = ' ORDER BY total_bookings DESC';
+}
 
 if (isset($_POST['search']) && !empty($_POST['text'])) {
     $text = mysqli_real_escape_string($connect, $_POST['text']);
-
-    $select_users = "SELECT `users`.`user_id`, `users`.`name`, `users`.`email`, `role`.`role_id`,`role`.`role_name`, 
+    $select_users = "SELECT `users`.`user_id`, `users`.`name`, `users`.`email`, `users`.`phone`, `role`.`role_id`,`role`.`role_name`, 
            (SELECT COUNT(*) FROM `bookings` WHERE `bookings`.`user_id` = `users`.`user_id`) AS total_bookings,
            `users`.`action`
     FROM `users`
     JOIN `role` ON `users`.`role_id` = `role`.`role_id`
-    WHERE `users`.`role_id` != '4' AND (`users`.`name` LIKE '%$text%' OR `users`.`email` LIKE '%$text%')";
-
+    WHERE `users`.`role_id` != '4' AND (`users`.`name` LIKE '%$text%' OR `users`.`email` LIKE '%$text%')
+    $order_by";
 } elseif (!empty($filter_role)) {
     // Filter by role
-
-    $select_users = "SELECT `users`.`user_id`, `users`.`name`, `users`.`email`, `role`.`role_id`,`role`.`role_name`, 
+    $select_users = "SELECT `users`.`user_id`, `users`.`name`, `users`.`email`, `users`.`phone`, `role`.`role_id`,`role`.`role_name`, 
            (SELECT COUNT(*) FROM `bookings` WHERE `bookings`.`user_id` = `users`.`user_id`) AS total_bookings,
            `users`.`action`
     FROM `users`
     JOIN `role` ON `users`.`role_id` = `role`.`role_id`
-    WHERE `users`.`role_id` != '4' AND `role`.`role_name` = '$filter_role'";
-
+    WHERE `users`.`role_id` != '4' AND `role`.`role_name` = '$filter_role'
+    $order_by";
 } else {
     // Default query to fetch all users
-    $select_users = "SELECT `users`.`user_id`, `users`.`name`, `users`.`email`, `role`.`role_id`,`role`.`role_name`, 
+    $select_users = "SELECT `users`.`user_id`, `users`.`name`, `users`.`email`, `users`.`phone`, `role`.`role_id`,`role`.`role_name`, 
            (SELECT COUNT(*) FROM `bookings` WHERE `bookings`.`user_id` = `users`.`user_id`) AS total_bookings,
            `users`.`action`
     FROM `users`
     JOIN `role` ON `users`.`role_id` = `role`.`role_id`
-    WHERE `users`.`role_id` != '4'";
+    WHERE `users`.`role_id` != '4'
+    $order_by";
 }
 
 $run_select = mysqli_query($connect, $select_users);
@@ -209,53 +205,349 @@ $run_select = mysqli_query($connect, $select_users);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users List</title>
-    <!-- Link Bootstrap (keep it for grid and base styles) -->
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <!-- Link Your Custom CSS -->
-    <link rel="stylesheet" href="./css/users-list.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Include jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #071739;
+            --secondary-color: #4B6382;
+            --info-color: #A4B5C4;
+            --light-color: #CDD5DB;
+            --accent-warm: #A68868;
+            --accent-light: #E3C39D;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s ease, padding 0.3s ease;
+            min-height: 100vh;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        .table-container {
+            width: 100%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .table-container h4 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 8px 6px;
+            font-size: 0.97rem;
+            min-width: 90px;
+            border: none;
+        }
+        .table tbody td {
+            padding: 8px 6px;
+            font-size: 0.97rem;
+            min-width: 90px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--light-color);
+        }
+        .table tbody tr:hover {
+            background-color: var(--light-color);
+        }
+        .table a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .table a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+            min-width: 100px;
+        }
+        .status-hold { background-color: var(--accent-warm); color: white; }
+        .status-active { background-color: var(--secondary-color); color: white; }
+        .controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 991px) {
+            .main-content,
+            .main-content.expanded {
+                margin-left: 0 !important;
+                padding: 10px;
+            }
+        }
+        .container-fluid {
+            width: 100%;
+            padding: 0;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .action-buttons a.btn {
+            border-radius: 20px !important;
+            padding: 6px 18px !important;
+            font-size: 0.95rem !important;
+            font-weight: 500 !important;
+            margin-right: 6px;
+            transition: all 0.2s;
+            box-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .action-buttons .btn-warning {
+            background-color: var(--accent-warm) !important;
+            color: white !important;
+            border: none !important;
+        }
+        .action-buttons .btn-warning:hover {
+            background-color: var(--accent-light) !important;
+            color: var(--primary-color) !important;
+        }
+        .action-buttons .btn-success {
+            background-color: var(--secondary-color) !important;
+            color: white !important;
+            border: none !important;
+        }
+        .action-buttons .btn-success:hover {
+            background-color: var(--info-color) !important;
+            color: var(--primary-color) !important;
+        }
+        .action-buttons .btn-danger {
+            background-color: #d9534f !important;
+            color: white !important;
+            border: none !important;
+        }
+        .action-buttons .btn-danger:hover {
+            background-color: #b52a1d !important;
+            color: #fff !important;
+        }
+         .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: var(--primary-color);
+            padding: 20px;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .toggle-sidebar:hover {
+            color: var(--accent-light);
+        }
+
+        .sidebar.collapsed .sidebar-header h3,
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .main-content.expanded {
+                margin-left: 0;
+            }
+
+            .toggle-sidebar {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1002;
+                background-color: var(--primary-color);
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+            }
+
+            .toggle-sidebar.collapsed {
+                left: 20px;
+            }
+
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-wrapper input {
+                max-width: 100%;
+            }
+
+            .sort-dropdown select {
+                width: 100%;
+            }
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-warm);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="page-title">Users List</h1>
-
-                <!-- Controls Container -->
-                <div class="controls-container">
-                    <div class="search-wrapper">
-                         <input type="text" id="searchText" class="form-control" placeholder="Search by name or email...">
-                    </div>
-                   <div class="filter-wrapper">
-                        <select id="filterRole" class="form-select"> 
-                            <option value="">All Roles</option>
-                            <option value="Employee">Employee</option>
-                            <option value="Company">Company</option>
-                            <option value="Workspace-owner">Workspace-owner</option>
-                        </select>
-                    </div>
+    <div class="main-content" id="mainContent">
+        <div class="container-fluid">
+            <h2><i class="fas fa-users"></i> Users List</h2>
+            <div class="controls-container">
+                <div class="search-wrapper">
+                    <input type="text" id="searchText" class="form-control" placeholder="Search by name or email...">
+                </div>
+                <div class="sort-dropdown">
+                    <select class="form-select" id="sortSelect">
+                        <option value="bookings_desc">Bookings (High to Low)</option>
+                        <option value="bookings_asc">Bookings (Low to High)</option>
+                    </select>
                 </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="table-container">
-                    <table class="table">
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Role</th>
-                                <th>Bookings</th> 
+                                <th>Bookings</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -265,41 +557,28 @@ $run_select = mysqli_query($connect, $select_users);
                             $counter = 1;
                             if (mysqli_num_rows($run_select) > 0) {
                                 foreach ($run_select as $row) {
-                                    $status_class = $row['action'] == 'hold' ? 'status-hold' : 'status-active';
-                            ?>
-                                    <tr>
-                                        <td><?php echo $counter++; ?></td>
-                                        <td>
-                                            <a href="../profile.php?user_id=<?php echo $row['user_id']; ?>">
-                                                <?php echo htmlspecialchars($row['name']); ?>
-                                            </a>
-                                        </td>
-                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['role_name']); ?></td>
-                                        <td>
-                                            <?php
-                                            // Display total bookings only for users with role_id 1 or 2
-                                            if ($row['role_id'] == '1' || $row['role_id'] == '2') {
-                                                echo $row['total_bookings'];
-                                            } else {
-                                                echo '-';
-                                            }
-                                            ?>
-                                        </td>
-                                         <td><span class="status <?php echo $status_class; ?>"><?php echo htmlspecialchars($row['action']); ?></span></td>
-                                        <td>
-                                             <div class="action-buttons"> <?php // Wrapper for buttons ?>
-                                                <?php if ($row['action'] == 'hold') { ?>
-                                                    <a href="?action=unhold&id=<?php echo $row['user_id']; ?>" class="btn btn-success btn-sm">Unhold</a>
-                                                <?php } else { ?>
-                                                    <a href="?action=hold&id=<?php echo $row['user_id']; ?>" class="btn btn-warning btn-sm">Hold</a>
-                                                <?php } ?>
-                                                <a href="?action=delete&id=<?php echo $row['user_id']; ?>" class="btn btn-danger btn-sm delete-btn">Delete</a>
-                                             </div>
-                                        </td>
-                                    </tr>
-                            <?php
+                                    $status_class = $row['action'] == 'hold' ? 'status-badge status-hold' : 'status-badge status-active';
+                                    echo '<tr>';
+                                    echo '<td>' . $counter++ . '</td>';
+                                    echo '<td><a href="../profile.php?user_id=' . htmlspecialchars($row['user_id']) . '">' . htmlspecialchars($row['name']) . '</a></td>';
+                                    echo '<td>' . htmlspecialchars($row['email']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($row['role_name']) . '</td>';
+                                    echo '<td>' . (($row['role_id'] == '1' || $row['role_id'] == '2') ? $row['total_bookings'] : '-') . '</td>';
+                                    echo '<td><span class="' . $status_class . '">' . htmlspecialchars($row['action']) . '</span></td>';
+                                    echo '<td>';
+                                    echo '<div class="action-buttons">';
+                                    if ($row['action'] == 'hold') {
+                                        echo '<a href="?action=unhold&id=' . htmlspecialchars($row['user_id']) . '" class="btn btn-success btn-sm"><i class="fas fa-play"></i> Unhold</a> ';
+                                    } else {
+                                        echo '<a href="?action=hold&id=' . htmlspecialchars($row['user_id']) . '" class="btn btn-warning btn-sm"><i class="fas fa-pause"></i> Hold</a> ';
+                                    }
+                                    echo '<a href="?action=delete&id=' . htmlspecialchars($row['user_id']) . '" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</a>';
+                                    echo '</div>';
+                                    echo '</td>';
+                                    echo '</tr>';
                                 }
+                            } else {
+                                echo '<tr><td colspan="7" class="text-center">No users found</td></tr>';
                             }
                             ?>
                         </tbody>
@@ -308,64 +587,45 @@ $run_select = mysqli_query($connect, $select_users);
             </div>
         </div>
     </div>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sidebar.js"></script>
     <script>
-               $(document).ready(function () {
-            // Show SweetAlert notifications from PHP
-            <?php if (isset($_SESSION['swal'])): ?>
-                Swal.fire({
-                    icon: '<?php echo $_SESSION['swal']['icon']; ?>',
-                    title: '<?php echo $_SESSION['swal']['title']; ?>',
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-                <?php unset($_SESSION['swal']); ?>
-            <?php endif; ?>
-
-            // Dynamic search
-            $("#searchText").on("input", function () {
-                var searchText = $(this).val();
-                var filterRole = $("#filterRole").val();
-                $.ajax({
-                    url: "users_list.php",
-                    type: "POST",
-                    data: { text: searchText, search: true, filter_role: filterRole },
-                    success: function (data) {
-                        var results = $(data).find("#usersTable").html();
-                        $("#usersTable").html(results);
-                    }
-                });
-            });
-
-            // Filter by role
-            $("#filterRole").on("change", function () {
-                var filterRole = $(this).val();
+        $(document).ready(function () {
+            // Search and sort functionality
+            function fetchUsers() {
                 var searchText = $("#searchText").val();
+                var sortValue = $("#sortSelect").val();
                 $.ajax({
                     url: "users_list.php",
                     type: "POST",
-                    data: { filter_role: filterRole, search: true, text: searchText },
+                    data: { search: true, text: searchText, sort: sortValue },
                     success: function (data) {
                         var results = $(data).find("#usersTable").html();
                         $("#usersTable").html(results);
                     }
                 });
-            });
+            }
+            $("#searchText").on("input", fetchUsers);
+            $("#sortSelect").on("change", fetchUsers);
 
-            // SweetAlert confirmation for delete buttons
+            // SweetAlert2 confirmation for delete buttons
             $(document).on('click', '.btn-danger', function(e) {
                 e.preventDefault();
                 var deleteUrl = $(this).attr('href');
-                
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    text: "This user will be permanently deleted!",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-warm').trim() || '#A68868',
+                    cancelButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--light-color').trim() || '#CDD5DB',
+                    confirmButtonText: 'Yes, delete',
+                    cancelButtonText: 'Cancel',
+                    customClass: {
+                        popup: 'swal2-popup',
+                        confirmButton: 'swal2-confirm',
+                        cancelButton: 'swal2-cancel'
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = deleteUrl;
@@ -373,20 +633,26 @@ $run_select = mysqli_query($connect, $select_users);
                 });
             });
 
-            // SweetAlert confirmation for hold/unhold buttons
+            // SweetAlert2 confirmation for hold/unhold buttons
             $(document).on('click', '.btn-success, .btn-warning', function(e) {
                 e.preventDefault();
                 var actionUrl = $(this).attr('href');
-                var actionText = $(this).hasClass('btn-success') ? 'unhold' : 'hold';
-                
+                var isUnhold = $(this).hasClass('btn-success');
+                var actionText = isUnhold ? 'activate' : 'place on hold';
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: `Are you sure you want to ${actionText} this user?`,
-                    icon: 'question',
+                    title: isUnhold ? 'Activate User?' : 'Place User on Hold?',
+                    text: isUnhold ? 'This will activate the user.' : 'This will place the user on hold.',
+                    icon: isUnhold ? 'success' : 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: `Yes, ${actionText}`
+                    confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-warm').trim() || '#A68868',
+                    cancelButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--light-color').trim() || '#CDD5DB',
+                    confirmButtonText: isUnhold ? 'Yes, activate' : 'Yes, place on hold',
+                    cancelButtonText: 'Cancel',
+                    customClass: {
+                        popup: 'swal2-popup',
+                        confirmButton: 'swal2-confirm',
+                        cancelButton: 'swal2-cancel'
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = actionUrl;
@@ -395,5 +661,91 @@ $run_select = mysqli_query($connect, $select_users);
             });
         });
     </script>
+    <style>
+        .swal2-popup {
+            font-family: 'DM Sans', sans-serif;
+            border-radius: 10px;
+        }
+        .swal2-title {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .swal2-html-container {
+            color: var(--secondary-color);
+        }
+        .swal2-confirm {
+            background-color: var(--accent-warm) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 5px !important;
+            padding: 10px 20px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+        }
+        .swal2-confirm:hover {
+            background-color: var(--accent-light) !important;
+            color: var(--primary-color) !important;
+        }
+        .swal2-cancel {
+            background-color: var(--light-color) !important;
+            color: var(--primary-color) !important;
+            border: none !important;
+            border-radius: 5px !important;
+            padding: 10px 20px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+        }
+        .swal2-cancel:hover {
+            background-color: var(--info-color) !important;
+            color: white !important;
+        }
+        .search-wrapper input {
+            border-radius: 20px;
+            padding: 10px 20px;
+            border: 1px solid var(--light-color);
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s ease;
+        }
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(75, 99, 130, 0.1);
+        }
+        .sort-dropdown select {
+            border-radius: 20px;
+            padding: 8px 15px;
+            border: 1px solid var(--light-color);
+            background-color: white;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .sort-dropdown select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(75, 99, 130, 0.1);
+        }
+        .controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        @media (max-width: 768px) {
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-wrapper input {
+                max-width: 100%;
+            }
+            .sort-dropdown select {
+                width: 100%;
+            }
+        }
+    </style>
 </body>
 </html>
