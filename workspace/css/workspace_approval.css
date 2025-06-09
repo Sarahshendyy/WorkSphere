@@ -1,54 +1,149 @@
-/* General Page Styling */
+
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 20px;
-    text-align: center;
+    background-color: #F9FAFB;
+    color: #071739;
 }
 
-/* Heading */
+
 h2 {
-    color: #333;
+    color: #071739;
     font-size: 28px;
-    margin-bottom: 20px;
+    border-bottom: 2px solid #4B6382;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
 }
 
-/* Workspace Container */
+
 .workspace-container {
-    background: white;
-    padding: 15px;
+    background-color: #CDD5DB;
+    border-left: 5px solid #4B6382;
     border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 15px auto;
-    width: 60%;
-    text-align: left;
-    transition: 0.3s ease-in-out;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-.workspace-container:hover {
-    transform: scale(1.02);
-}
-
-/* Workspace Text */
 .workspace-container p {
-    font-size: 18px;
-    color: #555;
     margin: 5px 0;
-}
-
-/* Approve Button */
-button {
-    background-color: #28a745;
-    color: white;
     font-size: 16px;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
 }
 
-button:hover {
-    background-color: #218838;
+
+.approve-btn {
+    background-color: #4B6382;
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-right: 10px;
+}
+
+.approve-btn:hover {
+    background-color: #35506D;
+}
+
+
+.decline-btn {
+    background-color: #A68868;
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.decline-btn:hover {
+    background-color: #8C6D53;
+}
+
+
+@media (max-width: 600px) {
+    .workspace-container {
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    .approve-btn, .decline-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+.view-btn {
+    background-color: #4B6382;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.view-btn:hover {
+    background-color: #35506D;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: #FFFFFF;
+    padding: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+}
+
+.room-card {
+    background-color: #F0F2F5;
+    border: 1px solid #D1D5DB;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+}
+
+.room-card p {
+    margin: 4px 0;
+    font-size: 15px;
+}
+
+.room-image {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 4px;
 }
