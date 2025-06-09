@@ -299,7 +299,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="chat.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'chat.php' ? 'active' : ''; ?>">
+                <a href="homee.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'chat.php' ? 'active' : ''; ?>">
                     <i class="fas fa-comments"></i>
                     <span>Chat</span>
                 </a>
