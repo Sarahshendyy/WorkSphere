@@ -231,5 +231,6 @@ function sendEmail($to, $subject, $body) {
         </div>
     </div>
     </div>
+    <script src="js/sidebar.js"></script>
 </body>
 </html>
