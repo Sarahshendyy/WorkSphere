@@ -1,6 +1,6 @@
 <?php
 
-include "connection.php";
+include "sidebar.php";
 
 
 $owner_id = $_SESSION['user_id'];
