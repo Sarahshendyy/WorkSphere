@@ -27,9 +27,14 @@
     <a href="about_us.php" class="angled-section get-touch">
       <i class="fas fa-comments me-2"></i> About Us
     </a>
-    <a href="workspaces_list.php" class="angled-section book-tour">
-      <i class="fas fa-calendar-alt me-2"></i> Book a Workspace
-    </a>
+
+    <?php if (!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 3): ?>
+      <a href="workspaces_list.php" class="angled-section book-tour">
+        <i class="fas fa-calendar-alt me-2"></i> Book a Workspace
+      </a>
+    <?php endif; ?>
+
+
   </div>
   <div class="social-icons">
     <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -51,7 +56,13 @@
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 bottom-nav">
         <li class="nav-item"><a class="nav-link" href="indexx.php">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="my_bookings.php">My Bookings</a></li>
+
+        <?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
+          <li class="nav-item"><a class="nav-link" href="./workspace/workspaces_dashboard.php">My Dashboard</a></li>
+        <?php else: ?>
+          <li class="nav-item"><a class="nav-link" href="my_bookings.php">My Bookings</a></li>
+        <?php endif; ?>
+
         <li class="nav-item"><a class="nav-link" href="workspaces_list.php">Workspaces</a></li>
         <li class="nav-item"><a class="nav-link" href="community.php">Community</a></li>
 
