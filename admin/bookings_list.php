@@ -70,7 +70,7 @@ if (isset($_POST['search'])) {
             echo '<td><span class="status-badge ' . $status_class . '">' . htmlspecialchars($row['status']) . '</span></td>';
             echo '<td>' . htmlspecialchars($row['booking_date']) . '</td>';
             echo '<td>' . number_format($row['total_price'], 2) . ' EGP</td>';
-            echo '<td>' . number_format($row['total_price'] * 0.20, 2) . ' EGP</td>';
+            echo '<td>' . number_format($row['total_price'] * 0.15, 2) . ' EGP</td>';
             echo '</tr>';
         }
     } else {
@@ -449,7 +449,7 @@ if (isset($_POST['search'])) {
                                             </span></td>
                                         <td><?php echo htmlspecialchars($row['booking_date']); ?></td>
                                         <td><?php echo number_format($row['total_price'], 2); ?> EGP</td>
-                                        <td><?php echo number_format($row['total_price'] * 0.20, 2); ?> EGP</td>
+                                        <td><?php echo number_format($row['total_price'] * 0.15, 2); ?> EGP</td>
                                     </tr>
                                     <?php
                                 }

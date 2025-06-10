@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 4) {
     exit();
 }
 
-// Handle room status updates
+
 if (isset($_POST['booking_id'])) {
     $booking_id = $_POST['booking_id'];
     $new_status = $_POST['status'];
@@ -16,9 +16,8 @@ if (isset($_POST['booking_id'])) {
     $run_update = mysqli_query($connect, $update_query);
 }
 
-// Get all bookings for admin view
-$bookings_query = "
-    SELECT 
+
+$bookings_query = "SELECT 
         b.booking_id, 
         u.name AS customer_name, 
         w.name AS workspace_name, 
@@ -28,7 +27,7 @@ $bookings_query = "
         b.end_time, 
         b.status, 
         b.total_price,
-        b.total_price * 0.2 AS profit,
+        b.total_price * 0.15 AS profit,
         p.payment_method,
         p.transaction_id
     FROM bookings b
@@ -41,7 +40,7 @@ $bookings_query = "
 
 $bookings_result = mysqli_query($connect, $bookings_query);
 
-// Get booking statistics for all workspaces
+
 $booking_statuses = ["ongoing", "canceled", "upcoming", "completed"];
 $booking_counts = [];
 
@@ -52,9 +51,7 @@ foreach ($booking_statuses as $status) {
     $booking_counts[$status] = $row['count'];
 }
 
-// Get earnings statistics (20% of total_price from all bookings)
-$earnings_query = "
-    SELECT 
+$earnings_query = "SELECT 
         w.workspace_id,
         w.name AS workspace_name,
         SUM(b.total_price) AS total_revenue,
@@ -68,12 +65,12 @@ $earnings_query = "
 
 $earnings_result = mysqli_query($connect, $earnings_query);
 
-// Get total system earnings
+
 $total_earnings_query = "SELECT SUM(total_price) * 0.2 AS total_profit FROM bookings";
 $total_earnings_result = mysqli_query($connect, $total_earnings_query);
 $total_earnings = mysqli_fetch_assoc($total_earnings_result)['total_profit'];
 
-// Get all workspaces for management
+
 $workspaces_query = "SELECT w.*, z.zone_name FROM workspaces w JOIN zone z ON w.zone_id = z.zone_id";
 $workspaces_result = mysqli_query($connect, $workspaces_query);
 ?>
@@ -514,7 +511,6 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
             accentLight: '#E3C39D'
         };
 
-        // Booking Statistics Pie Chart
         var ctx1 = document.getElementById('bookingChart').getContext('2d');
         var bookingChart = new Chart(ctx1, {
             type: 'pie',
@@ -545,7 +541,6 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
             }
         });
 
-        // Earnings by Workspace Bar Chart
         var ctx2 = document.getElementById('earningsChart').getContext('2d');
         var earningsLabels = [];
         var earningsData = [];
