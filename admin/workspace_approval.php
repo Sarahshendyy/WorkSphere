@@ -29,7 +29,7 @@ if (isset($_GET['fetch_rooms']) && isset($_GET['workspace_id'])) {
 
 
 
-include "../mail.php";
+// include "../mail.php";
 include "sidebar.php";
 
 
