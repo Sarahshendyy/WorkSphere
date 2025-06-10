@@ -174,7 +174,8 @@ function sendEmail($to, $subject, $body) {
                                 <p><strong>Status:</strong> ${room.room_status ?? 'N/A'}</p>
                                 <p><strong>Price/hr:</strong> $${room["p/hr"]}</p>
                                 <p><strong>Price/month:</strong> $${room["p/m"]}</p>
-                                ${room.images ? `<img src="../${room.images}" alt="Room Image" class="room-image" />` : ''}
+                               ${room.images ? room.images.split(',').map(img => `<img src="../workspace/${img.trim()}" 
+                               alt="Room Image" class="room-image" />`).join('') : ''}
                             </div>
                         `;
                     });
