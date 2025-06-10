@@ -1,5 +1,6 @@
 <?php
-include "connection.php";
+// include "connection.php";
+include "../admin/sidebar.php";
 
 
 if (!isset($_SESSION['user_id'])) {
