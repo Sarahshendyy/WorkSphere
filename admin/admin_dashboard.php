@@ -1,5 +1,4 @@
 <?php
-include "connection.php";
 include "sidebar.php";
 
 // Check if user is admin
