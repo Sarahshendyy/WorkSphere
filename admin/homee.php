@@ -4,7 +4,7 @@ include("connection.php");
 
 if (isset($_SESSION['user_id'])) {
     // Redirect to admin dashboard if user is admin
-    if ($_SESSION['role_id'] == 4) {
+    if ($_SESSION['role_id'] != 4) {
         header("Location: admin_dashboard.php");
         exit();
     }
