@@ -1,3 +1,6 @@
+<?php
+include "connection.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,7 +110,7 @@
         .main-content.expanded {
             margin-left: 70px;
         }
-
+       
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -257,17 +260,63 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <img src="../img/SCCI_Logo.png" alt="Logo">
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo-container">
+            <img src="../img/SCCI_Logo.png" alt="Logo">
+            <?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
+                <h3>Workspace Owner</h3>
+            <?php else: ?>
                 <h3>WorkSphere Admin</h3>
-            </div>
-            <button class="toggle-sidebar" id="toggleSidebar">
-                <i class="fas fa-bars"></i>
-            </button>
+            <?php endif; ?>
         </div>
-        <ul class="nav-menu">
+        <button class="toggle-sidebar" id="toggleSidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    <ul class="nav-menu">
+        <?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
+            <!-- Workspace Owner Sidebar -->
+            <li class="nav-item">
+                <a href="../workspace/workspaces_dashboard.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'workspaces_dashboard.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../workspace/booking_overview.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'booking_overview.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Booking Overview</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../workspace/workspace-calendar.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'workspace-calendar.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-calendar"></i>
+                    <span>Workspace Calendar</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../workspace/chat.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'chat.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-user profile-icon"></i>
+                    <span>My Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <form action="../workspace/connection.php" method="POST" style="margin:0;">
+                    <button type="submit" name="logout" class="nav-link" style="width:100%;background:none;border:none;padding:0;text-align:left;display:flex;align-items:center;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </li>
+        <?php elseif (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 4): ?>
+            <!-- Admin Sidebar -->
             <li class="nav-item">
                 <a href="admin_dashboard.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'admin_dashboard.php' ? 'active' : ''; ?>">
                     <i class="fas fa-tachometer-alt"></i>
@@ -299,7 +348,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="homee.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'chat.php' ? 'active' : ''; ?>">
+                <a href="homee.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'homee.php' ? 'active' : ''; ?>">
                     <i class="fas fa-comments"></i>
                     <span>Chat</span>
                 </a>
@@ -313,7 +362,7 @@
             <li class="nav-item">
                 <a href="profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
                     <i class="fas fa-user profile-icon"></i>
-                    <span>My Profile</span>
+                    <span>Profile</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -324,9 +373,9 @@
                     </button>
                 </form>
             </li>
-        </ul>
-    </div>
-
+        <?php endif; ?>
+    </ul>
+</div>
     <script>
         // Sidebar Toggle Functionality
         document.addEventListener('DOMContentLoaded', function() {
