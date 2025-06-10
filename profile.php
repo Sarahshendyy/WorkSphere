@@ -205,7 +205,7 @@ if (isset($_POST['update_password'])) {
             
            <?php if ($is_own_profile) { ?>
     <div class="profile-actions">
-        <?php if ($fetch['role_id'] != 2) { ?>
+        <?php if ($fetch['role_id'] == 1) { ?>
             <button id="openModalBtn" class="btn btn-add">Add Your Business</button>
         <?php } ?>
         <?php if ($fetch['role_id'] == 1 || $fetch['role_id'] == 2) { ?>
