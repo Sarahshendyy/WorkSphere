@@ -92,30 +92,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       --shadow-hover: 0 6px 16px rgba(7, 23, 57, 0.25);
     }
 
+    /* Close Button */
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: var(--light-grayish);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--dark-navy);
+      font-size: 18px;
+      text-decoration: none;
+      z-index: 1;
+    }
+
+    .close-btn:hover {
+      background-color: var(--medium-blue);
+      color: white;
+      transform: rotate(90deg);
+    }
+
+    @media (max-width: 768px) {
+      .close-btn {
+        top: 10px;
+        right: 10px;
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+      }
+    }
+
     /* Reset and base */
     * {
       box-sizing: border-box;
     }
 
+    /* General Styles */
     body {
       font-family: var(--font-family);
       background-color: var(--light-grayish);
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      color: var(--dark-navy);
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .container {
       background-color: #fff;
-      padding: 40px 40px 50px;
+      padding: 40px;
       border-radius: 16px;
       box-shadow: var(--shadow-light);
       width: 90%;
       max-width: 760px;
       position: relative;
       transition: box-shadow 0.3s ease;
-      margin: 100px auto; /* Add margin to account for fixed navigation */
+      margin: 100px auto;
     }
 
     .container:hover {
@@ -136,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 25px;
-      background-color: var(--light-blue);
+      background-color: var(--medium-blue);
       padding: 14px 22px;
       border-radius: 12px;
       user-select: none;
@@ -194,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     td {
-      background-color: var(--light-blue);
+      background-color: var(--medium-blue);
       padding: 14px 0;
       text-align: center;
       border-radius: 10px;
@@ -339,24 +379,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       background-color: transparent;
     }
 
-    #close-button {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      background: none;
-      border: none;
-      font-size: 28px;
-      cursor: pointer;
-      color: #999;
-      transition: color 0.25s ease;
-      font-weight: 700;
-      user-select: none;
-    }
-
-    #close-button:hover {
-      color: var(--brownish);
-    }
-
     #confirm-button {
       width: 100%;
       padding: 16px;
@@ -446,11 +468,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
   </style>
+
+  <!-- Add Font Awesome for the X icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
   <div class="container">
-    <button id="close-button" aria-label="Close booking window">&times;</button>
+    <a href="javascript:history.back()" class="close-btn" title="Go back">
+      <i class="fas fa-times"></i>
+    </a>
     <h1>Book Meeting Room</h1>
 
     <div class="calendar-controls">
@@ -511,7 +538,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const prevMonthButton = document.getElementById('prev-month');
       const nextMonthButton = document.getElementById('next-month');
       const confirmButton = document.getElementById('confirm-button');
-      const closeButton = document.getElementById('close-button');
+      const closeButton = document.querySelector('.close-btn');
       const checkinSelect = document.getElementById('checkin-time');
       const checkoutSelect = document.getElementById('checkout-time');
 
