@@ -1,5 +1,6 @@
 <?php
-include("connection.php"); // Ensure this file defines $connect as a valid connection
+
+include "connection.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
@@ -100,10 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       font-family: var(--font-family);
       background-color: var(--light-grayish);
       margin: 0;
-      padding: 30px 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      padding: 0;
       min-height: 100vh;
       color: var(--dark-navy);
     }
@@ -117,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       max-width: 760px;
       position: relative;
       transition: box-shadow 0.3s ease;
+      margin: 100px auto; /* Add margin to account for fixed navigation */
     }
 
     .container:hover {
