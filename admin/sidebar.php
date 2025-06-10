@@ -311,6 +311,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-user profile-icon"></i>
+                    <span>My Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <form action="connection.php" method="POST" style="margin:0;">
                     <button type="submit" name="logout" class="nav-link" style="width:100%;background:none;border:none;padding:0;text-align:left;display:flex;align-items:center;">
                         <i class="fas fa-sign-out-alt"></i>
