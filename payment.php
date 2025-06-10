@@ -93,7 +93,7 @@ $run_insert = mysqli_query($connect, $insert);
                 </div>
                 <div class="card-number-box">################</div>
                 <div class="flexbox">
-                    <div class="box">
+                    <div class="box" style="margin-right: 32px;">
                         <span>Card Holder</span>
                         <div class="card-holder-name">Full Name</div>
                     </div>
