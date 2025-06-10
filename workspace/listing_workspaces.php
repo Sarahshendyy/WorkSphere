@@ -4,7 +4,8 @@ include "connection.php";
 $successMessage = null;
 
 if (!isset($_SESSION['user_id'])) {
-    die("Session not set! <script>window.location.href='login.php';</script>");
+    header('Location: login.php'); // Use header redirect instead of die()
+    exit();
 }
 
 $user_id = $_SESSION['user_id'];
@@ -18,64 +19,68 @@ while ($type = mysqli_fetch_assoc($room_type_result)) {
 }
 
 if (isset($_POST['submit'])) {
-    $name = mysqli_real_escape_string($connect, $_POST['name']);
-    $location = mysqli_real_escape_string($connect, $_POST['location']);
-    $description = mysqli_real_escape_string($connect, $_POST['description']);
-    $price_hr = floatval($_POST['price_hr']);
-    $zone_id = intval($_POST['zone_id']);
-    $latitude = floatval($_POST['latitude']);
-    $longitude = floatval($_POST['longitude']);
+    // Use prepared statement for inserting workspace to prevent SQL injection
+    $stmt = $connect->prepare("INSERT INTO workspaces (user_id, name, location, description, `price/hr`, zone_id, latitude, longitude, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+    $stmt->bind_param("isssdiid", $user_id, $_POST['name'], $_POST['location'], $_POST['description'], $_POST['price_hr'], $_POST['zone_id'], $_POST['latitude'], $_POST['longitude']);
 
-
-    $insert_workspace = "INSERT INTO workspaces (user_id, name, location, description, `price/hr`, zone_id, latitude, longitude, created_at) 
-                     VALUES ('$user_id', '$name', '$location', '$description', '$price_hr', '$zone_id', '$latitude', '$longitude', NOW())";
-    $insertQry = mysqli_query($connect, $insert_workspace);
-
-    if (!$insertQry) {
-        die("Workspace Insert Error: " . mysqli_error($connect));
+    if (!$stmt->execute()) {
+        die("Workspace Insert Error: " . $stmt->error);
     }
+    $workspace_id = $stmt->insert_id;
+    $stmt->close();
 
-    $workspace_id = mysqli_insert_id($connect);
+    // Prepare statement for inserting rooms
+    $room_stmt = $connect->prepare("INSERT INTO rooms (workspace_id, room_name, seats, type_id, images, `p/hr`) VALUES (?, ?, ?, ?, ?, ?)");
 
     if (!empty($_POST['rooms']) && is_array($_POST['rooms'])) {
         foreach ($_POST['rooms'] as $index => $room) {
-            $room_name = mysqli_real_escape_string($connect, $room['name']);
+            $room_name = $room['name'];
             $seats = intval($room['seats']);
             $type_id = intval($room['type']);
-            $room_status = mysqli_real_escape_string($connect, $room['status']);
-            $price_hr = floatval($room['price_hr']);
-
+            $price_hr_room = floatval($room['price_hr']);
+            
             $image_paths = [];
-            if (!empty($_FILES['room_images']['name'][$index])) {
+            
+            // Check if files were uploaded for this room index
+            if (isset($_FILES['room_images']['name'][$index])) {
                 $target_dir = "img/";
                 if (!is_dir($target_dir)) {
-                    mkdir($target_dir, 0755, true);
+                    mkdir($target_dir, 0755, true); // Ensure the directory exists
                 }
 
-                foreach ($_FILES['room_images']['name'][$index] as $key => $image_name) {
-                    $file_ext = pathinfo($image_name, PATHINFO_EXTENSION);
-                    $new_filename = uniqid() . '.' . $file_ext;
-                    $target_file = $target_dir . $new_filename;
+                $file_count = count($_FILES['room_images']['name'][$index]);
+                for ($i = 0; $i < $file_count; $i++) {
+                    // Check for upload errors
+                    if ($_FILES['room_images']['error'][$index][$i] === UPLOAD_ERR_OK) {
+                        $image_name = $_FILES['room_images']['name'][$index][$i];
+                        $tmp_name = $_FILES['room_images']['tmp_name'][$index][$i];
+                        
+                        $file_ext = pathinfo($image_name, PATHINFO_EXTENSION);
+                        $new_filename = uniqid('room_', true) . '.' . $file_ext;
+                        $target_file = $target_dir . $new_filename;
 
-                    if (move_uploaded_file($_FILES['room_images']['tmp_name'][$index][$key], $target_file)) {
-                        $image_paths[] = $target_file;
-                    } else {
-                        die("Failed to upload image: " . $_FILES['room_images']['name'][$index][$key]);
+                        if (move_uploaded_file($tmp_name, $target_file)) {
+                            // Store the relative path for the database
+                            $image_paths[] = $target_file; 
+                        } else {
+                            // Handle file move error
+                            error_log("Failed to move uploaded file: " . $image_name);
+                        }
                     }
                 }
             }
+            
+            // Implode the array of paths into a single string
+            $images_string = implode(",", $image_paths);
 
-            $images = implode(",", $image_paths);
-
-            $insert_room = "INSERT INTO rooms (workspace_id, room_name, seats, type_id, room_status, images, `p/hr`) 
-                VALUES ('$workspace_id', '$room_name', '$seats', '$type_id', '$room_status', '$images', '$price_hr')";
-            $insertRoomQry = mysqli_query($connect, $insert_room);
-
-            if (!$insertRoomQry) {
-                die("Room Insert Error: " . mysqli_error($connect));
+            // Bind params and execute for the room
+            $room_stmt->bind_param("isiisd", $workspace_id, $room_name, $seats, $type_id, $images_string, $price_hr_room);
+            if (!$room_stmt->execute()) {
+                die("Room Insert Error for room '$room_name': " . $room_stmt->error);
             }
         }
     }
+    $room_stmt->close();
 
     $successMessage = "Your workspace is waiting for admin approval. You will receive an email once it's approved or rejected.";
 }
@@ -98,12 +103,10 @@ if (isset($_POST['submit'])) {
     <a href="../indexx.php" class="close-btn"><i class="fa-solid fa-xmark"></i></a>
     <h2 class="success-title">Done!</h2>
       <i class="fa-solid fa-circle-check"></i>
-      <p><?= $successMessage ?></p>
+      <p><?= htmlspecialchars($successMessage) ?></p>
     </div>
   </div>
 <?php endif; ?>
-
-
 
 <div class="container">
     <h2>List Your Workspace</h2>
@@ -119,24 +122,25 @@ if (isset($_POST['submit'])) {
         <label for="description">Description:</label>
         <textarea name="description" required></textarea>
 
-        <label for="price_hr">Price per Hour:</label>
+        <label for="price_hr">Workspace Base Price per Hour (optional):</label>
         <input type="number" step="0.01" name="price_hr" required>
 
         <label for="zone_id">Select Zone:</label>
         <select name="zone_id" required>
             <option value="">-- Select a Zone --</option>
+            <?php mysqli_data_seek($zone_result, 0); // Reset pointer for re-use ?>
             <?php while ($zone = mysqli_fetch_assoc($zone_result)): ?>
                 <option value="<?php echo $zone['zone_id']; ?>">
-                    <?php echo $zone['zone_name']; ?>
+                    <?php echo htmlspecialchars($zone['zone_name']); ?>
                 </option>
             <?php endwhile; ?>
         </select>
                 
         <label for="latitude">Latitude:</label>
-        <input type="number" step="0.000001" name="latitude" required>
+        <input type="number" step="any" name="latitude" required>
 
         <label for="longitude">Longitude:</label>
-        <input type="number" step="0.000001" name="longitude" required>
+        <input type="number" step="any" name="longitude" required>
 
        <small style="display:block; margin-top:5px; color:#4B6382;">
         🧭 Don't know your coordinates? 
@@ -162,25 +166,24 @@ if (isset($_POST['submit'])) {
                     <option value="">-- Select Room Type --</option>
                     <?php foreach ($room_types as $type): ?>
                         <option value="<?php echo $type['type_id']; ?>">
-                            <?php echo $type['type_name']; ?>
+                            <?php echo htmlspecialchars($type['type_name']); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
                 <br><br>
 
-                <label>Price per Hour:</label>
+                <label>Room Price per Hour:</label>
                 <input type="number" step="0.01" name="rooms[0][price_hr]" required>
-
+                
+                <label for="file-0" class="file-label">Room Images:</label>
                 <div class="file-upload-wrapper">
-                <label for="file-${roomCount}" class="file-label">Room Images:</label>
-                <input type="file" id="file-${roomCount}" name="room_images[${roomCount}][]" multiple class="file-input">
+                  <input type="file" id="file-0" name="room_images[0][]" multiple class="file-input">
                 </div>
-
-                </div>
+            </div>
         </div>
         
         <button type="button" onclick="addRoom()">Add Another Room</button>
-        <button type="submit" name="submit">Submit</button>
+        <button type="submit" name="submit">Submit Workspace</button>
     </form>
 </div>
 
@@ -195,6 +198,7 @@ function addRoom() {
 
     roomDiv.innerHTML = `
         <a href="#" class="close-btn" onclick="removeRoom('${roomId}'); return false;"><i class="fa-solid fa-xmark"></i></a>
+        <h4>Room #${roomCount + 1}</h4>
         <label>Room Name:</label>
         <input type="text" name="rooms[${roomCount}][name]" required>
 
@@ -205,16 +209,16 @@ function addRoom() {
         <select name="rooms[${roomCount}][type]" required>
             <option value="">-- Select Room Type --</option>
             <?php foreach ($room_types as $type): ?>
-                <option value="<?php echo $type['type_id']; ?>"><?php echo $type['type_name']; ?></option>
+                <option value="<?php echo $type['type_id']; ?>"><?php echo htmlspecialchars($type['type_name']); ?></option>
             <?php endforeach; ?>
         </select>
 
-        <label>Price per Hour:</label>
+        <label>Room Price per Hour:</label>
         <input type="number" step="0.01" name="rooms[${roomCount}][price_hr]" required>
 
-        <label>Room Images:</label>
+        <label for="file-${roomCount}" class="file-label">Room Images:</label>
         <div class="file-upload-wrapper">
-            <input type="file" class="file-input" name="room_images[${roomCount}][]" multiple>
+            <input type="file" id="file-${roomCount}" class="file-input" name="room_images[${roomCount}][]" multiple>
         </div>
     `;
 
@@ -226,6 +230,8 @@ function removeRoom(id) {
     if (roomElement) {
         roomElement.remove();
     }
+    // Note: This does not re-index the rooms. For this form, that is okay.
+    // The PHP will receive a non-sequential list of indexes, which is fine.
 }
 
 </script>
