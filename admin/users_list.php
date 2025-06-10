@@ -560,7 +560,7 @@ $run_select = mysqli_query($connect, $select_users);
                                     $status_class = $row['action'] == 'hold' ? 'status-badge status-hold' : 'status-badge status-active';
                                     echo '<tr>';
                                     echo '<td>' . $counter++ . '</td>';
-                                    echo '<td><a href="../profile.php?user_id=' . htmlspecialchars($row['user_id']) . '">' . htmlspecialchars($row['name']) . '</a></td>';
+                                    echo '<td><a href="profile.php?user_id=' . htmlspecialchars($row['user_id']) . '">' . htmlspecialchars($row['name']) . '</a></td>';
                                     echo '<td>' . htmlspecialchars($row['email']) . '</td>';
                                     echo '<td>' . htmlspecialchars($row['role_name']) . '</td>';
                                     echo '<td>' . (($row['role_id'] == '1' || $row['role_id'] == '2') ? $row['total_bookings'] : '-') . '</td>';
