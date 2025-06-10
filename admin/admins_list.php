@@ -1,7 +1,7 @@
 <?php
 // include "connection.php";
 
-include '../mail.php';
+// include '../mail.php';
 include "sidebar.php";
 
 // Handle Add Admin
