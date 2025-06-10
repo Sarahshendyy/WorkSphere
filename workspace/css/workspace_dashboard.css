@@ -4,39 +4,41 @@ body {
     padding: 20px;
     background-color: #F9FAFB;
     color: #071739;
+    padding-left: 250px; 
 }
 
 h2 {
     color: #071739;
-    font-size: 28px;
+    font-size: 32px; 
     border-bottom: 2px solid #4B6382;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
     margin-bottom: 30px;
     text-align: center;
 }
 
 h4 {
     color: #071739;
-    font-size: 20px;
-    margin-bottom: 15px;
+    font-size: 22px;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
 .table-container {
     background-color: #F0F2F5;
-    border: 1px solid #D1D5DB;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border: 2px solid #D1D5DB;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }
 
 .btn-primary {
     background-color: #4B6382;
     color: #FFFFFF;
     border: none;
-    padding: 8px 16px;
+    padding: 10px 20px; 
     font-weight: bold;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s ease;
     text-decoration: none;
@@ -50,42 +52,44 @@ h4 {
 .dashboard-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px; 
     justify-content: space-between;
+    margin-top: 20px;
 }
 
 .chart-container {
     flex: 1;
-    min-width: 300px;
+    min-width: 320px; 
     background-color: #F0F2F5;
-    border: 1px solid #D1D5DB;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border: 2px solid #D1D5DB; 
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }
 
 canvas {
     max-width: 100%;
     height: auto;
+    min-height: 300px;
 }
 
 @media (max-width: 768px) {
+    body {
+        padding-left: 0; 
+    }
     .dashboard-container {
         flex-direction: column;
     }
-
     .chart-container {
         min-width: 100%;
+        margin-bottom: 20px;
     }
-
     h2 {
-        font-size: 24px;
+        font-size: 28px;
     }
-
     .table-container {
         padding: 15px;
     }
-
     .btn-primary {
         width: 100%;
         text-align: center;
@@ -96,23 +100,23 @@ canvas {
     body {
         padding: 10px;
     }
-
     h2 {
-        font-size: 22px;
+        font-size: 24px;
     }
-
     h4 {
-        font-size: 18px;
+        font-size: 20px;
     }
-
     .table-container {
         padding: 10px;
     }
-
     .chart-container {
         padding: 15px;
     }
+    .btn-primary {
+        padding: 8px 16px;
+    }
 }
+
 a.btn.btn-primary {
     background-color: #A68868 !important;
     border-color: #A68868 !important;
