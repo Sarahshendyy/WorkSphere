@@ -142,3 +142,15 @@
 .fc-day-grid-container {
     height: auto !important;
 }
+#back-btn {
+    display: inline-block;
+    margin: 20px 0 10px 20px;
+    font-size: 1.8rem;
+    color: #fda521;
+    z-index: 1000;
+    position: relative;
+}
+#back-btn:hover {
+    color: #23527c;
+    text-decoration: none;
+}
