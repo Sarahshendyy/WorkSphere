@@ -1,5 +1,5 @@
 <?php
-include "../mail.php";
+// include "../mail.php";
 include "sidebar.php";
 
 // Check if user is admin
