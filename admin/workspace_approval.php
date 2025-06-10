@@ -1,8 +1,6 @@
 <?php
 
 if (isset($_GET['fetch_rooms']) && isset($_GET['workspace_id'])) {
-    // We only need the database connection for this request.
-    // Based on your error message, connection.php is in the same 'admin' directory.
     include "connection.php"; 
 
     // Set the header to specify that the response is JSON.
@@ -45,28 +43,6 @@ $workspaces_query = "SELECT
     WHERE w.Availability = 1
 ";
 $result = mysqli_query($connect, $workspaces_query);
-
-
-// if (isset($_GET['fetch_rooms']) && isset($_GET['workspace_id'])) {
-//     $workspace_id = intval($_GET['workspace_id']);
-//     $rooms_query = "SELECT room_name, seats, type_id, room_status, `images`, `p/hr`, `p/m` 
-//                     FROM rooms WHERE workspace_id = $workspace_id";
-//     $rooms_result = mysqli_query($connect, $rooms_query);
-//     if (!$rooms_result) {
-//         header('Content-Type: application/json');
-//         echo json_encode(['error' => 'Database error: ' . mysqli_error($connect)]);
-//         exit();
-//     }
-//     $rooms = [];
-//     while ($room = mysqli_fetch_assoc($rooms_result)) {
-//         $rooms[] = $room;
-//     }
-//     header('Content-Type: application/json');
-//     echo json_encode($rooms);
-//     exit();
-// }
-
-
 if (isset($_POST['approve'])) {
     $workspace_id = $_POST['workspace_id'];
 
