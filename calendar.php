@@ -25,6 +25,10 @@ include 'nav.php';
 </head>
 
 <body>
+     <!-- Back Icon -->
+    <a href="javascript:history.back()" id="back-btn" title="Go Back" style="display:inline-block;margin:20px 0 10px 20px;font-size:1.8rem;color:#fda521;">
+        <i class="fa fa-arrow-left"></i>
+    </a>
     <div id='calendar'></div>
     <script>
         $(document).ready(function () {
