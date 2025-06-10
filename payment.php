@@ -85,41 +85,43 @@ $run_insert = mysqli_query($connect, $insert);
 
 <body>
     <div class="container">
-        
-<div class="card-container">
-    <div class="front">
-        <div class="image">
-            <img src="img/chip-card2 (1).png" alt="">
-            <img src="img/visa.png" alt="">
-        </div>
-        <div class="card-number-box">################</div>
-        <div class="flexbox">
-            <div class="box">
-                <span>Card Holder</span>
-                <div class="card-holder-name">Full Name</div>
+        <div class="card-container">
+            <div class="front">
+                <div class="image">
+                    <img src="img/chip-card2 (1).png" alt="">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="visa-icon">
+                </div>
+                <div class="card-number-box">################</div>
+                <div class="flexbox">
+                    <div class="box">
+                        <span>Card Holder</span>
+                        <div class="card-holder-name">Full Name</div>
+                    </div>
+                    <div class="box">
+                        <span>expires</span>
+                        <div class="expiration">
+                            <span class="exp-month">mm</span>
+                            <span class="exp-year">yy</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="box">
-                <span>expires</span>
-                <div class="expiration">
-                    <span class="exp-month">mm</span>
-                    <span class="exp-year">yy</span>
+            <div class="back">
+                <div class="stripe"></div>
+                <div class="box">
+                    <span>cvv</span>
+                    <div class="cvv-box"></div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="visa-icon">
                 </div>
             </div>
         </div>
-    </div>
-    <div class="back">
-        <div class="stripe"></div>
-        <div class="box">
-            <span>cvv</span>
-            <div class="cvv-box"></div>
-            <img src="img/visa.png" alt="">
-        </div>
-    </div>
-</div>
         <!-- Payment Form -->
-        <form method="POST" onsubmit="return validateForm()">
+        <form method="POST" onsubmit="return validateForm()" style="position:relative;">
+            <a href="javascript:history.back()" class="close-btn" title="Go back">
+                <i class="fas fa-times"></i>
+            </a>
+            <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
             <div class="inputBox">
-                <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
                 <span class="span">Card Number</span>
                 <input type="number" maxlength="16" name="card_number" id="card-number-input" class="card-number-input" oninput="validateNum()" required>
                 <span name="numError" id="numError" class="error" style="display:none;"></span>
