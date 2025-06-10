@@ -1,5 +1,5 @@
 <?php
-include 'connection.php';
+include "../admin/sidebar.php";
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -32,7 +32,7 @@ if ($room_id > 0) {
         $images = $fetch['images'];
         $image_array = !empty($images) ? explode(',', $images) : [];
     }
-    
+
     $selected_amenities_query = "SELECT amenity FROM amenities WHERE room_id = '$room_id'";
     $selected_amenities_result = mysqli_query($connect, $selected_amenities_query);
     while ($row = mysqli_fetch_assoc($selected_amenities_result)) {
@@ -46,16 +46,15 @@ $all_amenities_result = mysqli_query($connect, $all_amenities_query);
 if (isset($_POST['delete_image'])) {
     $image_to_delete = $_POST['image_to_delete'];
     $image_array = array_diff($image_array, [$image_to_delete]);
-   
+
     if (file_exists($image_to_delete)) {
         unlink($image_to_delete);
     }
-    
+
     $updated_images = implode(',', $image_array);
     $update_images = "UPDATE rooms SET images='$updated_images' WHERE room_id='$room_id'";
     mysqli_query($connect, $update_images);
-    
-   
+
     header("Location: edit_room.php?id=$room_id");
     exit();
 }
@@ -67,7 +66,6 @@ if (isset($_POST['update'])) {
     $price_per_hour = floatval($_POST['price_per_hour']);
     $amenities = isset($_POST['amenities']) ? $_POST['amenities'] : [];
 
-   
     if (!empty($_FILES['room_images']['name'][0])) {
         foreach ($_FILES['room_images']['tmp_name'] as $key => $tmp_name) {
             $image_name = basename($_FILES['room_images']['name'][$key]);
@@ -78,7 +76,7 @@ if (isset($_POST['update'])) {
             }
         }
     }
-    
+
     $updated_images = implode(',', $image_array);
 
     $update = "UPDATE rooms SET 
@@ -91,7 +89,19 @@ if (isset($_POST['update'])) {
     $run_update = mysqli_query($connect, $update);
 
     if ($run_update) {
-        header("Location: workspaces_dashboard.php");
+        mysqli_query($connect, "DELETE FROM amenities WHERE room_id = '$room_id'");
+
+        foreach ($amenities as $amenity_name) {
+            $safe_amenity = mysqli_real_escape_string($connect, $amenity_name);
+            mysqli_query($connect, "INSERT INTO amenities (amenity, room_id) VALUES ('$safe_amenity', '$room_id')");
+        }
+
+        if (!empty($_POST['new_amenity'])) {
+            $new_amenity = mysqli_real_escape_string($connect, $_POST['new_amenity']);
+            mysqli_query($connect, "INSERT INTO amenities (amenity, room_id) VALUES ('$new_amenity', '$room_id')");
+        }
+
+        header("Location: rooms_table.php");
         exit();
     } else {
         echo "<script>alert('Error updating room.');</script>";
@@ -108,48 +118,6 @@ if (isset($_POST['update'])) {
 <title>Edit Room</title>
 <link rel="stylesheet" type="text/css" href="./css/Edit-room.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<style>
-    .image-container {
-        position: relative;
-        display: inline-block;
-        margin: 10px;
-    }
-    .delete-image {
-        position: absolute;
-        top: -10px;
-        right: -10px;
-        background: red;
-        color: white;
-        border-radius: 50%;
-        width: 25px;
-        height: 25px;
-        text-align: center;
-        line-height: 25px;
-        cursor: pointer;
-    }
-    .deletepopup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-    }
-    .deletecard {
-        background: white;
-        padding: 20px;
-        border-radius: 5px;
-        text-align: center;
-    }
-    .closebtn {
-        cursor: pointer;
-        float: right;
-    }
-</style>
 </head>
 
 <body>
@@ -205,27 +173,35 @@ if (isset($_POST['update'])) {
             </div>
 
             <div class="input-group">
-                <label><h3>Existing Amenities</h3></label>
-                <?php 
-                mysqli_data_seek($all_amenities_result, 0);
-                while ($amenity = mysqli_fetch_assoc($all_amenities_result)): ?>
-                    <div class="checkbox-group">
-                        <input type="checkbox" name="amenities[]" value="<?php echo htmlspecialchars($amenity['amenity']); ?>" 
-                            <?php if (in_array($amenity['amenity'], $selected_amenities)) echo "checked"; ?>>
-                        <label><?php echo htmlspecialchars($amenity['amenity']); ?></label>
-                    </div>
+            <label><h3>Existing Amenities</h3></label>
+            <div class="amenities-container">
+                <?php mysqli_data_seek($all_amenities_result, 0); ?>
+                <?php while ($amenity = mysqli_fetch_assoc($all_amenities_result)): ?>
+                <div class="amenity-item">
+                    <input type="checkbox" name="amenities[]" value="<?php echo htmlspecialchars($amenity['amenity']); ?>"
+                    <?php echo in_array($amenity['amenity'], $selected_amenities) ? 'checked' : ''; ?>>
+                    <label><?php echo htmlspecialchars($amenity['amenity']); ?></label>
+                </div>
                 <?php endwhile; ?>
+                </div>
             </div>
+
+            <div class="input-group">
+                <label><h3>Add New Amenity</h3></label>
+                <input type="text" name="new_amenity" placeholder="e.g., Whiteboard">
+            </div>
+
+
 
             <button type="submit" name="update">Update Room</button>
             <div class="back-link">
-                <a href="workspaces_dashboard.php">Cancel</a>
+                <a href="rooms_table.php">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Delete Image Popup -->
+
 <div id="deleteShow" class="deletepopup">
     <div class="deletecard">
         <form method="POST">

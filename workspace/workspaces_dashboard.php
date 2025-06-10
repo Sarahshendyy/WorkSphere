@@ -1,6 +1,6 @@
 <?php
 
-include "sidebar.php";
+include "../admin/sidebar.php";
 
 
 $owner_id = $_SESSION['user_id'];
@@ -64,8 +64,7 @@ if (isset($_POST['booking_id'])) {
     
 }
 
-$bookings_query = "
-    SELECT workspaces.*, 
+$bookings_query = "SELECT workspaces.*, 
            zone.zone_name, 
            rooms.images, 
            AVG(reviews.rating) AS avg_rating, 
@@ -108,14 +107,13 @@ foreach ($booking_statuses as $status) {
     $booking_counts[$status] = $row['count'];
 }
 
-$earnings_query = "
-    SELECT workspaces.*, 
+$earnings_query = "SELECT workspaces.*, 
            zone.zone_name, 
            rooms.images, 
            AVG(reviews.rating) AS avg_rating, 
            rooms.room_id, 
            rooms.room_name, 
-           SUM(bookings.total_price) * 0.8 AS earnings
+           SUM(bookings.total_price) * 0.85 AS earnings
     FROM workspaces
     LEFT JOIN rooms ON workspaces.workspace_id = rooms.workspace_id
     LEFT JOIN zone ON workspaces.zone_id = zone.zone_id
@@ -176,7 +174,7 @@ $rooms_result = mysqli_query($connect, $rooms_query);
 
 
 <script>
-    const bookingColors = ['#4B6382', '#D9534F', '#E3C39D', '#CDD5DB']; // [ongoing, canceled, upcoming, completed]
+    const bookingColors = ['#4B6382', '#D9534F', '#E3C39D', '#CDD5DB']; 
 
     const ctx1 = document.getElementById('bookingChart').getContext('2d');
     const bookingChart = new Chart(ctx1, {
