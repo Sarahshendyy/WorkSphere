@@ -1,6 +1,6 @@
 <?php
 # database connection file
-include("connection.php");
+include("sidebar.php");
 
 if (isset($_SESSION['user_id'])) {
     // Redirect to admin dashboard if user is admin
