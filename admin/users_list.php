@@ -1,6 +1,6 @@
 <?php
 
-include '../mail.php';
+// include '../mail.php';
 include "sidebar.php";
 
 // Handle "Hold" action
