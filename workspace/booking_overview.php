@@ -38,7 +38,7 @@ $bookings_query = "SELECT workspaces.*,
 
 $bookings_result = mysqli_query($connect, $bookings_query);
 
-$booking_statuses = ["ongoing", "canceled", "upcoming", "completed"];
+$booking_statuses = ["ongoing", "canceled", "upcoming", "completed", "no-show"];
 
 if (isset($_POST['booking_id'])) {
     $booking_id = $_POST['booking_id'];
