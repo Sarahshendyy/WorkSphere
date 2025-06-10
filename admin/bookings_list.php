@@ -1,5 +1,5 @@
 <?php
-include "connection.php";
+// include "connection.php";
 include "sidebar.php";
 
 // Initialize sort variables
