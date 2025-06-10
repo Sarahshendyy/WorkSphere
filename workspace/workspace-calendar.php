@@ -20,11 +20,16 @@ include 'connection.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/css/tooltipster.min.css">
     <!-- Tooltipster JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/js/jquery.tooltipster.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <link rel="stylesheet" href="./css/calendar.css">
 </head>
 
 <body>
+    <!-- Back Icon -->
+    <a href="javascript:history.back()" id="back-btn" title="Go Back" style="display:inline-block;margin:20px 0 10px 20px;font-size:1.8rem;color:#fda521;">
+        <i class="fa fa-arrow-left"></i>
+    </a>
     <div id='calendar'></div>
     <script>
         $(document).ready(function () {
