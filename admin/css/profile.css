@@ -1,0 +1,510 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-color: #071739;
+    --secondary-color: #4B6382;
+    --info-color: #A4B5C4;
+    --light-color: #CDD5DB;
+    --accent-warm: #A68868;
+    --accent-light: #E3C39D;
+    --font-family: 'Roboto', Arial, sans-serif;
+
+    --border-radius: 6px;
+    --box-shadow: 0 4px 15px rgba(7, 23, 57, 0.15);
+    --transition-speed: 0.3s;
+}
+
+/* --- General Styles --- */
+
+body {
+    min-height: 100vh;
+    background-color: var(--light-color);
+    margin: 0;
+    margin-left: 15%;
+    padding: 0;
+    font-family: var(--font-family);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Center the container under the nav */
+.container {
+    position: relative;
+    width: 100%;
+    max-width: 850px;
+    background-color: #fdfdfd;
+    padding: 35px 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin: 60px auto 30px; /* Adjust top margin to fit under nav */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* --- Back Button --- */
+.back-button-wrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.back-button {
+    background-color: var(--light-color);
+    color: var(--primary-color);
+    font-size: 20px;
+    padding: 8px 12px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: color var(--transition-speed), background-color var(--transition-speed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* make buttons square and consistent */
+    height: 40px;
+}
+
+.back-button:hover {
+    color: var(--accent-warm);
+    background-color: var(--primary-color);
+}
+
+.back-button .icon {
+    pointer-events: none; /* So icon doesn’t interfere with click */
+}
+
+/* --- Profile Section --- */
+.profile {
+    display: flex;
+    gap: 50px; /* Gap between profile-image-section and profile-info */
+    align-items: flex-start;
+    width: 100%; /* Ensure profile takes available width */
+}
+
+/* NEW: Styles for the left column (image + password button) */
+.profile-image-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the image and button horizontally */
+    gap: 20px; /* Space between profile image and password button */
+    flex-shrink: 0; /* Prevent this column from shrinking */
+}
+
+.profile-pic {
+    flex-shrink: 0;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid var(--light-color);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-pic:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+}
+
+/* NEW: Styles for the moved password button (relies on .btn and .btn-update for most styling) */
+.profile-password-button {
+    width: auto; /* Allows button to size to its content + padding */
+    min-width: 180px; /* Optional: ensure a minimum width */
+    text-align: center;
+    /* Inherits .btn styles for padding, font, border, cursor, shadow, transition */
+    /* Inherits .btn-update styles for background-color, color */
+}
+
+
+/* Info Section NEW/ADJUSTED STYLES */
+.profile-info {
+    flex: 1; /* Takes remaining space next to profile-image-section */
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Vertical spacing between H1, info-pairs, and actions */
+}
+
+.profile-info h1 {
+    font-size: 28px;
+    margin-bottom: 10px; /* Adjusted, using gap on parent for more consistent spacing */
+    font-weight: 600;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--light-color);
+    padding-bottom: 15px;
+}
+
+.info-pair {
+    display: flex;
+    gap: 30px; /* Horizontal gap between the two items in a pair */
+    /* If only one item exists in the pair, it will take full width due to .info-item's flex: 1 */
+}
+
+/* General style for each individual piece of information (Email, Phone, etc.) */
+.info-item {
+    flex: 1; /* Each item in a pair tries to take equal space. If alone, takes all space. */
+    font-size: 16px; /* Slightly adjusted for better fit if needed */
+    color: var(--secondary-color);
+    display: flex; /* Aligns icon (::before), strong label, and text value */
+    align-items: center; /* Vertically aligns content within the item */
+    gap: 8px; /* Space between icon, strong label, and value */
+    min-height: 28px; /* From original styling */
+    margin: 0; /* Reset default paragraph margins */
+    line-height: 1.4; /* Improves readability */
+}
+
+.info-item strong {
+    color: var(--primary-color);
+    font-weight: 600;
+    white-space: nowrap; /* Prevents the label (e.g., "Job Title:") from breaking */
+}
+
+/* Icons with FontAwesome before text - applied to .info-item */
+.info-item.email::before    { content: "\f0e0"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: #DB4437; }
+.info-item.phone::before    { content: "\f095"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: #4CAF50; }
+.info-item.age::before      { content: "\f1fd"; font-family: "Font Awesome 6 Free"; font-weight: 900; }
+.info-item.location::before { content: "\f3c5"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--accent-light); }
+.info-item.zone::before     { content: "\f57d"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: #9c27b0; }
+.info-item.job::before      { content: "\f0b1"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: #607D8B; }
+.info-item.company::before  { content: "\f1ad"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: #03A9F4; }
+.info-item.type::before     { content: "\f02b"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: #795548; }
+.info-item.contact::before  { content: "\f2bb"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: #FF9800; }
+.info-item.portfolio::before{ content: "\f15c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: #E91E63; }
+.info-item.contact {
+    padding: 0;
+}
+
+/* Portfolio link style - applied to <a> inside .info-item.portfolio */
+.info-item.portfolio a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color var(--transition-speed);
+    position: relative;
+}
+
+.info-item.portfolio a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -3px;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width var(--transition-speed);
+}
+.info-item.portfolio a:hover {
+    color: var(--accent-warm);
+}
+.info-item.portfolio a:hover::after {
+    width: 100%;
+}
+
+
+/* --- Buttons Section --- */
+/* This section now primarily styles the "Add Your Business" button if present */
+.profile-actions {
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 1px solid var(--light-color);
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    /* If you want the "Add Business" button to be centered when it's the only one: */
+    /* justify-content: center; */
+}
+
+/* General .btn styles, will also apply to .profile-password-button */
+.profile-actions .btn,
+.profile-password-button /* Add this so general btn styles also apply to the moved button */
+{
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* In case it's an <a> styled as a button */
+}
+
+.profile-actions .btn-edit { /* This class might not be used anymore, but kept for completeness */
+    background-color: var(--primary-color);
+}
+.profile-actions .btn-edit:hover {
+    background-color: #10244f;
+    transform: scale(1.05);
+}
+.profile-actions .btn-add {
+    background-color: var(--primary-color);
+    transition: background-color 0.5s;
+}
+.profile-actions .btn-add:hover {
+    background-color: #8b6e4d;
+    transform: scale(1.05);
+}
+
+/* This styles the "Update Password" button specifically */
+.btn-update { /* This class is on the profile-password-button */
+    background-color: var(--info-color);
+    color: #071739;
+}
+.btn-update:hover {
+    background-color: #8aa2b3;
+    color: #071739;
+    transform: scale(1.05);
+}
+
+
+/* --- Modal Styles --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(7, 23, 57, 0.75);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed) ease, visibility 0s linear var(--transition-speed);
+}
+
+.modal.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 40px auto;
+    padding: 35px 40px;
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 540px;
+    box-shadow: 0 10px 30px rgba(7, 23, 57, 0.25);
+    transform: scale(0.95) translateY(-20px);
+    transition: transform var(--transition-speed) ease;
+    position: relative;
+}
+
+.modal.show .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+#passwordModal .modal-content {
+    max-width: 480px;
+}
+
+.modal-content h2 {
+    font-size: 26px;
+    color: var(--primary-color);
+    text-align: center;
+    font-weight: 600;
+    margin-top: 0;
+    border-bottom: 1px solid var(--light-color);
+    padding-bottom: 15px;
+    user-select: none;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-content label {
+    font-size: 15px;
+    color: var(--secondary-color);
+    font-weight: 600;
+    user-select: none;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="password"],
+.modal-content input[type="file"] {
+    width: 100%;
+    padding: 13px 18px;
+    border: 1px solid var(--light-color);
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    outline-offset: 2px;
+}
+
+.modal-content input:focus {
+    border-color: var(--info-color);
+    box-shadow: 0 0 8px rgba(164, 181, 196, 0.6);
+    outline: none;
+}
+
+.modal-content input[type="submit"],
+.modal-content button[type="button"],
+#addContactInfoBtn {
+    background-color: var(--accent-warm);
+    color: #fff;
+    border: none;
+    padding: 14px 22px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    align-self: flex-end;
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.modal-content input[type="submit"]:hover,
+.modal-content button[type="button"]:hover,
+#addContactInfoBtn:hover {
+    background-color: #8b6e4d;
+    transform: scale(1.03);
+}
+
+#addContactInfoBtn {
+    align-self: flex-start;
+    margin-top: 10px;
+}
+
+.close {
+    color: var(--secondary-color);
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1;
+    opacity: 0.8;
+    cursor: pointer;
+    transition: color var(--transition-speed), transform var(--transition-speed);
+    user-select: none;
+}
+
+.close:hover {
+    color: var(--primary-color);
+    transform: rotate(90deg);
+}
+
+/* Error message styling */
+.error-message {
+    color: #dc3545;
+    font-size: 0.9em;
+    margin: -8px 0 10px 0;
+    font-weight: 500;
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+    .profile {
+        flex-direction: column; /* Stacks profile-image-section above profile-info */
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-image-section {
+        margin-bottom: 30px; /* Add some space when stacked */
+    }
+
+    .profile-info {
+        align-items: center;
+        width: 100%;
+    }
+    .profile-info h1 {
+        text-align: center;
+    }
+
+    .profile-actions {
+        justify-content: center; /* Center the "Add Business" button on smaller screens */
+    }
+
+    .modal-content {
+        margin: 10vh auto; /* Better vertical centering for modals on smaller screens */
+        padding: 25px 30px;
+    }
+}
+
+@media (max-width: 768px) { /* Added breakpoint for info-pair stacking */
+    .info-pair {
+        flex-direction: column; /* Stack items vertically */
+        gap: 10px; /* Adjust gap for vertical stacking */
+        align-items: flex-start; /* Align items to the start when stacked */
+    }
+    .info-pair .info-item {
+         width: 100%; /* Ensure items take full width when stacked */
+         justify-content: flex-start; /* Align content to the left */
+    }
+}
+
+
+@media (max-width: 480px) {
+    .container {
+        padding: 25px 20px;
+        margin-top: 30px; /* Reduce top margin for very small screens */
+        margin-bottom: 20px;
+    }
+
+    .profile-pic {
+        width: 120px;
+        height: 120px;
+    }
+    .profile-password-button {
+        min-width: 150px; /* Slightly smaller min-width for password button */
+        padding: 10px 20px; /* Adjust padding */
+        font-size: 15px;
+    }
+
+    .profile-info h1 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .info-item { /* Info items on small screens */
+        font-size: 15px;
+        gap: 6px; /* Slightly reduce gap */
+    }
+
+    .profile-actions {
+        margin-top: 30px;
+        padding-top: 20px;
+    }
+    .profile-actions .btn {
+        padding: 10px 22px;
+        font-size: 15px;
+    }
+
+    .modal-content {
+        padding: 20px 25px;
+        width: 95%;
+        margin: 5vh auto;
+    }
+
+    .modal-content input[type="submit"],
+    .modal-content button[type="button"],
+    #addContactInfoBtn {
+        width: 100%;
+        align-self: center;
+        padding: 12px 18px;
+        font-size: 15px;
+    }
+}
