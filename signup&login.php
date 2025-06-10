@@ -124,8 +124,14 @@ if (isset($_POST['login'])){
               setcookie("remember", "", time() - 3600);
           }
 
-          header("Location: indexx.php");
-          exit(); // Always exit after a header redirect
+          if ($data['role_id'] == 1 || $data['role_id'] == 2) {
+            header("Location: indexx.php");
+          } elseif ($data['role_id'] == 3) {
+            header("Location: workspace/workspaces_dashboard.php");
+          } elseif ($data['role_id'] == 4) {
+            header("Location: admin/admin_dashboard.php");
+          }
+          exit(); 
         }
         else{
           $Lmsg = "Incorrect Password"; // FRONT SPECIAL styling
