@@ -1,5 +1,5 @@
 <?php
-include "connection.php";
+// include "connection.php";
 include "sidebar.php";
 
 // Check if we're viewing a specific user's profile (from community page)
