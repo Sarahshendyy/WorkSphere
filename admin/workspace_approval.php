@@ -1,4 +1,36 @@
 <?php
+
+if (isset($_GET['fetch_rooms']) && isset($_GET['workspace_id'])) {
+    // We only need the database connection for this request.
+    // Based on your error message, connection.php is in the same 'admin' directory.
+    include "connection.php"; 
+
+    // Set the header to specify that the response is JSON.
+    header('Content-Type: application/json');
+
+    $workspace_id = intval($_GET['workspace_id']);
+    $rooms_query = "SELECT room_name, seats, type_id, room_status, `images`, `p/hr`, `p/m` 
+                    FROM rooms WHERE workspace_id = $workspace_id";
+    $rooms_result = mysqli_query($connect, $rooms_query);
+
+    if (!$rooms_result) {
+        // If the query fails, return a JSON error object.
+        echo json_encode(['error' => 'Database error: ' . mysqli_error($connect)]);
+        exit();
+    }
+
+    $rooms = [];
+    while ($room = mysqli_fetch_assoc($rooms_result)) {
+        $rooms[] = $room;
+    }
+
+    // Echo the JSON-encoded data and stop the script.
+    echo json_encode($rooms);
+    exit();
+}
+
+
+
 include "../mail.php";
 include "sidebar.php";
 
@@ -15,21 +47,24 @@ $workspaces_query = "SELECT
 $result = mysqli_query($connect, $workspaces_query);
 
 
-if (isset($_GET['fetch_rooms']) && isset($_GET['workspace_id'])) {
-    $workspace_id = intval($_GET['workspace_id']);
-    $rooms_query = "SELECT room_name, seats, type_id, room_status, `images`, `p/hr`, `p/m` 
-                    FROM rooms WHERE workspace_id = $workspace_id";
-    $rooms_result = mysqli_query($connect, $rooms_query);
-    $rooms = [];
-
-    while ($room = mysqli_fetch_assoc($rooms_result)) {
-        $rooms[] = $room;
-    }
-
-    header('Content-Type: application/json');
-    echo json_encode($rooms);
-    exit();
-}
+// if (isset($_GET['fetch_rooms']) && isset($_GET['workspace_id'])) {
+//     $workspace_id = intval($_GET['workspace_id']);
+//     $rooms_query = "SELECT room_name, seats, type_id, room_status, `images`, `p/hr`, `p/m` 
+//                     FROM rooms WHERE workspace_id = $workspace_id";
+//     $rooms_result = mysqli_query($connect, $rooms_query);
+//     if (!$rooms_result) {
+//         header('Content-Type: application/json');
+//         echo json_encode(['error' => 'Database error: ' . mysqli_error($connect)]);
+//         exit();
+//     }
+//     $rooms = [];
+//     while ($room = mysqli_fetch_assoc($rooms_result)) {
+//         $rooms[] = $room;
+//     }
+//     header('Content-Type: application/json');
+//     echo json_encode($rooms);
+//     exit();
+// }
 
 
 if (isset($_POST['approve'])) {
@@ -133,46 +168,57 @@ function sendEmail($to, $subject, $body) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin - Approve Workspaces</title>
     <link rel="stylesheet" href="./css/workspace_approval.css" />
-    <script>
-        function confirmDelete(workspaceId) {
-            if (window.confirm("⚠️ Are you sure you want to DECLINE this workspace to be DELETED permanently?")) {
-                document.getElementById('decline-form-' + workspaceId).submit();
-            }
+    <!-- ...existing code... -->
+<script>
+    function confirmDelete(workspaceId) {
+        if (window.confirm("⚠️ Are you sure you want to DECLINE this workspace to be DELETED permanently?")) {
+            document.getElementById('decline-form-' + workspaceId).submit();
         }
+    }
 
-        function showRoomDetails(workspaceId) {
-            fetch(`workspace_approval.php?fetch_rooms=1&workspace_id=${workspaceId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const container = document.getElementById('roomDetails');
-                    container.innerHTML = "";
+    function showRoomDetails(workspaceId) {
+        fetch(`workspace_approval.php?fetch_rooms=1&workspace_id=${workspaceId}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                const container = document.getElementById('roomDetails');
+                container.innerHTML = "";
 
-                    if (data.length === 0) {
-                        container.innerHTML = "<p>No rooms found for this workspace.</p>";
-                    } else {
-                        data.forEach(room => {
-                            container.innerHTML += `
-                                <div class="room-card">
-                                    <p><strong>Name:</strong> ${room.room_name}</p>
-                                    <p><strong>Seats:</strong> ${room.seats ?? 'N/A'}</p>
-                                    <p><strong>Type ID:</strong> ${room.type_id ?? 'N/A'}</p>
-                                    <p><strong>Status:</strong> ${room.room_status ?? 'N/A'}</p>
-                                    <p><strong>Price/hr:</strong> $${room["p/hr"]}</p>
-                                    <p><strong>Price/month:</strong> $${room["p/m"]}</p>
-                                    ${room.images ? `<img src="../${room.images}" alt="Room Image" class="room-image" />` : ''}
-                                </div>
-                            `;
-                        });
-                    }
+                if (Array.isArray(data) && data.length === 0) {
+                    container.innerHTML = "<p>No rooms found for this workspace.</p>";
+                } else if (Array.isArray(data)) {
+                    data.forEach(room => {
+                        container.innerHTML += `
+                            <div class="room-card">
+                                <p><strong>Name:</strong> ${room.room_name}</p>
+                                <p><strong>Seats:</strong> ${room.seats ?? 'N/A'}</p>
+                                <p><strong>Type ID:</strong> ${room.type_id ?? 'N/A'}</p>
+                                <p><strong>Status:</strong> ${room.room_status ?? 'N/A'}</p>
+                                <p><strong>Price/hr:</strong> $${room["p/hr"]}</p>
+                                <p><strong>Price/month:</strong> $${room["p/m"]}</p>
+                                ${room.images ? `<img src="../${room.images}" alt="Room Image" class="room-image" />` : ''}
+                            </div>
+                        `;
+                    });
+                } else if (data.error) {
+                    container.innerHTML = `<p style="color:red;">${data.error}</p>`;
+                }
+                document.getElementById('roomPopup').style.display = 'flex';
+            })
+            .catch(error => {
+                const container = document.getElementById('roomDetails');
+                container.innerHTML = `<p style="color:red;">Error loading room details.</p>`;
+                document.getElementById('roomPopup').style.display = 'flex';
+            });
+    }
 
-                    document.getElementById('roomPopup').style.display = 'flex';
-                });
-        }
-
-        function closePopup() {
-            document.getElementById('roomPopup').style.display = 'none';
-        }
-    </script>
+    function closePopup() {
+        document.getElementById('roomPopup').style.display = 'none';
+    }
+</script>
+<!-- ...existing code... -->
     <style>
         .main-content {
             margin-left: 250px;
