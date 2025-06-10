@@ -9,7 +9,7 @@ if (isset($_SESSION['user_id'])) {
     include 'app/helpers/timeAgo.php';
 
     if (!isset($_GET['user'])) {
-        header("Location: home.php");
+        header("Location: homee.php");
         exit;
     }
 
@@ -17,7 +17,7 @@ if (isset($_SESSION['user_id'])) {
     $chatWith = getUser($_GET['user'], $connect);
 
     if (empty($chatWith)) {
-        header("Location: home.php");
+        header("Location: homee.php");
         exit;
     }
 
@@ -77,10 +77,10 @@ if (isset($_SESSION['user_id'])) {
 </head>
 <body class="d-flex justify-content-center align-items-center vh-100">
     <div class="w-400 shadow p-4 rounded" id="bigdiv">
-        <a href="home.php" class="fs-4 link-dark">&#8592;</a>
+        <a href="homee.php" class="fs-4 link-dark">&#8592;</a>
 
         <div class="d-flex align-items-center" id="frstdiv">
-            <img src="./img/<?=$chatWith['image']?>" class="w-15 rounded-circle">
+            <img src="../img/<?=$chatWith['image']?>" class="w-10 rounded-circle">
 
             <h3 class="display-4 fs-sm m-2">
                 <?=$chatWith['name']?> <br>
