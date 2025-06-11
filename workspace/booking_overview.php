@@ -44,7 +44,6 @@ if (isset($_POST['booking_id'])) {
     $booking_id = $_POST['booking_id'];
     $new_status = $_POST['status'];
 
- 
     $fetch_booking = "
         SELECT status, total_price, pay_method 
         FROM bookings 
@@ -58,9 +57,7 @@ if (isset($_POST['booking_id'])) {
     $run_update = mysqli_query($connect, $update_query);
 
     if ($run_update) {
-
-            if ($new_status == "ongoing" && $pay_method == "pay at host") {
-            
+        if ($new_status == "ongoing" && $pay_method == "pay at host") {
             $workspace_query = "SELECT workspaces.workspace_id 
             FROM bookings 
             JOIN rooms ON bookings.room_id = rooms.room_id 
@@ -72,12 +69,10 @@ if (isset($_POST['booking_id'])) {
             $workspace_id = $workspace_data['workspace_id'];
             $payment_check = mysqli_query($connect, "SELECT * FROM payments WHERE booking_id = '$booking_id'");
             if (mysqli_num_rows($payment_check) == 0) {
-            $insert_payment = "INSERT INTO `payments` VALUES (NULL,'$booking_id','$amount','paid at host',NULL,NULL,'$workspace_id')";
-            $run_insert=mysqli_query($connect,$insert_payment); 
+                $insert_payment = "INSERT INTO `payments` VALUES (NULL,'$booking_id','$amount','paid at host',NULL,NULL,'$workspace_id')";
+                $run_insert=mysqli_query($connect,$insert_payment); 
             }
-            }
-
-
+        }
     
         if ($new_status == 'completed') {
             $email_query = "SELECT users.email, users.name 
@@ -130,10 +125,13 @@ if (isset($_POST['booking_id'])) {
             }
         }
 
-        header("Location: booking_overview.php");
+        // Redirect with success parameter
+        header("Location: booking_overview.php?updated=1");
         exit();
     } else {
-        echo "Error updating record: " . mysqli_error($connect);
+        // Redirect with error parameter
+        header("Location: booking_overview.php?update_error=1");
+        exit();
     }
 }
 ?>
@@ -177,7 +175,7 @@ if (isset($_POST['booking_id'])) {
                     <td>
                         <form method="POST" id="form_<?php echo $booking['booking_id']; ?>">
                             <input type="hidden" name="booking_id" value="<?php echo $booking['booking_id']; ?>">
-                            <select class="form-select" name="status" onchange="document.getElementById('form_<?php echo $booking['booking_id']; ?>').submit();">
+                            <select class="form-select" name="status" onchange="confirmStatusChange(this, <?php echo $booking['booking_id']; ?>)">
                                 <?php foreach ($booking_statuses as $status): ?>
                                     <option value="<?php echo $status; ?>" <?php echo ($booking['status'] == $status) ? 'selected' : ''; ?>>
                                         <?php echo ucfirst($status); ?>
@@ -195,8 +193,8 @@ if (isset($_POST['booking_id'])) {
                             echo htmlspecialchars($booking['pay_method']);
                         }
                         ?>
-                        </td>                
-                </tr>
+                        </td>
+                    </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
@@ -204,5 +202,67 @@ if (isset($_POST['booking_id'])) {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+// Check for URL parameters to show alerts
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.has('updated') && urlParams.get('updated') === '1') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Booking status updated successfully.',
+            showConfirmButton: false,
+            timer: 1800
+        }).then(() => {
+            // Remove the parameter from URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    }
+    
+    if (urlParams.has('update_error') && urlParams.get('update_error') === '1') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to update booking status.',
+            confirmButtonColor: '#0a7273'
+        }).then(() => {
+            // Remove the parameter from URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    }
+});
+
+// Confirmation before changing status
+function confirmStatusChange(selectElement, bookingId) {
+    const newStatus = selectElement.value;
+    const formId = 'form_' + bookingId;
+    
+    Swal.fire({
+        title: 'Confirm Status Change',
+        text: `Are you sure you want to change this booking's status to "${newStatus}"?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#0a7273',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, update it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(formId).submit();
+        } else {
+            // Reset to original value if cancelled
+            selectElement.value = selectElement.dataset.originalValue;
+        }
+    });
+}
+
+// Store original values when page loads
+window.onload = function() {
+    document.querySelectorAll('select[name="status"]').forEach(select => {
+        select.dataset.originalValue = select.value;
+    });
+};
+</script>
 </body>
 </html>
