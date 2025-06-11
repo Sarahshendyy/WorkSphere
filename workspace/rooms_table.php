@@ -80,7 +80,6 @@ if (isset($_POST['room_name'])) {
 
 <div class="container mt-4">
     <h2>Rooms Management</h2>
-    <a href="workspaces_dashboard.php" class="btn btn-secondary mb-3">Back to Dashboard</a>
     
     <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addRoomModal">
         + Add Room
