@@ -1,7 +1,5 @@
 <?php
-// include "connection.php";
 include "../admin/sidebar.php";
-
 
 if (!isset($_SESSION['user_id'])) {
     die("Session not set! <script>window.location.href='login.php';</script>");
@@ -36,16 +34,20 @@ if (isset($_POST['room_name'])) {
         $workspace_row = mysqli_fetch_assoc($workspace_result);
         $workspace_id = $workspace_row['workspace_id'];
 
-        
         $image_paths = [];
+
         if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
             foreach ($_FILES['images']['name'] as $key => $name) {
-                $file_ext = pathinfo($name, PATHINFO_EXTENSION);
-                $new_filename = uniqid() . '.' . $file_ext;
-                $target_file = $image_dir . $new_filename;
-                
-                if (move_uploaded_file($_FILES['images']['tmp_name'][$key], $target_file)) {
-                    $image_paths[] = $target_file;
+                $tmp_name = $_FILES['images']['tmp_name'][$key];
+
+                if (!empty($tmp_name)) {
+                    $file_ext = pathinfo($name, PATHINFO_EXTENSION);
+                    $new_filename = uniqid() . '.' . $file_ext;
+                    $target_file = $image_dir . $new_filename;
+
+                    if (move_uploaded_file($tmp_name, $target_file)) {
+                        $image_paths[] = $new_filename;
+                    }
                 }
             }
         }
@@ -53,12 +55,10 @@ if (isset($_POST['room_name'])) {
         $images = implode(",", $image_paths);
 
         $insert_query = "INSERT INTO rooms (workspace_id, room_name, seats, type_id, `p/hr`, room_status, images) 
-                 VALUES ('$workspace_id', '$room_name', '$seats', '$type_id', '$price', '$room_status', '$images')";
+                         VALUES ('$workspace_id', '$room_name', '$seats', '$type_id', '$price', '$room_status', '$images')";
         
         if (mysqli_query($connect, $insert_query)) {
-            echo "<script>
-                    window.location.href='rooms_table.php?added=1';
-                  </script>";
+            echo "<script>window.location.href='rooms_table.php?added=1';</script>";
             exit();
         } else {
             echo "<script>
@@ -115,43 +115,37 @@ if (isset($_POST['room_name'])) {
             <tbody>
                 <?php while ($room = mysqli_fetch_assoc($rooms_result)): ?>
                     <?php
-    // Check if this room has bookings
-    $room_id = $room['room_id'];
-    $booking_check = mysqli_query($connect, "SELECT COUNT(*) as cnt FROM bookings WHERE room_id = '$room_id'");
-    $has_booking = mysqli_fetch_assoc($booking_check)['cnt'] > 0;
-?>
-                <tr>
-                    <td><?php echo htmlspecialchars($room['room_name']); ?></td>
-                    <td><?php echo htmlspecialchars($room['seats']); ?></td>
-                    <td><?php echo htmlspecialchars($room['type_name']); ?></td>
-                    <td><?php echo htmlspecialchars($room['p/hr']); ?> EGP</td>
-                    <td>
-                        <div class="img-container">
-                        <?php
-                        if (!empty($room['images'])) {
-                            $imageFiles = explode(',', $room['images']);
-                            foreach ($imageFiles as $image) {
-                                $image_path = trim($image);
-                                if (!empty($image_path)) {
-                                    echo "<img src='$image_path' class='room-img'>";
+                        $room_id = $room['room_id'];
+                        $booking_check = mysqli_query($connect, "SELECT COUNT(*) as cnt FROM bookings WHERE room_id = '$room_id'");
+                        $has_booking = mysqli_fetch_assoc($booking_check)['cnt'] > 0;
+                    ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($room['room_name']); ?></td>
+                        <td><?php echo htmlspecialchars($room['seats']); ?></td>
+                        <td><?php echo htmlspecialchars($room['type_name']); ?></td>
+                        <td><?php echo htmlspecialchars($room['p/hr']); ?> EGP</td>
+                        <td>
+                            <div class="img-container d-flex flex-wrap">
+                                <?php
+                                if (!empty($room['images'])) {
+                                    $imageFiles = explode(',', $room['images']);
+                                    foreach ($imageFiles as $img) {
+                                        echo '<img src="img/' . htmlspecialchars(trim($img)) . '" width="60" height="60" class="me-1 mb-1" style="object-fit:cover;border-radius:5px;">';
+                                    }
                                 }
-                            }
-                        }
-                        ?>
-                        </div>
-
-                    </td>
-                    <td><?php echo htmlspecialchars($room['room_status']); ?></td>
-                    <td>
-        <a href="edit_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-        <?php if ($has_booking): ?>
-            <button type="button" class="btn btn-danger btn-sm" onclick="showCannotDeleteAlert()">Delete</button>
-            <?php else: ?>
-                <button type="button" class="btn btn-danger btn-sm btn-delete-room" data-id="<?php echo $room['room_id']; ?>">Delete</button>
-                <?php endif; ?>
-
-    </td>
-                </tr>
+                                ?>
+                            </div>
+                        </td>
+                        <td><?php echo htmlspecialchars($room['room_status']); ?></td>
+                        <td>
+                            <a href="edit_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
+                            <?php if ($has_booking): ?>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="showCannotDeleteAlert()">Delete</button>
+                            <?php else: ?>
+                                <button type="button" class="btn btn-danger btn-sm btn-delete-room" data-id="<?php echo $room['room_id']; ?>">Delete</button>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
@@ -213,7 +207,6 @@ if (isset($_POST['room_name'])) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Show alerts based on URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     
     if (urlParams.has('added') && urlParams.get('added') === '1') {
@@ -224,7 +217,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showConfirmButton: false,
             timer: 1800
         }).then(() => {
-            // Clean URL
             window.history.replaceState({}, document.title, window.location.pathname);
         });
     }
@@ -237,12 +229,10 @@ document.addEventListener('DOMContentLoaded', function() {
             showConfirmButton: false,
             timer: 1800
         }).then(() => {
-            // Clean URL
             window.history.replaceState({}, document.title, window.location.pathname);
         });
     }
-    
-    // Delete room confirmation
+
     document.querySelectorAll('.btn-delete-room').forEach(function(btn) {
         btn.addEventListener('click', function() {
             const roomId = this.getAttribute('data-id');
