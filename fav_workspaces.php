@@ -1,12 +1,11 @@
 <?php
 include "nav.php";
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
+if(!isset($_SESSION['user_id'])){
+     header("location: signup&login.php");
 }
-
 $user_id = $_SESSION['user_id'];
+
+
 
 $query = "SELECT workspaces.*, 
                  zone.zone_name, 
