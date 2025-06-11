@@ -337,6 +337,24 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
             font-weight: 700;
             margin-bottom: 30px;
         }
+        .btn-view-more {
+    background-color: #A68868;      /* Custom blue */
+    color: #fff !important;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 6px 18px;
+    transition: background 0.2s;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+    float: right; /* This will push the button to the right */
+    margin-left: auto;
+}
+.btn-view-more:hover, .btn-view-more:focus {
+    background-color: #8C6D53;
+    color: #fff !important;
+    text-decoration: none;
+}
+
     </style>
 </head>
 <body>
@@ -436,6 +454,7 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
 
             <!-- Bookings Table -->
             <div class="table-container">
+                <a href="bookings_list.php" class="btn btn-view-more">View More</a>
                 <h4><i class="fas fa-calendar-check"></i> Recent Bookings</h4>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
