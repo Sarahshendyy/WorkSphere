@@ -94,7 +94,7 @@ $bookings_result = mysqli_query($connect, $bookings_query);
 $workspaces_query = "SELECT * FROM `workspaces` WHERE `user_id` = '$owner_id'";
 $workspaces_result = mysqli_query($connect, $workspaces_query);
 
-$booking_statuses = ["ongoing", "canceled", "upcoming", "completed"];
+$booking_statuses = ["ongoing", "canceled", "upcoming", "completed", "no-show"];
 $booking_counts = [];
 
 foreach ($booking_statuses as $status) {
@@ -106,7 +106,6 @@ foreach ($booking_statuses as $status) {
     $row = mysqli_fetch_assoc($result);
     $booking_counts[$status] = $row['count'];
 }
-
 $earnings_query = "SELECT workspaces.*, 
            zone.zone_name, 
            rooms.images, 
@@ -174,19 +173,20 @@ $rooms_result = mysqli_query($connect, $rooms_query);
 
 
 <script>
-    const bookingColors = ['#4B6382', '#D9534F', '#E3C39D', '#CDD5DB']; 
+    const bookingColors = ['#4B6382', '#D9534F', '#E3C39D', '#CDD5DB', '#F39C12']; // [ongoing, canceled, upcoming, completed, no-show]
 
     const ctx1 = document.getElementById('bookingChart').getContext('2d');
     const bookingChart = new Chart(ctx1, {
         type: 'pie',
         data: {
-            labels: ['Ongoing', 'Canceled', 'Upcoming', 'Completed'],
+            labels: ['Ongoing', 'Canceled', 'Upcoming', 'Completed', 'No-show'],
             datasets: [{
                 data: [
                     <?php echo $booking_counts['ongoing']; ?>,
                     <?php echo $booking_counts['canceled']; ?>,
                     <?php echo $booking_counts['upcoming']; ?>,
-                    <?php echo $booking_counts['completed']; ?>
+                    <?php echo $booking_counts['completed']; ?>,
+                    <?php echo $booking_counts['no-show']; ?>
                 ],
                 backgroundColor: bookingColors,
                 borderColor: '#F9FAFB',
