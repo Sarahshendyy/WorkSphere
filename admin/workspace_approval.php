@@ -58,7 +58,7 @@ if (isset($_POST['approve'])) {
         $user_id = $owner['user_id'];
 
         $update_role_query = "UPDATE users SET role_id = 3 WHERE user_id = '$user_id'";
-        $update_workspace_query = "UPDATE workspaces SET Availability = 2 WHERE workspace_id = '$workspace_id'";
+        $update_workspace_query = "UPDATE workspaces SET Availability = 3 WHERE workspace_id = '$workspace_id'";
 
         if (mysqli_query($connect, $update_role_query) && mysqli_query($connect, $update_workspace_query)) {
             $subject = "🎉 Welcome On Board! Ready to Activate Your Workspace";
@@ -71,7 +71,7 @@ if (isset($_POST['approve'])) {
                         <p>Dear <strong>$user_name</strong>,</p>
                         <p>Congratulations! Your workspace listing has been approved. 🎉</p>
                         <p>To activate your workspace and start receiving bookings, please complete your payment.</p>
-                        <p><a href='http://localhost/graduation/workspace_payment.php?user_id=$user_id' style='display: inline-block; padding: 10px 15px; background-color: #0a7273; color: white; text-decoration: none; border-radius: 5px;'>Proceed to Payment</a></p>
+                        <p><a href='http://localhost/WorkSphere-main/workspace/payment.php?user_id=$user_id&workspace_id=$workspace_id' style='display: inline-block; padding: 10px 15px; background-color: #0a7273; color: white; text-decoration: none; border-radius: 5px;'>Proceed to Payment</a></p>
                         <p>Best regards,<br>The WorkSphere Team</p>
                     </div>
                 </body>
