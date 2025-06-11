@@ -56,13 +56,27 @@ if (isset($_POST['room_name'])) {
                  VALUES ('$workspace_id', '$room_name', '$seats', '$type_id', '$price', '$room_status', '$images')";
         
         if (mysqli_query($connect, $insert_query)) {
-            echo "<script>alert('Room added successfully!'); window.location.href='rooms_table.php';</script>";
+            echo "<script>
+                    window.location.href='rooms_table.php?added=1';
+                  </script>";
             exit();
         } else {
-            echo "<script>alert('Error adding room: " . mysqli_error($connect) . "');</script>";
+            echo "<script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error adding room: " . addslashes(mysqli_error($connect)) . "'
+                    });
+                  </script>";
         }
     } else {
-        echo "<script>alert('Error: No workspace found for this user.');</script>";
+        echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No workspace found for this user.'
+                });
+              </script>";
     }
 }
 ?>
@@ -131,10 +145,11 @@ if (isset($_POST['room_name'])) {
                     <td>
         <a href="edit_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
         <?php if ($has_booking): ?>
-            <button type="button" class="btn btn-danger btn-sm" onclick="alert('You cannot delete a room that is already booked by someone!');">Delete</button>
-        <?php else: ?>
-            <a href="delete_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-danger btn-sm">Delete</a>
-        <?php endif; ?>
+            <button type="button" class="btn btn-danger btn-sm" onclick="showCannotDeleteAlert()">Delete</button>
+            <?php else: ?>
+                <button type="button" class="btn btn-danger btn-sm btn-delete-room" data-id="<?php echo $room['room_id']; ?>">Delete</button>
+                <?php endif; ?>
+
     </td>
                 </tr>
                 <?php endwhile; ?>
@@ -195,5 +210,70 @@ if (isset($_POST['room_name'])) {
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show alerts based on URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.has('added') && urlParams.get('added') === '1') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Room added successfully.',
+            showConfirmButton: false,
+            timer: 1800
+        }).then(() => {
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    }
+    
+    if (urlParams.has('deleted') && urlParams.get('deleted') === '1') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Room deleted successfully.',
+            showConfirmButton: false,
+            timer: 1800
+        }).then(() => {
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    }
+    
+    // Delete room confirmation
+    document.querySelectorAll('.btn-delete-room').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const roomId = this.getAttribute('data-id');
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This room will be permanently deleted!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#A68868',
+                cancelButtonColor: '#CDD5DB',
+                confirmButtonText: 'Yes, delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `delete_room.php?id=${roomId}`;
+                }
+            });
+        });
+    });
+});
+
+function showCannotDeleteAlert() {
+    Swal.fire({
+        icon: 'error',
+        title: 'Cannot Delete',
+        text: 'You cannot delete a room that has active bookings!',
+        confirmButtonColor: '#A68868'
+    });
+}
+</script>
+
 </body>
 </html>
