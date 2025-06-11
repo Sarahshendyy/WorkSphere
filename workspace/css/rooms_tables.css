@@ -1,3 +1,6 @@
+body {
+  padding-left: 240px; /* Adjusted for sidebar */
+}
 .container.mt-4 {
   max-width: 960px;
   margin-top: 2rem !important;
