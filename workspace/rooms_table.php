@@ -100,6 +100,12 @@ if (isset($_POST['room_name'])) {
             </thead>
             <tbody>
                 <?php while ($room = mysqli_fetch_assoc($rooms_result)): ?>
+                    <?php
+    // Check if this room has bookings
+    $room_id = $room['room_id'];
+    $booking_check = mysqli_query($connect, "SELECT COUNT(*) as cnt FROM bookings WHERE room_id = '$room_id'");
+    $has_booking = mysqli_fetch_assoc($booking_check)['cnt'] > 0;
+?>
                 <tr>
                     <td><?php echo htmlspecialchars($room['room_name']); ?></td>
                     <td><?php echo htmlspecialchars($room['seats']); ?></td>
@@ -119,12 +125,17 @@ if (isset($_POST['room_name'])) {
                         }
                         ?>
                         </div>
+
                     </td>
                     <td><?php echo htmlspecialchars($room['room_status']); ?></td>
                     <td>
-                        <a href="edit_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                        <a href="delete_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
+        <a href="edit_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
+        <?php if ($has_booking): ?>
+            <button type="button" class="btn btn-danger btn-sm" onclick="alert('You cannot delete a room that is already booked by someone!');">Delete</button>
+        <?php else: ?>
+            <a href="delete_room.php?id=<?php echo $room['room_id']; ?>" class="btn btn-danger btn-sm">Delete</a>
+        <?php endif; ?>
+    </td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
