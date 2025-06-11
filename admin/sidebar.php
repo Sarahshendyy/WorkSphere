@@ -61,7 +61,7 @@ include "mail.php";
         }
 
         .sidebar-header img {
-            width: 40px;
+            width: 80px;
             height: 40px;
         }
 
