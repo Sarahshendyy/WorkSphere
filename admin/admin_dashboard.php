@@ -35,13 +35,14 @@ $bookings_query = "SELECT
     JOIN rooms r ON b.room_id = r.room_id
     JOIN workspaces w ON r.workspace_id = w.workspace_id
     LEFT JOIN payments p ON b.booking_id = p.booking_id
-    ORDER BY b.date DESC, b.start_time DESC
+     ORDER BY b.date DESC, b.start_time DESC
+    LIMIT 5
 ";
 
 $bookings_result = mysqli_query($connect, $bookings_query);
 
 
-$booking_statuses = ["ongoing", "canceled", "upcoming", "completed"];
+$booking_statuses = ["ongoing", "canceled", "upcoming", "completed", "no-show"];
 $booking_counts = [];
 
 foreach ($booking_statuses as $status) {
@@ -50,7 +51,6 @@ foreach ($booking_statuses as $status) {
     $row = mysqli_fetch_assoc($result);
     $booking_counts[$status] = $row['count'];
 }
-
 $earnings_query = "SELECT 
         w.workspace_id,
         w.name AS workspace_name,
@@ -321,7 +321,10 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
         .status-ongoing { background-color: var(--accent-light); color: var(--primary-color); }
         .status-completed { background-color: var(--secondary-color); color: white; }
         .status-canceled { background-color: var(--accent-warm); color: white; }
-
+        .status-no-show { 
+    background-color: #B85C38;  /* Matches the chart color for no-show */
+    color: #fff;
+}
         .table thead th {
             background-color: var(--primary-color);
             color: white;
@@ -337,7 +340,8 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
             font-weight: 700;
             margin-bottom: 30px;
         }
-        .btn-view-more {
+/* Add this to your style section or CSS file */
+.btn-view-more {
     background-color: #A68868;      /* Custom blue */
     color: #fff !important;
     border: none;
@@ -456,6 +460,7 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
             <div class="table-container">
                 <a href="bookings_list.php" class="btn btn-view-more">View More</a>
                 <h4><i class="fas fa-calendar-check"></i> Recent Bookings</h4>
+
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
                         <thead>
@@ -531,34 +536,36 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
         };
 
         var ctx1 = document.getElementById('bookingChart').getContext('2d');
-        var bookingChart = new Chart(ctx1, {
-            type: 'pie',
-            data: {
-                labels: ['Ongoing', 'Canceled', 'Upcoming', 'Completed'],
-                datasets: [{
-                    data: [
-                        <?php echo $booking_counts['ongoing']; ?>,
-                        <?php echo $booking_counts['canceled']; ?>,
-                        <?php echo $booking_counts['upcoming']; ?>,
-                        <?php echo $booking_counts['completed']; ?>
-                    ],
-                    backgroundColor: [
-                        chartColors.accentLight,
-                        chartColors.accentWarm,
-                        chartColors.info,
-                        chartColors.secondary
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    }
-                }
+   var bookingChart = new Chart(ctx1, {
+    type: 'pie',
+    data: {
+        labels: ['Ongoing', 'Canceled', 'Upcoming', 'Completed', 'No-show'],
+        datasets: [{
+            data: [
+                <?php echo $booking_counts['ongoing']; ?>,
+                <?php echo $booking_counts['canceled']; ?>,
+                <?php echo $booking_counts['upcoming']; ?>,
+                <?php echo $booking_counts['completed']; ?>,
+                <?php echo $booking_counts['no-show']; ?>
+            ],
+            backgroundColor: [
+                chartColors.accentLight,
+                chartColors.accentWarm,
+                chartColors.info,
+                chartColors.secondary,
+                '#B85C38' // color for no-show
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
             }
-        });
+        }
+    }
+});
 
         var ctx2 = document.getElementById('earningsChart').getContext('2d');
         var earningsLabels = [];
