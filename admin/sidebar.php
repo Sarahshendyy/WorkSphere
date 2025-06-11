@@ -264,8 +264,8 @@ include "mail.php";
 <div class="sidebar">
     <div class="sidebar-header">
         <div class="logo-container">
-            <img src="../img/SCCI_Logo.png" alt="Logo">
-            <?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
+            <img src="../img/logo.png" alt="Logo">
+<?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
                 <h3>Workspace Owner</h3>
             <?php else: ?>
                 <h3>WorkSphere Admin</h3>
