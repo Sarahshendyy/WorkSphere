@@ -2,6 +2,8 @@ body {
   background-color: #fffffa;
   color: #071739;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding-left: 240px; 
+
 }
 
 .container.mt-4 {
