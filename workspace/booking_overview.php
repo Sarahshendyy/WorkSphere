@@ -151,7 +151,6 @@ if (isset($_POST['booking_id'])) {
 
 <div class="container mt-4">
     <h2>Booking Overview</h2>
-    <a href="workspaces_dashboard.php" class="btn btn-secondary mb-3">Back to Dashboard</a>
     
     <div class="table-responsive">
         <table class="table table-striped">
