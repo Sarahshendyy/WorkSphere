@@ -449,3 +449,27 @@ body {
         font-size: 16px;
     }
 }
+
+.btn.btn-add {
+  background-color: var(--primary-color, #071739);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(7,23,57,0.08);
+  transition: background 0.2s, color 0.2s;
+  margin: 0 6px;
+  display: inline-block;
+}
+.btn.btn-add:hover {
+  background-color: var(--secondary-color, #4B6382);
+  color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6, .community-title {
+  font-family: 'DM Sans', 'Poppins', Arial, sans-serif !important;
+  font-weight: 400;
+  letter-spacing: -1px;
+}
