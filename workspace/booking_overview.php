@@ -187,7 +187,15 @@ if (isset($_POST['booking_id'])) {
                         </form>
                     </td>
                     <td><?php echo htmlspecialchars($booking['total_price']); ?></td>
-                    <td><?php echo htmlspecialchars($booking['pay_method']); ?></td>
+                    <td>
+                        <?php
+                        if (!empty($booking['payment_method'])) {
+                            echo htmlspecialchars($booking['payment_method']);
+                        } else {
+                            echo htmlspecialchars($booking['pay_method']);
+                        }
+                        ?>
+                        </td>                
                 </tr>
                 <?php endwhile; ?>
             </tbody>
