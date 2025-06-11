@@ -1,7 +1,10 @@
 <?php
 
 include "connection.php";
-
+if(!isset($_SESSION['user_id'])){
+     header("location: signup&login.php");
+}
+$user_id = $_SESSION['user_id'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
 
