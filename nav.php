@@ -1,4 +1,6 @@
-<?php include 'connection.php';?>
+<?php include 'connection.php';
+?>
+
 <!-- Top Header -->
  <!DOCTYPE html>
  <html lang="en">
@@ -46,8 +48,10 @@
 <!-- Logo & Navigation bottom-->
 <div class="logo-bar">
   <div class="logo">
-    <img src="./img/SCCI_Logo.png" alt="Logo">
-    <p>WorkSohere</p>
+    <a href="indexx.php">
+      <img src="./img/logo.png" alt="Logo">
+    </a>
+    <!-- <p>WorkSohere</p> -->
   </div>
   <nav class="navbar navbar-expand-lg navbar-light">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
