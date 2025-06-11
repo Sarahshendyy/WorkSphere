@@ -43,7 +43,8 @@ $savings = round(($hourly_cost - $room['p/m']) / $hourly_cost * 100);
                         <div class="bg-white p-4 p-md-5 rounded-4 shadow-lg position-relative">
                             <!-- Close Icon -->
                             <div class="position-absolute top-0 end-0 m-3">
-                                <a href="javascript:window.history.back()" class="btn btn-light btn-sm border rounded-circle">
+                                <a href="javascript:window.history.back()"
+                                    class="btn btn-light btn-sm border rounded-circle">
                                     <i class="fa-solid fa-xmark"></i>
                                 </a>
                             </div>
@@ -75,50 +76,65 @@ $savings = round(($hourly_cost - $room['p/m']) / $hourly_cost * 100);
                                             ?>
                                         </div>
                                         <?php if (!empty($room['images']) && count($images) > 1): ?>
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon"></span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon"></span>
-                                        </button>
+                                            <button class="carousel-control-prev" type="button"
+                                                data-bs-target="#roomCarousel" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon"></span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button"
+                                                data-bs-target="#roomCarousel" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon"></span>
+                                            </button>
                                         <?php endif; ?>
                                     </div>
                                 </div>
-                                <!-- Room Information -->
+                                <!-- Room Information Section -->
                                 <div class="col-md-6">
                                     <h1 class="fw-bold mb-3 color"><?php echo $room['room_name']; ?></h1>
-                                    <h2 class="fs-4 fw-bold mb-2 color2">Workspace: <?php echo $room['workspace_name']; ?></h2>
-                                    <p class="mb-2"><i class="fa-solid fa-location-dot me-2 color2"></i><span class="fw-medium color"><?php echo $room['location']; ?></span></p>
-                                    <p class="mb-2"><i class="fa-solid fa-users me-2 color2"></i> <strong>Seats:</strong> <?php echo $room['seats']; ?></p>
-                                    <p class="mb-2"><strong>Working Times:</strong> 09:00 AM - 11:00 PM</p>
-                                    <div class="mt-3">
+                                    <h2 class="fs-4 fw-bold mb-2 color2">Workspace:
+                                        <?php echo $room['workspace_name']; ?>
+                                    </h2>
+
+                                    <!-- Location -->
+                                    <p class="mb-2"><i class="fa-solid fa-location-dot me-2 color2"></i><span
+                                            class="fw-medium color"><?php echo $room['location']; ?></span></p>
+
+                                    <!-- Seats -->
+                                    <p class="mb-2"><i class="fa-solid fa-users me-2 color2"></i><span
+                                            class="fw-medium color"><strong>Seats:</strong>
+                                            <?php echo $room['seats']; ?></span></p>
+
+                                    <!-- Price/Hour - Updated to match style -->
+                                    <p class="mb-2"><i class="fa-solid fa-money-bill-wave me-2 color2"></i><span
+                                            class="fw-medium color"><strong>Price/Hour:</strong>
+                                            <?php echo $room['p/hr']; ?> EGP</span></p>
+
+                                    <!-- Working Times - Updated to match style -->
+                                    <p class="mb-2"><i class="fa-solid fa-clock me-2 color2"></i><span
+                                            class="fw-medium color"><strong>Working Times:</strong> 09:00 AM - 11:00
+                                            PM</span></p>
+
+                                    <!-- Amenities Section -->
+                                    <!-- Amenities Section -->
+                                    <div class="mb-2">
                                         <p class="fw-bold color">Amenities</p>
                                         <ul class="list-unstyled d-flex flex-wrap gap-2">
                                             <?php
                                             foreach ($run_am as $row) {
-                                                echo '<li class="d-flex align-items-center gap-2 bg-light px-3 py-2 rounded-3 mb-1"><i class="fa-solid fa-check color2"></i> ' . $row['amenity'] . '</li>';
+                                                echo '<li class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 mb-1" style="background-color: rgb(205, 213, 219);">
+                    <i class="fa-solid fa-check color2"></i> ' . $row['amenity'] . '
+                  </li>';
                                             }
                                             ?>
                                         </ul>
                                     </div>
+
+                                    <!-- Booking Button -->
                                     <div class="mt-4">
-                                        <div class="d-flex gap-4 align-items-center mb-3">
-                                            <div class="text-center">
-                                                <div class="text-muted small">Hourly Rate</div>
-                                                <div class="fs-5 fw-bold color2"><?php echo $room['p/hr']; ?> EGP</div>
-                                            </div>
-                                            <div class="text-center bg-light rounded-3 px-3 py-2">
-                                                <div class="text-muted small">Monthly Rate</div>
-                                                <div class="fs-4 fw-bold text-success"><?php echo $room['p/m']; ?> EGP</div>
-                                                <span class="badge bg-warning text-dark mt-2">Save <?php echo $savings; ?>%</span>
-                                            </div>
-                                        </div>
                                         <div class="d-flex gap-3">
-                                            <a href="book_now.php?r_id=<?php echo $room['room_id'] ?>&type=hourly" class="btn flex-fill d-flex align-items-center justify-content-center gap-2" style="background-color: var(--deep-navy); color: white; border: none; padding: 12px 20px; border-radius: 8px; transition: all 0.3s ease;">
-                                                <i class="fa-regular fa-clock"></i> Book Hourly
-                                            </a>
-                                            <a href="book_monthly.php?r_id=<?php echo $room['room_id'] ?>&type=monthly" class="btn flex-fill d-flex align-items-center justify-content-center gap-2" style="background-color: var(--steel-blue); color: white; border: none; padding: 12px 20px; border-radius: 8px; transition: all 0.3s ease;">
-                                                <i class="fa-solid fa-piggy-bank"></i> Save with Monthly Booking
+                                            <a href="book_now.php?r_id=<?php echo $room['room_id'] ?>&type=hourly"
+                                                class="btn flex-fill d-flex align-items-center justify-content-center gap-2"
+                                                style="background-color: var(--deep-navy); color: white; border: none; padding: 12px 20px; border-radius: 8px; transition: all 0.3s ease;">
+                                                <i class="fa-regular fa-clock"></i> Book Now
                                             </a>
                                         </div>
                                     </div>
@@ -127,6 +143,8 @@ $savings = round(($hourly_cost - $room['p/m']) / $hourly_cost * 100);
                         </div>
                     </div>
                 </div>
+            </div>
+            </div>
             </div>
         </section>
     </main>
