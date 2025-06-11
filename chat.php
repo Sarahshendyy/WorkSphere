@@ -492,7 +492,7 @@ function showAlert(message, type) {
 </html>
 <?php
     }else{
-		header("location:index.php");
+		header("location:signup&login.php");
 		exit;
 	}
 ?>
