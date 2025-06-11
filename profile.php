@@ -213,8 +213,17 @@ if (isset($_POST['update_password'])) {
                 List Your Workspace
             </button>
         <?php } ?>
+        <form method="POST" action="logout.php" style="display:inline; margin-left: 10px;">
+            <button type="submit" class="btn btn-add" style="display:inline-flex; align-items:center; gap:8px;">
+                <i class="fas fa-sign-out-alt icon"></i> Logout
+            </button>
+        </form>
     </div>
 <?php } ?>
+
+            <?php if ($is_own_profile) { ?>
+            <!-- Remove the old centered logout button form here -->
+            <?php } ?>
 
 
 
