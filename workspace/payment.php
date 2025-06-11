@@ -8,8 +8,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $error = "";
-// $workspaceId = mysqli_real_escape_string($connect, $_GET['workspace_id']);
-$workspaceId = 13;
+$workspaceId = mysqli_real_escape_string($connect, $_GET['workspace_id']);
+// $workspaceId = 13;
 $userId = $_SESSION['user_id'];
 
 // Verify the user is the owner of this workspace
@@ -50,196 +50,239 @@ if (isset($_POST['pay'])) {
 
     if ($stmt->affected_rows > 0) {
         // Update workspace availability
-        $update = "UPDATE workspaces SET Availability = 1 WHERE workspace_id = ?";
+        $update = "UPDATE workspaces SET Availability = 2 WHERE workspace_id = ?";
         $updateStmt = $connect->prepare($update);
         $updateStmt->bind_param("i", $workspaceId);
         $updateStmt->execute();
         
-        header("Location: subscription_success.php");
+        header("Location: workspaces_dashboard.php");
         exit;
     } else {
         $error = "Payment failed. Please try again.";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Workspace Owner Subscription</title>
-    <link rel="stylesheet" href="css/payment.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        /* Subscription Details Styling */
-        .subscription-details {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e0d6c3 0%, #b8c6db 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
-        .subscription-details h2 {
-            color: #4CAF50;
-            margin-bottom: 15px;
-            font-size: 20px;
+        .main-payment-container {
+            width: 420px;
+            background: #fff;
+            border-radius: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+            padding: 40px 30px 30px 30px;
+            position: relative;
+            margin-top: 80px;
         }
-        .detail-row {
+        .card-container {
+            position: absolute;
+            left: 50%;
+            top: -90px;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+        .front {
+            width: 320px;
+            height: 190px;
+            background: linear-gradient(135deg, #0a1a36 60%, #1e3c72 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            color: #fff;
+            padding: 30px 25px 20px 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .front .image {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
+            align-items: center;
         }
-        .detail-label {
-            font-weight: bold;
-            color: #555;
+        .front .image img {
+            height: 32px;
         }
-        .detail-value {
-            color: #333;
+        .card-number-box {
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            margin: 18px 0 10px 0;
+        }
+        .flexbox {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .box span {
+            font-size: 0.8rem;
+            color: #b8c6db;
+        }
+        .card-holder-name, .expiration {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 2px;
         }
         .total-amount {
-            font-size: 18px;
-            font-weight: bold;
             color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.1rem;
             text-align: right;
             margin-top: 10px;
         }
-        
-        /* Input Box Styling */
+        .payment-form {
+            margin-top: 120px;
+        }
         .inputBox {
-            margin-top: 250px;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
-        
         .inputBox span {
-            margin-bottom: 10px;
             display: block;
-            color: #555;
+            font-size: 0.95rem;
+            color: #222;
+            margin-bottom: 7px;
+            font-weight: 500;
         }
-        
         .inputBox input,
         .inputBox select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 15px;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 7px;
+            font-size: 1rem;
+            background: #f8f9fa;
+            outline: none;
+            transition: border 0.2s;
         }
-        
-        .flexbox {
+        .inputBox input:focus,
+        .inputBox select:focus {
+            border: 1.5px solid #0a7273;
+        }
+        .flexbox-form {
             display: flex;
-            gap: 15px;
+            gap: 10px;
         }
-        
-        .flexbox .inputBox {
-            flex: 1 1 150px;
+        .flexbox-form .inputBox {
+            flex: 1 1 0;
         }
-        
         .error {
-            color: red;
-            font-size: 12px;
-            margin-top: 5px;
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 3px;
         }
-        
-        
+        .cssbuttons-io-button {
+            background: #0a7273;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 0;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .cssbuttons-io-button:hover {
+            background: #085d5e;
+        }
+        @media (max-width: 500px) {
+            .main-payment-container {
+                width: 98vw;
+                padding: 20px 5vw 20px 5vw;
+            }
+            .card-container .front {
+                width: 90vw;
+                min-width: 220px;
+                max-width: 98vw;
+            }
+        }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <!-- Subscription Details -->
-        <div class="subscription-details">
-            <h2>Workspace Owner Subscription</h2>
-            <div class="detail-row">
-                <span class="detail-label">Workspace Name:</span>
-                <span class="detail-value"><?php echo htmlspecialchars($workspaceData['workspace_name']); ?></span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Subscription Type:</span>
-                <span class="detail-value">Monthly Platform Access</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Subscription Fee:</span>
-                <span class="detail-value">1000 EGP/month</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Renewal Date:</span>
-                <span class="detail-value"><?php echo date('Y-m-d', strtotime('+1 month')); ?></span>
-            </div>
-            <div class="total-amount">Total Due: 1000 EGP</div>
-        </div>
-        
-        <!-- Credit Card UI -->
+    <div class="main-payment-container">
         <div class="card-container">
             <div class="front">
-                <div class="image">
+               <div class="image">
                     <img src="img/chip-card2 (1).png" alt="">
-                    <img src="img/visa.png" alt="">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="visa-icon">
                 </div>
                 <div class="card-number-box">################</div>
                 <div class="flexbox">
                     <div class="box">
-                        <span>Card Holder</span>
-                        <div class="card-holder-name">Full Name</div>
+                        <span>CARD HOLDER</span>
+                        <div class="card-holder-name">FULL NAME</div>
                     </div>
                     <div class="box">
-                        <span>expires</span>
+                        <span>EXPIRES</span>
                         <div class="expiration">
-                            <span class="exp-month">mm</span>
-                            <span class="exp-year">yy</span>
+                            <span class="exp-month">MM</span>
+                            <span class="exp-year">YY</span>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="back">
-                <div class="stripe"></div>
-                <div class="box">
-                    <span>cvv</span>
-                    <div class="cvv-box"></div>
-                    <img src="img/visa.png" alt="">
-                </div>
+                <div class="total-amount">TOTAL DUE: 1000 EGP</div>
             </div>
         </div>
-        
-        <!-- Payment Form -->
-        <form method="POST" onsubmit="return validateForm()">
+        <form method="POST" class="payment-form" onsubmit="return validateForm()">
+            <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
             <div class="inputBox">
-                <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
-                <span class="span">Card Number</span>
+                <span>Workspace Name</span>
+                <input type="text" value="<?php echo htmlspecialchars($workspaceData['workspace_name']); ?>" readonly>
+            </div>
+            <div class="inputBox">
+                <span>Subscription Type</span>
+                <input type="text" value="Monthly Platform Access" readonly>
+            </div>
+            <div class="inputBox">
+                <span>Renewal Date</span>
+                <input type="text" value="<?php echo date('Y-m-d', strtotime('+1 month')); ?>" readonly>
+            </div>
+            <div class="inputBox">
+                <span>Card Number</span>
                 <input type="number" maxlength="16" name="card_number" id="card-number-input" class="card-number-input" oninput="validateNum()" required>
                 <span name="numError" id="numError" class="error" style="display:none;"></span>
             </div>
             <div class="inputBox">
-                <span class="span">Card Holder</span>
+                <span>Card Holder</span>
                 <input type="text" class="card-holder-input" name="C-HOLDER" id="card-holder-input" oninput="validateName()" required>
                 <span name="nameError" id="nameError" class="error" style="display:none;"></span>
             </div>
-            <div class="flexbox">
+            <div class="flexbox-form">
                 <div class="inputBox">
-                    <span class="span">Expiration MM</span>
+                    <span>Expiration MM</span>
                     <select name="MM" id="month-input" oninput="validateMonth()" class="month-input" required>
                         <option value="month" id="MONTH">Month</option>
-                        <?php
-                        for ($i = 1; $i <= 12; $i++) {
+                        <?php for ($i = 1; $i <= 12; $i++) {
                             echo "<option value='$i'>" . str_pad($i, 2, '0', STR_PAD_LEFT) . "</option>";
-                        }
-                        ?>
+                        } ?>
                     </select>
                     <span name="monthError" id="monthError" class="error" style="display:none;"></span>
                 </div>
                 <div class="inputBox">
-                    <span class="span">Expiration YY</span>
+                    <span>Expiration YY</span>
                     <select name="YY" id="year-input" oninput="validateYear()" class="year-input" required>
                         <option value="year" id="YEAR">Year</option>
-                        <?php
-                        for ($i = date('Y'); $i <= date('Y') + 10; $i++) {
+                        <?php for ($i = date('Y'); $i <= date('Y') + 10; $i++) {
                             echo "<option value='$i'>$i</option>";
-                        }
-                        ?>
+                        } ?>
                     </select>
                     <span name="yearError" id="yearError" class="error" style="display:none;"></span>
                 </div>
@@ -249,22 +292,13 @@ if (isset($_POST['pay'])) {
                     <span name="cvvError" id="cvvError" class="error" style="display:none;"></span>
                 </div>
             </div>
-            <div class="btns">
-                <div class="buttons">
-                    <button class="cssbuttons-io-button addto" type="submit" name="pay">
-                        <span>Subscribe Now</span>
-                        <div class="icon">
-                            <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z" fill="currentColor"></path>
-                            </svg>
-                        </div>
-                    </button>
-                </div>
-            </div>
+            <button class="cssbuttons-io-button" type="submit" name="pay">
+                <span>Pay</span>
+                <i class="fa fa-arrow-right"></i>
+            </button>
         </form>
     </div>
-
+   
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Card Number Display and Validation
