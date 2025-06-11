@@ -11,10 +11,33 @@
     text-transform: uppercase;
 }
 
+:root {
+    --deep-navy: #071739;
+    --steel-blue: #4B6382;
+    --sky-blue: #A4B5C4;
+    --cloud-grey: #CDD5DB;
+    --warm-taupe: #A68868;
+    --beige-cream: #E3C39D;
+    --white-color: #ffffff;
+    --primary-color: var(--warm-taupe);
+    --secondary-color: var(--steel-blue);
+    --section-bg-color: var(--cloud-grey);
+    --custom-btn-bg-color: var(--beige-cream);
+    --custom-btn-bg-hover-color: var(--sky-blue);
+    --dark-color: var(--deep-navy);
+    --p-color: var(--steel-blue);
+    --link-hover-color: var(--warm-taupe);
+    --body-font-family: 'DM Sans', sans-serif;
+}
+
+body, .container, .container form, .container form .inputBox input, .container form .inputBox select {
+    font-family: var(--body-font-family);
+}
+
 .container {
     min-height: 100vh;
-    padding-top: 15px;
-    background: linear-gradient(45deg, #6db1a6, #fda521);
+    padding-top: 60px;
+    background: linear-gradient(135deg, var(--cloud-grey), var(--beige-cream), var(--steel-blue));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -25,24 +48,27 @@
 }
 
 .container form {
-    border-radius: 5px;
-    box-shadow: 0 10px 15px rgba(0, 0, 0, .1);
+    position: relative;
+    z-index: 1;
+    border-radius: 20px;
+    box-shadow: 0 10px 15px rgba(7, 23, 57, .08);
     padding: 20px;
     width: 600px;
     padding-top: 150px;
-
-    background-color: #ffffffa8;
+    background-color: var(--white-color);
+    margin-top: 50px;
 }
-
 
 .container form .inputBox {
     margin-top: 20px;
 }
 
-.container form .inputBox span {
+.container form .inputBox span,
+.container form .inputBox label {
     display: flex;
-    color: white;
+    color: var(--dark-color);
     padding-bottom: 5px;
+    font-weight: 500;
 }
 
 .container form .inputBox input,
@@ -50,8 +76,9 @@
     width: 100%;
     padding: 10px;
     border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, .3);
-    color: black;
+    border: 1px solid var(--cloud-grey);
+    color: var(--dark-color);
+    background: var(--white-color);
 }
 
 .container form .flexbox {
@@ -63,13 +90,18 @@
     flex: 1 1 150px;
 }
 
-
 .container .card-container {
-    margin-bottom: -150px;
-    position: relative;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
     height: 250px;
     width: 400px;
-
+    border-radius: 18px;
+    box-shadow: 0 15px 25px rgba(7, 23, 57, 0.18);
+    background: var(--deep-navy);
+    z-index: 10;
+    margin-top: 32px;
 }
 
 .container .card-container .front {
@@ -79,11 +111,12 @@
     top: 0;
     left: 0;
     backface-visibility: hidden;
-    box-shadow: 0 15px 25px rgba(0, 0, 0, .2);
+    box-shadow: 0 15px 25px rgba(7, 23, 57, 0.18);
     padding: 20px;
     transform: perspective(1000px) rotateY(0deg);
     transition: transform .4s ease-out;
-    background-image: linear-gradient(45deg, #fda521, #6db1a6);
+    background: linear-gradient(135deg, var(--deep-navy) 60%, var(--steel-blue) 100%);
+    border-radius: 18px;
 }
 
 .container .card-container .front .image {
@@ -94,21 +127,26 @@
 }
 
 .container .card-container .front .image img {
-    height: 50px;
+    height: 38px;
+    margin-right: 6px;
+}
+
+.container .card-container .front .image .visa-icon {
+    height: 38px;
+    width: auto;
+    margin-left: auto;
+    filter: drop-shadow(0 2px 4px rgba(75,99,130,0.15));
 }
 
 .container .card-container .front .card-number-box {
-    padding: 30px 0;
+    padding: 30px 0 10px 0;
     font-size: 22px;
     color: #fff;
+    letter-spacing: 2px;
 }
 
 .container .card-container .front .flexbox {
     display: flex;
-}
-
-.container .card-container .front .flexbox .box:nth-child(1) {
-    margin-right: auto;
 }
 
 .container .card-container .front .flexbox .box {
@@ -122,13 +160,12 @@
     right: 0;
     height: 100%;
     width: 100%;
-    /* background-color: #2124b1; */
-    background: linear-gradient(170deg, #6db1a6, #fda521);
-    border-radius: 5px;
+    background: linear-gradient(135deg, var(--deep-navy) 60%, var(--steel-blue) 100%);
+    border-radius: 18px;
     padding: 20px 0;
     text-align: right;
     backface-visibility: hidden;
-    box-shadow: 0 15px 25px rgba(0, 0, 0, .2);
+    box-shadow: 0 15px 25px rgba(7, 23, 57, 0.18);
     transform: perspective(1000px) rotateY(180deg);
     transition: transform .4s ease-out;
 }
@@ -138,6 +175,7 @@
     width: 100%;
     margin: 10px 0;
     height: 50px;
+    border-radius: 4px;
 }
 
 .container .card-container .back .box {
@@ -162,6 +200,26 @@
 .container .card-container .back .box img {
     margin-top: 30px;
     height: 30px;
+    filter: drop-shadow(0 2px 4px rgba(75,99,130,0.15));
+}
+
+button, .cssbuttons-io-button, .btn {
+    padding: 10px 30px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 0;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(7,23,57,0.08);
+    transition: background 0.2s, color 0.2s;
+}
+button:hover, .cssbuttons-io-button:hover, .btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
 }
 
 .btns {
@@ -173,85 +231,6 @@
     gap: 5%;
     margin-left: 28%;
 }
-
-button {
-    padding: 4px 30px;
-    border-radius: 50px;
-    cursor: pointer;
-    border: 0;
-    border-radius: 0.9em;
-    background-color: var(--secondary-color);
-    box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-size: 15px;
-    transition: all 0.5s ease;
-    font-family: inherit;
-}
-
-button:hover {
-    letter-spacing: 3px;
-    background-color: var(--secondary-color);
-    color: hsl(0, 0%, 100%);
-    box-shadow: rgb(255, 255, 255) 0px 5px 20px 0px;
-    ;
-}
-
-
-
-
-/* From Uiverse.io by adamgiebl */
-.cssbuttons-io-button {
-    background-color: #fda521b8;
-    color: #6db1a6;
-    font-family: inherit;
-    padding: 0.35em;
-    padding-left: 1.2em;
-    font-size: 17px;
-    font-weight: 500;
-    border-radius: 0.9em;
-    border: none;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    box-shadow: inset 0 0 1.6em -0.6em var(--secondary-color);
-    overflow: hidden;
-    position: relative;
-    height: 2.8em;
-    padding-right: 3.3em;
-    cursor: pointer;
-}
-
-.cssbuttons-io-button .icon {
-    background: white;
-    margin-left: 1em;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.2em;
-    width: 2.2em;
-    border-radius: 0.7em;
-    box-shadow: 0.1em 0.1em 0.6em 0.2em var(--secondary-color);
-    right: 0.3em;
-    transition: all 0.3s;
-}
-
-.cssbuttons-io-button:hover .icon {
-    width: calc(100% - 0.6em);
-}
-
-.cssbuttons-io-button .icon svg {
-    width: 1.1em;
-    transition: transform 0.3s;
-    color: #6db1a6;
-}
-
-.cssbuttons-io-button:hover .icon svg {
-    transform: translateX(0.1em);
-}
-
-
 
 .buttons {
     display: flex;
@@ -291,107 +270,9 @@ a {
     transform: scale(1.05);
 }
 
-
 .btn:hover:after {
     transform: skewX(-45deg) scale(1, 1);
     transition: all 0.5s;
-}
-
-
-
-button {
-    padding: 4px 30px;
-    border-radius: 50px;
-    cursor: pointer;
-    border: 0;
-    border-radius: 0.9em;
-    background-color: var(--secondary-color);
-    box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-size: 15px;
-    transition: all 0.5s ease;
-    font-family: inherit;
-}
-
-button:hover {
-    letter-spacing: 3px;
-    background-color: var(--secondary-color);
-    color: hsl(0, 0%, 100%);
-    box-shadow: rgb(255, 255, 255) 0px 5px 20px 0px;
-}
-
-
-
-.cssbuttons-io-button {
-    background: #f6bf6d;
-    color: #033043;
-    font-family: inherit;
-    padding: 0.35em;
-    padding-left: 1.2em;
-    font-size: 17px;
-    font-weight: 500;
-    border-radius: 0.9em;
-    border: none;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    box-shadow: inset 0 0 1.6em -0.6em var(--secondary-color);
-    overflow: hidden;
-    position: relative;
-    height: 2.8em;
-    padding-right: 3.3em;
-    cursor: pointer;
-}
-
-.cssbuttons-io-button .icon {
-    background: #6db1a6;
-    margin-left: 1em;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.2em;
-    width: 2.2em;
-    border-radius: 0.7em;
-    box-shadow: 0.1em 0.1em 0.6em 0.2em var(--secondary-color);
-    right: 0.3em;
-    transition: all 0.3s;
-}
-
-.cssbuttons-io-button:hover .icon {
-    width: calc(100% - 0.6em);
-}
-
-.cssbuttons-io-button .icon svg {
-    width: 1.1em;
-    transition: transform 0.3s;
-    color: white;
-}
-
-.cssbuttons-io-button:hover .icon svg {
-    transform: translateX(0.1em);
-}
-
-
-
-
-.buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.btn {
-    position: absolute;
-    top: 14px;
-    right: 27px;
-    padding: 10px;
-    font-size: 20px;
-}
-
-a {
-    text-decoration: none;
-    color: var(--fourthly-color);
 }
 
 .addto {
@@ -421,6 +302,51 @@ a {
         display: flex;
         gap: 5%;
         margin-left: 11%;
+    }
+}
+
+.error {
+    color: #d32f2f;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 4px;
+    display: block;
+    letter-spacing: 0.5px;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--cloud-grey);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--deep-navy);
+    font-size: 20px;
+    text-decoration: none;
+    z-index: 2;
+}
+.close-btn:hover {
+    background-color: var(--steel-blue);
+    color: var(--white-color);
+    transform: rotate(90deg);
+}
+
+@media (max-width: 768px) {
+    .close-btn {
+        top: 10px;
+        right: 10px;
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
     }
 }
 
