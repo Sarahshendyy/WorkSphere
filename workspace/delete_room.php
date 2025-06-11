@@ -11,13 +11,13 @@ if (isset($_GET['id'])) {
     mysqli_stmt_bind_param($stmt, "i", $room_id);
 
     if (mysqli_stmt_execute($stmt)) {
-        echo "<script>alert('Room deleted successfully!'); window.location.href='workspaces_dashboard.php';</script>";
+        echo "<script>alert('Room deleted successfully!'); window.location.href='rooms_table.php';</script>";
     } else {
-        echo "<script>alert('Error deleting room.'); window.location.href='dashboard.php';</script>";
+        echo "<script>alert('Error deleting room.'); window.location.href='rooms_table.php';</script>";
     }
 
     mysqli_stmt_close($stmt);
 } else {
-    echo "<script>alert('Invalid request.'); window.location.href='workspaces_dashboard.php';</script>";
+    echo "<script>alert('Invalid request.'); window.location.href='rooms_table.php';</script>";
 }
 ?>
