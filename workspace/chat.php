@@ -72,10 +72,25 @@ include 'connection.php';
             display: inline-block;
             vertical-align: middle;
         }
+	           #back-btn {
+    display: inline-block;
+    margin: 20px 0 10px 20px;
+    font-size: 1.8rem;
+    color: #fda521;
+    z-index: 1000;
+    position: relative;
+}
+#back-btn:hover {
+    color: #23527c;
+    text-decoration: none;
+}
     </style>
 </head>
 <body class="d-flex justify-content-center align-items-center vh-100">
     <div class="w-400 shadow p-4 rounded" id="bigdiv">
+	  <a href="javascript:history.back()" id="back-btn" title="Go Back" style="display:inline-block;margin:20px 0 10px 20px;font-size:1.8rem;color:#fda521;">
+        <i class="fa fa-arrow-left"></i>
+    </a>
         <div class="d-flex align-items-center" id="frstdiv">
             <h3 class="display-4 fs-sm m-2">
                 <?=$chatWith['name']?> <br>
