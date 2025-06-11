@@ -127,25 +127,72 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // DELETE COMMENT Function (Used by both initial comments and new comments)
     function deleteComment(commentId, commentElement) {
-        fetch('', { // URL: empty string because we're submitting to the same page
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'action=delete&comment_id=' + encodeURIComponent(commentId) // Data sent to PHP
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    commentElement.remove(); // Remove comment from the UI
-                } else {
-                    alert('Error deleting comment.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred.');
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This comment will be deleted!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: 'btn btn-add',
+                cancelButton: 'btn btn-add'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('', { // URL: empty string because we're submitting to the same page
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'action=delete&comment_id=' + encodeURIComponent(commentId) // Data sent to PHP
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            commentElement.remove(); // Remove comment from the UI
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: 'Your comment has been deleted.',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-add',
+                                    cancelButton: 'btn btn-add'
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Error deleting comment.',
+                                icon: 'error',
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-add',
+                                    cancelButton: 'btn btn-add'
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An error occurred.',
+                            icon: 'error',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-add',
+                                cancelButton: 'btn btn-add'
+                            }
+                        });
+                    });
+            }
+        });
     }
 
     // Attach event listeners to existing delete buttons on page load
@@ -164,32 +211,77 @@ document.addEventListener("DOMContentLoaded", function() {
             const postId = this.dataset.postId;
             const postCard = this.closest('.post-card');
 
-            if (confirm('Are you sure you want to delete this post?')) {
-                fetch('', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'action=delete_post&post_id=' + encodeURIComponent(postId)
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        postCard.remove();
-                    } else {
-                        throw new Error(data.error || 'Error deleting post');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert(error.message || 'An error occurred while processing your request.');
-                });
-            }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This post will be deleted!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-add',
+                    cancelButton: 'btn btn-add'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'action=delete_post&post_id=' + encodeURIComponent(postId)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            postCard.remove();
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: 'Your post has been deleted.',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-add',
+                                    cancelButton: 'btn btn-add'
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: data.error || 'Error deleting post',
+                                icon: 'error',
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'btn btn-add',
+                                    cancelButton: 'btn btn-add'
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: error.message || 'An error occurred while processing your request.',
+                            icon: 'error',
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-add',
+                                cancelButton: 'btn btn-add'
+                            }
+                        });
+                    });
+                }
+            });
         });
     });
 });
