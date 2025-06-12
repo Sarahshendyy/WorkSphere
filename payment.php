@@ -62,7 +62,7 @@ if (isset($_POST['pay'])) {
     VALUES ('$bookingId', '$workspaceId', '$totalAmount', 'online', '$transactionId', NOW())";
 $run_insert = mysqli_query($connect, $insert);
     if ($run_insert) {
-        header("Location: payment_success.php"); // Redirect to success page
+        header("Location: my_bookings.php"); // Redirect to success page
         exit;
     } else {
         $error = "Payment failed. Please try again.";
