@@ -84,12 +84,12 @@ if (isset($_POST['pay_at_host'])) {
             </div>
             <div style='background-color: #4B6382; padding: 18px 40px; text-align: left; color: #E3C39D;'>
                 <p style='margin: 0 0 6px 0;'>For any questions, please contact:</p>
-                <p style='margin: 0;'>Email: <a href='mailto:deskify0@gmail.com' style='color: #A68868; text-decoration: underline;'>deskify0@gmail.com</a></p>
+                <p style='margin: 0;'>Email: <a href='mailto:worksphere50@gmail.com' style='color: #A68868; text-decoration: underline;'>worksphere50@gmail.com</a></p>
             </div>
         </body>";
 
         // Use your mail function to send the email
-        $mail->setFrom('deskify0@gmail.com', 'Deskify');
+        $mail->setFrom('worksphere50@gmail.com', 'WorkSphere');
         $mail->addAddress($userEmail);
         $mail->isHTML(true);
         $mail->Subject = $subject;
