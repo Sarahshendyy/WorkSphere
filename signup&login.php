@@ -57,7 +57,7 @@ if (isset($_POST['sign-btn']))
     </div>
     <div style='background-color: #071739; padding: 10px; text-align: center; color: #CDD5DB;'>
       <p>For support and updates, please visit our website or contact us via email.</p>
-      <p>Email: <a href='mailto:worksphere04@gmail.com' style='color: #E3C39D; text-decoration: none;'>worksphere04@gmail.com</a></p>
+      <p>Email: <a href='mailto:worksphere50@gmail.com' style='color: #E3C39D; text-decoration: none;'>worksphere50@gmail.com</a></p>
     </div>
   </body>
 ";
@@ -65,7 +65,7 @@ if (isset($_POST['sign-btn']))
     $old_time = time(); // TIME AS IT IS ON THE THE FORM SUBMISSION
     $_SESSION['old_time'] = $old_time;
 
-    $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+    $mail->setFrom('worksphere50@gmail.com', 'WorkSphere');
     $mail->addAddress($email);
     $mail->isHTML(true);
     $mail->Subject = 'Account Activation code';
