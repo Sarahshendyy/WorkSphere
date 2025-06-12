@@ -12,6 +12,6 @@ ob_start(); // CRUC
 if(isset($_POST['logout'])){
     session_unset();
     session_destroy();
-    header("location: signup&login.php");
+    header("location: ../signup&login.php");
 }
 ?>
