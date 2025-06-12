@@ -61,11 +61,9 @@ if (isset($_SESSION['user_id'])) {
                 VALUES (?, ?, ?, 0, ?, 0, 0, ?)";
         
         $stmt = mysqli_prepare($connect, $sql);
-        $null = NULL;
-        $file_param = $upload_success ? $message_file : $null;
+        $file_param = $upload_success ? $message_file : NULL;
         mysqli_stmt_bind_param($stmt, "iisss", $from_id, $to_id, $message, $date, $file_param);
         $res = mysqli_stmt_execute($stmt);
-        
         if ($res) {
             // Check if this is the first conversation
             $sql2 = "SELECT * FROM `conversation` 
