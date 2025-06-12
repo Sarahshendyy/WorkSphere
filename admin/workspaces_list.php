@@ -13,11 +13,17 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     $workspace_id = $_GET['id'];
     $delete_workspace = "DELETE FROM `workspaces` WHERE `workspace_id` = $workspace_id";
     if (mysqli_query($connect, $delete_workspace)) {
-        $_SESSION['delete_status'] = 'success';
-        $_SESSION['delete_message'] = 'Workspace deleted successfully';
+        $_SESSION['swal'] = [
+            'icon' => 'success',
+            'title' => 'Success!',
+            'text' => 'Workspace deleted successfully'
+        ];
     } else {
-        $_SESSION['delete_status'] = 'error';
-        $_SESSION['delete_message'] = 'Failed to delete workspace: ' . mysqli_error($connect);
+        $_SESSION['swal'] = [
+            'icon' => 'error',
+            'title' => 'Error',
+            'text' => 'Failed to delete workspace: ' . mysqli_error($connect)
+        ];
     }
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
@@ -640,12 +646,13 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/sidebar.js"></script>
     <script>
-        $(document).ready(function() {
+                $(document).ready(function() {
             // Show SweetAlert notifications if any
             <?php if (isset($_SESSION['swal'])) { ?>
                 Swal.fire({
                     icon: '<?php echo $_SESSION['swal']['icon']; ?>',
                     title: '<?php echo $_SESSION['swal']['title']; ?>',
+                    text: '<?php echo isset($_SESSION['swal']['text']) ? $_SESSION['swal']['text'] : ''; ?>',
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -659,6 +666,45 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });
+
+            // Delete confirmation with enhanced feedback
+            $(document).on('click', '.btn-danger', function(e) {
+                e.preventDefault();
+                const deleteUrl = $(this).attr('href');
+                
+                Swal.fire({
+                    title: 'Delete Workspace?',
+                    text: "This action cannot be undone. All associated data will be permanently deleted.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: 'var(--accent-warm)',
+                    cancelButtonColor: 'var(--secondary-color)',
+                    confirmButtonText: 'Yes, delete it',
+                    background: '#fff',
+                    customClass: {
+                        title: 'text-primary',
+                        content: 'text-secondary',
+                        confirmButton: 'btn btn-danger',
+                        cancelButton: 'btn btn-secondary'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state
+                        Swal.fire({
+                            title: 'Deleting...',
+                            html: 'Please wait while we delete the workspace',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        // Perform the delete
+                        window.location.href = deleteUrl;
+                    }
+                });
+            });
+
 
             // Hold confirmation
             $(document).on('click', '.btn-warning', function(e) {
@@ -714,32 +760,32 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
                 });
             });
 
-            // Delete confirmation
-            $(document).on('click', '.btn-danger', function(e) {
-                e.preventDefault();
-                const deleteUrl = $(this).attr('href');
+            // // Delete confirmation
+            // $(document).on('click', '.btn-danger', function(e) {
+            //     e.preventDefault();
+            //     const deleteUrl = $(this).attr('href');
                 
-                Swal.fire({
-                    title: 'Delete Workspace?',
-                    text: "This action cannot be undone. All associated data will be permanently deleted.",
-                    icon: 'error',
-                    showCancelButton: true,
-                    confirmButtonColor: 'var(--accent-warm)',
-                    cancelButtonColor: 'var(--secondary-color)',
-                    confirmButtonText: 'Yes, delete it',
-                    background: '#fff',
-                    customClass: {
-                        title: 'text-primary',
-                        content: 'text-secondary',
-                        confirmButton: 'btn btn-danger',
-                        cancelButton: 'btn btn-secondary'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = deleteUrl;
-                    }
-                });
-            });
+            //     Swal.fire({
+            //         title: 'Delete Workspace?',
+            //         text: "This action cannot be undone. All associated data will be permanently deleted.",
+            //         icon: 'error',
+            //         showCancelButton: true,
+            //         confirmButtonColor: 'var(--accent-warm)',
+            //         cancelButtonColor: 'var(--secondary-color)',
+            //         confirmButtonText: 'Yes, delete it',
+            //         background: '#fff',
+            //         customClass: {
+            //             title: 'text-primary',
+            //             content: 'text-secondary',
+            //             confirmButton: 'btn btn-danger',
+            //             cancelButton: 'btn btn-secondary'
+            //         }
+            //     }).then((result) => {
+            //         if (result.isConfirmed) {
+            //             window.location.href = deleteUrl;
+            //         }
+            //     });
+            // });
         });
     </script>
 </body>
