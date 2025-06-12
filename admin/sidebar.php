@@ -290,6 +290,12 @@ include "mail.php";
                     <span>Booking Overview</span>
                 </a>
             </li>
+        <li class="nav-item">
+                <a href="../workspace/rooms_table.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'rooms_table.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Rooms Management</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a href="../workspace/workspace-calendar.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'workspace-calendar.php' ? 'active' : ''; ?>">
                     <i class="fas fa-calendar"></i>
