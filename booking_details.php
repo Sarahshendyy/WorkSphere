@@ -2,7 +2,6 @@
 // Include your database connection and mail files
 include "mail.php";
 
-
 // Check if booking_id is provided in the URL
 if (!isset($_GET['booking_id'])) {
     die("Booking ID is missing.");
@@ -55,11 +54,34 @@ if (isset($_POST['pay_at_host'])) {
     // Get the workspace_id from the booking data
     $workspaceId = $bookingData['workspace_id'];
     
-    $insert = "INSERT INTO payments (booking_id, workspace_id, amount, payment_method, transaction_id, created_at) 
-               VALUES ('$bookingId', '$workspaceId', '$totalAmount', 'Pay at Host', '$transactionId', NOW())";
-    $run_insert = mysqli_query($connect, $insert);
-
-    if ($run_insert) {
+    // Start transaction
+    mysqli_begin_transaction($connect);
+    
+    try {
+        // Update the bookings table with payment info
+        $updateBooking = "UPDATE bookings 
+                         SET total_price = '$totalAmount', 
+                             pay_method = 'Pay at Host',
+                             status = 'upcoming'
+                         WHERE booking_id = '$bookingId'";
+        $runUpdate = mysqli_query($connect, $updateBooking);
+        
+        if (!$runUpdate) {
+            throw new Exception("Failed to update booking record.");
+        }
+        
+        // Insert into payments table
+        $insert = "INSERT INTO payments (booking_id, workspace_id, amount, payment_method, transaction_id, created_at) 
+                   VALUES ('$bookingId', '$workspaceId', '$totalAmount', 'Pay at Host', '$transactionId', NOW())";
+        $run_insert = mysqli_query($connect, $insert);
+        
+        if (!$run_insert) {
+            throw new Exception("Failed to insert payment record.");
+        }
+        
+        // Commit transaction
+        mysqli_commit($connect);
+        
         // Send email to the user
         $subject = "Your Booking Confirmation";
         $message = "
@@ -101,8 +123,10 @@ if (isset($_POST['pay_at_host'])) {
         } else {
             $error = "Payment was successful, but the email could not be sent.";
         }
-    } else {
-        $error = "Payment failed. Please try again.";
+    } catch (Exception $e) {
+        // Rollback transaction on error
+        mysqli_rollback($connect);
+        $error = "Payment failed: " . $e->getMessage();
     }
 }
 
