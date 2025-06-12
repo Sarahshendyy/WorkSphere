@@ -236,12 +236,13 @@ a {
 	display: block;
 }
 
-#error-message {
-	color: #FF4500;
-	font-size: 15px;
-	margin-left: 64px;
+.error-message {
+    color: #ff3333;
+    text-align: center;
+    font-size: 0.95em;
+    margin-top: 2px;
+    margin-bottom: 6px;
 }
-
 .checkbox-container {
 	color: var(--sec-color);
 	display: flex;
