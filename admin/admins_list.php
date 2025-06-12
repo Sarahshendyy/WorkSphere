@@ -67,12 +67,11 @@ if (isset($_POST['add_admin'])) {
                 </div>
                 <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
                     <p style='color: #fffffa;'>For admin support or urgent matters, please contact:</p>
-                    <p style='color: #fffffa;'>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #fda521;'>admin-support@worksphere04@gmail.com</a></p>
-                    <p style='color: #fffffa;'>Phone: [Your Admin Support Phone Number]</p>
+                    <p style='color: #fffffa;'>Email: <a href='mailto:admin-support@worksphere50@gmail.com' style='color: #fda521;'>admin-support@worksphere50@gmail.com</a></p>
                 </div>
             </body>";
 
-                $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+                $mail->setFrom('worksphere50@gmail.com', 'WorkSphere');
                 $mail->addAddress($email);
                 $mail->isHTML(true);
                 $mail->Subject = 'Welcome Aboard';
