@@ -480,7 +480,7 @@ $num_bookings = mysqli_num_rows($run_bookings);
                             <button class="accordion-button fs-4 lh-lg fw-bold pt-x1 pb-2 collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expand="false" aria-controls="collapse5" data-accordion-button="data-accordion-button">How do I contact customer support?</button>
                         </h2>
                         <div class="accordion-collapse collapse" id="collapse5" data-bs-parent="#accordion">
-                            <div class="accordion-body lh-xl pt-0 pb-x1">For any support inquiries, you can email our team at worksphere04@gmail.com, or chat with us and we'll get back to you as soon as possible.</div>
+                            <div class="accordion-body lh-xl pt-0 pb-x1">For any support inquiries, you can email our team at worksphere50@gmail.com, or chat with us and we'll get back to you as soon as possible.</div>
                         </div>
                     </div>
                 </div>
