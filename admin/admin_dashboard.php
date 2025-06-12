@@ -472,7 +472,7 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
                                 <th>Date</th>
                                 <th>Time</th>
                                 <th>Payment</th>
-                                <th>Profit (20%)</th>
+                                <th>Profit (15%)</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
