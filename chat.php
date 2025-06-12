@@ -211,7 +211,7 @@ include 'connection.php';
                             <?=$chat['message']?> 
                             <?php if(!empty($chat['file'])) { ?>
                                 <br>
-                                <a href="/files/<?= htmlspecialchars($chat['file']) ?>" target="_blank" class="file-link">
+                                <a href="./files/<?= htmlspecialchars($chat['file']) ?>" target="_blank" class="file-link">
                                     <i class="fas fa-paperclip"></i> View File
                                 </a>
                             <?php } ?>
