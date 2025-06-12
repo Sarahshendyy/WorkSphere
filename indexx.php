@@ -284,9 +284,7 @@ $num_bookings = mysqli_num_rows($run_bookings);
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="position-relative z-1 text-center mb-8 mb-lg-9 video-player-paused" data-video-player-container="data-video-player-container">
-                    <div class="overlay rounded-4 bg-1100 object-cover" data-overlay="data-overlay"> 
-                        <img class="pause-icon w-100 h-100" src="img/Screenshot 2024-08-04 060742.png" alt="" />
-                    </div>
+                    
                 </div>
             </div>
             <div class="col-md-8 col-lg-7">
