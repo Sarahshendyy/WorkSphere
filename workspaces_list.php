@@ -252,7 +252,7 @@ if (isset($_POST['search']) && !empty($_POST['text'])) {
               while ($imag = mysqli_fetch_assoc($run_img)) {
                 foreach (explode(',', $imag['images']) as $image) {
                   echo '<div class="carousel-item ' . ($first ? 'active' : '') . '">
-                        <img src="./img/' . trim($image) . '" class="d-block w-100" alt="">
+                        <img src="./workspace/img/' . trim($image) . '" class="d-block w-100" alt="">
                       </div>';
                   $first = false;
                 }

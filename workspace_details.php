@@ -160,7 +160,7 @@ $ws = mysqli_fetch_assoc($run_select_room);
           $images = explode(',', $room['images']);
           foreach ($images as $i => $img) {
             $active = $i === 0 ? 'active' : '';
-            echo "<div class='carousel-item $active'><img src='./img/" . trim($img) . "' class='d-block w-100'></div>";
+            echo "<div class='carousel-item $active'><img src='./workspace/img/" . trim($img) . "' class='d-block w-100'></div>";
           }
           ?>
         </div>
