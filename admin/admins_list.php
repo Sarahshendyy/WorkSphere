@@ -68,6 +68,7 @@ if (isset($_POST['add_admin'])) {
                 <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
                     <p style='color: #fffffa;'>For admin support or urgent matters, please contact:</p>
                     <p style='color: #fffffa;'>Email: <a href='mailto:admin-support@worksphere50@gmail.com' style='color: #fda521;'>admin-support@worksphere50@gmail.com</a></p>
+                    <p style='color: #fffffa;'>Phone: [Your Admin Support Phone Number]</p>
                 </div>
             </body>";
 
@@ -92,11 +93,17 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     $user_id = $_GET['id'];
     $delete_user = "DELETE FROM `users` WHERE `user_id` = $user_id";
     if (mysqli_query($connect, $delete_user)) {
-        $_SESSION['delete_status'] = 'success';
-        $_SESSION['delete_message'] = 'User deleted successfully';
+        $_SESSION['swal'] = [
+            'icon' => 'success',
+            'title' => 'Admin Deleted',
+            'text' => 'The admin has been successfully removed from the system.'
+        ];
     } else {
-        $_SESSION['delete_status'] = 'error';
-        $_SESSION['delete_message'] = 'Failed to delete user: ' . mysqli_error($connect);
+        $_SESSION['swal'] = [
+            'icon' => 'error',
+            'title' => 'Deletion Failed',
+            'text' => 'Failed to delete admin: ' . mysqli_error($connect)
+        ];
     }
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
@@ -640,30 +647,105 @@ $run_select = mysqli_query($connect, $select_users);
                 });
             });
 
-            // SweetAlert2 confirmation for delete buttons
-            $(document).on('click', '.btn-danger', function(e) {
-                e.preventDefault();
-                var deleteUrl = $(this).attr('href');
+              // Show SweetAlert notifications from PHP session
+    <?php if (isset($_SESSION['delete_status'])) { ?>
+        Swal.fire({
+            icon: '<?php echo $_SESSION['delete_status'] === 'success' ? 'success' : 'error'; ?>',
+            title: '<?php echo $_SESSION['delete_status'] === 'success' ? 'Success!' : 'Error!'; ?>',
+            text: '<?php echo $_SESSION['delete_message']; ?>',
+            showConfirmButton: false,
+            timer: 2000,
+            background: '#fff',
+            customClass: {
+                popup: 'swal2-popup',
+                title: 'swal2-title',
+                content: 'swal2-html-container'
+            }
+        });
+        <?php unset($_SESSION['delete_status']); ?>
+        <?php unset($_SESSION['delete_message']); ?>
+    <?php } ?>
+
+    // SweetAlert2 confirmation for delete buttons
+    $(document).on('click', '.btn-danger', function(e) {
+        e.preventDefault();
+        var deleteUrl = $(this).attr('href');
+        Swal.fire({
+            title: 'Delete Admin Account?',
+            text: "This action will permanently delete the admin and cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-warm').trim() || '#A68868',
+            cancelButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--light-color').trim() || '#CDD5DB',
+            confirmButtonText: 'Yes, delete permanently',
+            cancelButtonText: 'Cancel',
+            background: '#fff',
+            customClass: {
+                popup: 'swal2-popup',
+                title: 'swal2-title',
+                content: 'swal2-html-container',
+                confirmButton: 'swal2-confirm',
+                cancelButton: 'swal2-cancel'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading state
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This admin will be permanently deleted!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-warm').trim() || '#A68868',
-                    cancelButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--light-color').trim() || '#CDD5DB',
-                    confirmButtonText: 'Yes, delete',
-                    cancelButtonText: 'Cancel',
+                    title: 'Deleting Admin...',
+                    html: 'Please wait while we process your request',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    background: '#fff',
                     customClass: {
                         popup: 'swal2-popup',
-                        confirmButton: 'swal2-confirm',
-                        cancelButton: 'swal2-cancel'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = deleteUrl;
+                        title: 'swal2-title',
+                        content: 'swal2-html-container'
                     }
                 });
-            });
+                
+                // Perform the deletion via AJAX
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'GET',
+                    success: function(response) {
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Admin Deleted!',
+                            text: 'The admin has been successfully removed from the system.',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            background: '#fff',
+                            customClass: {
+                                popup: 'swal2-popup',
+                                title: 'swal2-title',
+                                content: 'swal2-html-container'
+                            }
+                        }).then(() => {
+                            // Refresh the page to update the list
+                            window.location.reload();
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Show error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Deletion Failed',
+                            text: 'Failed to delete admin: ' + error,
+                            background: '#fff',
+                            customClass: {
+                                popup: 'swal2-popup',
+                                title: 'swal2-title',
+                                content: 'swal2-html-container'
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
         });
     </script>
     <style>
