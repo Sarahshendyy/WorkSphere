@@ -430,7 +430,7 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
                     <div class="summary-card text-center">
                         <h5>Total Earnings</h5>
                         <h3><?php echo number_format($total_earnings, 2); ?> EGP</h3>
-                        <p class="text-muted">20% of all bookings</p>
+                        <p class="text-muted">15% of all bookings</p>
                     </div>
                 </div>
                 <div class="col-md-3">
