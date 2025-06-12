@@ -487,8 +487,6 @@ $run_select = mysqli_query($connect, $select_users);
                                     echo '<td><a href="../profile.php?user_id=' . htmlspecialchars($row['user_id']) . '">' . htmlspecialchars($row['name']) . '</a></td>';
                                     echo '<td>' . htmlspecialchars($row['email']) . '</td>';
                                     echo '<td>' . htmlspecialchars($row['phone']) . '</td>';
-                                    echo '<td><span class="' . $status_class . '">Active</span></td>';
-                                    echo '<td>';
                                     echo '<div class="action-buttons">';
                                     echo '<a href="?action=delete&id=' . htmlspecialchars($row['user_id']) . '" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</a>';
                                     echo '</div>';
