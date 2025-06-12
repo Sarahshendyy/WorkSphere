@@ -61,7 +61,7 @@ include "mail.php";
         }
 
         .sidebar-header img {
-            width: 80px;
+            width: 40px;
             height: 40px;
         }
 
@@ -265,10 +265,10 @@ include "mail.php";
     <div class="sidebar-header">
         <div class="logo-container">
             <img src="../img/logo.png" alt="Logo">
-<?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
+            <?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
                 <h3>Workspace Owner</h3>
             <?php else: ?>
-                <h3>WorkSphere Admin</h3>
+                <h3 style="color: #fff;">WorkSphere Admin</h3>
             <?php endif; ?>
         </div>
         <button class="toggle-sidebar" id="toggleSidebar">
@@ -288,12 +288,6 @@ include "mail.php";
                 <a href="../workspace/booking_overview.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'booking_overview.php' ? 'active' : ''; ?>">
                     <i class="fas fa-calendar-check"></i>
                     <span>Booking Overview</span>
-                </a>
-            </li>
-         <li class="nav-item">
-                <a href="../workspace/rooms_table.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'rooms_table.php' ? 'active' : ''; ?>">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Rooms Management</span>
                 </a>
             </li>
             <li class="nav-item">

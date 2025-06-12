@@ -49,6 +49,253 @@ if (isset($_SESSION['user_id'])) {
             color: #6c757d;
         }
 	</style>
+	<style>
+        :root {
+            --primary-color: #071739;
+            --secondary-color: #4B6382;
+            --info-color: #A4B5C4;
+            --light-color: #CDD5DB;
+            --accent-warm: #A68868;
+            --accent-light: #E3C39D;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: var(--primary-color);
+            padding: 20px;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .toggle-sidebar:hover {
+            color: var(--accent-light);
+        }
+
+        .sidebar.collapsed .sidebar-header h3,
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+       
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .main-content.expanded {
+                margin-left: 0;
+            }
+
+            .toggle-sidebar {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1002;
+                background-color: var(--primary-color);
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+            }
+
+            .toggle-sidebar.collapsed {
+                left: 20px;
+            }
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+
+        .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-warm);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-warm);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .chart-container {
+            width: 48%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container {
+            width: 100%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-upcoming { background-color: #66b3ff; color: white; }
+        .status-ongoing { background-color: #ffcc00; color: black; }
+        .status-completed { background-color: #4caf50; color: white; }
+        .status-canceled { background-color: #ff4d4d; color: white; }
+    </style>
 </head>
 <body class="d-flex
              justify-content-center
@@ -169,7 +416,59 @@ if (isset($_SESSION['user_id'])) {
       setInterval(lastSeenUpdate, 10000);
 
     });
+
+	// Sidebar Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    const toggleBtn = document.getElementById('toggleSidebar');
+    
+    // Check for saved state
+    const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (isSidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        mainContent.classList.add('expanded');
+        toggleBtn.classList.add('collapsed');
+    }
+
+    // Check if we're on mobile
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+        sidebar.classList.remove('collapsed');
+        mainContent.classList.remove('expanded');
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        if (isMobile) {
+            sidebar.classList.toggle('active');
+        } else {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            toggleBtn.classList.toggle('collapsed');
+            
+            // Save state only for desktop
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('expanded');
+        } else {
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+                toggleBtn.classList.add('collapsed');
+            }
+        }
+    });
+}); 
 </script>
+
 </body>
 </html>
 <?php
