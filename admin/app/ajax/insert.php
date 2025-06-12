@@ -15,7 +15,7 @@ if (isset($_SESSION['user_id'])) {
         // File upload handling
         if(isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
             // File upload directory - changed to 'files' folder
-            $upload_dir = '../../files/';
+            $upload_dir = '../../../files/';
             
             // Create directory if it doesn't exist
             if (!file_exists($upload_dir)) {
