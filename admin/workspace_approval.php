@@ -61,6 +61,7 @@ if (isset($_POST['approve'])) {
         $update_workspace_query = "UPDATE workspaces SET Availability = 3 WHERE workspace_id = '$workspace_id'";
 
         if (mysqli_query($connect, $update_role_query) && mysqli_query($connect, $update_workspace_query)) {
+            $_SESSION['approve_success'] = true;
             $subject = "🎉 Welcome On Board! Ready to Activate Your Workspace";
             $message = "
                 <body style='font-family: Arial, sans-serif; background-color: #fffffa; color: #00000a;'>
@@ -103,6 +104,7 @@ if (isset($_POST['decline'])) {
 
         $delete_query = "DELETE FROM workspaces WHERE workspace_id = '$workspace_id'";
         if (mysqli_query($connect, $delete_query)) {
+            $_SESSION['decline_success'] = true;
             $subject = "⚠️ Workspace Request Declined";
             $message = "
                 <body style='font-family: Arial, sans-serif; background-color: #fffffa; color: #00000a;'>
@@ -144,6 +146,9 @@ function sendEmail($to, $subject, $body) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin - Approve Workspaces</title>
     <link rel="stylesheet" href="./css/workspace_approval.css" />
+    <!-- Add SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- ...existing code... -->
 <script>
     function confirmDelete(workspaceId) {
@@ -194,7 +199,128 @@ function sendEmail($to, $subject, $body) {
     function closePopup() {
         document.getElementById('roomPopup').style.display = 'none';
     }
-</script>
+    
+        // New SweetAlert functions
+        function confirmApprove(workspaceId) {
+            Swal.fire({
+                title: 'Approve Workspace?',
+                text: "This will approve the workspace and notify the owner.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-warm').trim() || '#A68868',
+                cancelButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--light-color').trim() || '#CDD5DB',
+                confirmButtonText: 'Yes, approve',
+                cancelButtonText: 'Cancel',
+                background: '#fff',
+                customClass: {
+                    popup: 'swal2-popup',
+                    title: 'swal2-title',
+                    content: 'swal2-html-container',
+                    confirmButton: 'swal2-confirm',
+                    cancelButton: 'swal2-cancel'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing Approval...',
+                        html: 'Please wait while we process your request',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                        background: '#fff',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            content: 'swal2-html-container'
+                        }
+                    });
+                    
+                    // Submit the form
+                    document.getElementById('approve-form-' + workspaceId).submit();
+                }
+            });
+        }
+
+        function confirmDecline(workspaceId) {
+            Swal.fire({
+                title: 'Decline Workspace?',
+                text: "This will permanently delete the workspace and notify the owner.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-warm').trim() || '#A68868',
+                cancelButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--light-color').trim() || '#CDD5DB',
+                confirmButtonText: 'Yes, decline',
+                cancelButtonText: 'Cancel',
+                background: '#fff',
+                customClass: {
+                    popup: 'swal2-popup',
+                    title: 'swal2-title',
+                    content: 'swal2-html-container',
+                    confirmButton: 'swal2-confirm',
+                    cancelButton: 'swal2-cancel'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing Decline...',
+                        html: 'Please wait while we process your request',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        },
+                        background: '#fff',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            content: 'swal2-html-container'
+                        }
+                    });
+                    
+                    // Submit the form
+                    document.getElementById('decline-form-' + workspaceId).submit();
+                }
+            });
+        }
+
+        // Show success messages from PHP if they exist
+        <?php if (isset($_SESSION['approve_success'])): ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Workspace Approved',
+                text: 'The workspace has been approved successfully',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#fff',
+                customClass: {
+                    popup: 'swal2-popup',
+                    title: 'swal2-title',
+                    content: 'swal2-html-container'
+                }
+            });
+            <?php unset($_SESSION['approve_success']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['decline_success'])): ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Workspace Declined',
+                text: 'The workspace has been declined and removed',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#fff',
+                customClass: {
+                    popup: 'swal2-popup',
+                    title: 'swal2-title',
+                    content: 'swal2-html-container'
+                }
+            });
+            <?php unset($_SESSION['decline_success']); ?>
+        <?php endif; ?>
+    </script>
+
 <!-- ...existing code... -->
     <style>
         .main-content {
@@ -215,6 +341,45 @@ function sendEmail($to, $subject, $body) {
                 padding: 10px;
             }
         }
+      
+        /* SweetAlert Custom Styles (matching reference) */
+        .swal2-popup {
+            font-family: 'DM Sans', sans-serif;
+            border-radius: 10px;
+        }
+        .swal2-title {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .swal2-html-container {
+            color: var(--secondary-color);
+        }
+        .swal2-confirm {
+            background-color: var(--accent-warm) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 5px !important;
+            padding: 10px 20px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+        }
+        .swal2-confirm:hover {
+            background-color: var(--accent-light) !important;
+            color: var(--primary-color) !important;
+        }
+        .swal2-cancel {
+            background-color: var(--light-color) !important;
+            color: var(--primary-color) !important;
+            border: none !important;
+            border-radius: 5px !important;
+            padding: 10px 20px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+        }
+        .swal2-cancel:hover {
+            background-color: var(--info-color) !important;
+            color: white !important;
+        }
     </style>
 </head>
 <body>
@@ -233,14 +398,15 @@ function sendEmail($to, $subject, $body) {
             
             <button type="button" onclick="showRoomDetails(<?php echo $workspace['workspace_id']; ?>)" class="view-btn">📋 View Room Details</button>
 
-            <form method="POST" style="display:inline;">
+                    <form method="POST" id="approve-form-<?php echo $workspace['workspace_id']; ?>" style="display:inline;">
                 <input type="hidden" name="workspace_id" value="<?php echo $workspace['workspace_id']; ?>" />
-                <button type="submit" name="approve" class="approve-btn">✅ Approve</button>
+                <button type="button" onclick="confirmApprove(<?php echo $workspace['workspace_id']; ?>)" class="approve-btn">✅ Approve</button>
+                <input type="hidden" name="approve" />
             </form>
 
             <form method="POST" id="decline-form-<?php echo $workspace['workspace_id']; ?>" style="display:inline;">
                 <input type="hidden" name="workspace_id" value="<?php echo $workspace['workspace_id']; ?>" />
-                <button type="button" onclick="confirmDelete(<?php echo $workspace['workspace_id']; ?>)" class="decline-btn">❌ Decline</button>
+                <button type="button" onclick="confirmDecline(<?php echo $workspace['workspace_id']; ?>)" class="decline-btn">❌ Decline</button>
                 <input type="hidden" name="decline" />
             </form>
         </div>
