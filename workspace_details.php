@@ -160,7 +160,7 @@ $ws = mysqli_fetch_assoc($run_select_room);
           $images = explode(',', $room['images']);
           foreach ($images as $i => $img) {
             $active = $i === 0 ? 'active' : '';
-            echo "<div class='carousel-item $active'><img src='./workspace/img/" . trim($img) . "' class='d-block w-100'></div>";
+            echo "<div class='carousel-item $active'><img src='./img/" . trim($img) . "' class='d-block w-100'></div>";
           }
           ?>
         </div>
@@ -177,7 +177,6 @@ $ws = mysqli_fetch_assoc($run_select_room);
         <h3><?php echo $room['room_name']; ?></h3>
         <p><strong>Seats:</strong> <?php echo $room['seats']; ?></p>
         <p class="price-block"><?php echo $room['p/hr']; ?> EGP / hour</p>
-        <p class="price-block"><?php echo $room['p/m']; ?> EGP / month</p>
         <a href="room_details.php?r_id=<?php echo $room['room_id']; ?>" class="view-btn">View Details</a>
       </div>
     </div>
