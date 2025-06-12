@@ -128,7 +128,7 @@ include 'connection.php';
                                         <?=$chat['created_at']?>
                                     </small>
                                     
-                                    <a href="/files/<?= htmlspecialchars($chat['file']) ?>" target="_blank" class="file-link">
+                                    <a href="./files/<?= htmlspecialchars($chat['file']) ?>" target="_blank" class="file-link">
                                         <i class="fas fa-paperclip"></i> View File
                                     </a>
 
