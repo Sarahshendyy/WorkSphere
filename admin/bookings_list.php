@@ -407,8 +407,8 @@ if (isset($_POST['search'])) {
             <?php endif; ?>
         </div>
         <button class="toggle-sidebar" id="toggleSidebar">
-            <i class="fas fa-bars"></i>
-        </button>
+    <i class="fas fa-bars"></i>
+</button>
     </div>
     <ul class="nav-menu">
         <?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
@@ -595,56 +595,66 @@ if (isset($_POST['search'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     // Sidebar Toggle Functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.querySelector('.sidebar');
-            const mainContent = document.querySelector('.main-content');
-            const toggleBtn = document.getElementById('toggleSidebar');
-            
-            // Check for saved state
-            const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-            if (isSidebarCollapsed) {
+        // ...existing code...
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    const toggleBtn = document.getElementById('toggleSidebar');
+
+    if (!sidebar || !mainContent || !toggleBtn) {
+        // Elements not found, do nothing
+        return;
+    }
+
+    // Check for saved state
+    const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (isSidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        mainContent.classList.add('expanded');
+        toggleBtn.classList.add('collapsed');
+    }
+
+    // Check if we're on mobile
+    function checkMobile() {
+        return window.innerWidth <= 768;
+    }
+    if (checkMobile()) {
+        sidebar.classList.remove('collapsed');
+        mainContent.classList.remove('expanded');
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        if (checkMobile()) {
+            sidebar.classList.toggle('active');
+        } else {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            toggleBtn.classList.toggle('collapsed');
+            // Save state only for desktop
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (checkMobile()) {
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('expanded');
+        } else {
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isCollapsed) {
                 sidebar.classList.add('collapsed');
                 mainContent.classList.add('expanded');
                 toggleBtn.classList.add('collapsed');
-            }
-
-            // Check if we're on mobile
-            const isMobile = window.innerWidth <= 768;
-            if (isMobile) {
+            } else {
                 sidebar.classList.remove('collapsed');
                 mainContent.classList.remove('expanded');
+                toggleBtn.classList.remove('collapsed');
             }
-
-            toggleBtn.addEventListener('click', function() {
-                if (isMobile) {
-                    sidebar.classList.toggle('active');
-                } else {
-                    sidebar.classList.toggle('collapsed');
-                    mainContent.classList.toggle('expanded');
-                    toggleBtn.classList.toggle('collapsed');
-                    
-                    // Save state only for desktop
-                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-                }
-            });
-
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                const isMobile = window.innerWidth <= 768;
-                if (isMobile) {
-                    sidebar.classList.remove('collapsed');
-                    mainContent.classList.remove('expanded');
-                } else {
-                    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-                    if (isCollapsed) {
-                        sidebar.classList.add('collapsed');
-                        mainContent.classList.add('expanded');
-                        toggleBtn.classList.add('collapsed');
-                    }
-                }
-            });
-        });
-    
+        }
+    });
+});
+// ...existing code...
 
         // Search and sort functionality
         $(document).ready(function() {
@@ -687,7 +697,7 @@ if (isset($_POST['search'])) {
             });
         });
   </script>
-    <script src="js/sidebar.js"></script>
+    <!-- <script src="js/sidebar.js"></script> -->
 </body>
 
 </html>
