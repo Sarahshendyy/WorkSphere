@@ -42,13 +42,13 @@ if(isset($_POST['submit']))
         </div>
         <div style='background-color: #071739; padding: 10px; text-align: center; color: #CDD5DB;'>
             <p>For support and updates, please visit our website or contact us via email.</p>
-            <p>Email: <a href='mailto:worksphere04@gmail.com' style='color: #E3C39D; text-decoration: none;'>worksphere04@gmail.com</a></p>
+            <p>Email: <a href='mailto:worksphere50@gmail.com' style='color: #E3C39D; text-decoration: none;'>worksphere50@gmail.com</a></p>
         </div>
     </body>
 ";
 
 
-                $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+                $mail->setFrom('worksphere50@gmail.com', 'WorkSphere');
                 $mail->addAddress($email);
                 $mail->isHTML(true);
                 $mail->Subject = 'Password Reset Successfully';
