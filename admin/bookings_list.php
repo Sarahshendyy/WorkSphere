@@ -1,9 +1,14 @@
 <?php
-// include "connection.php";
-include "sidebar.php";
+include "connection.php";
+// include "sidebar.php";
 
 // Initialize sort variables
-$sort = isset($_GET['sort']) ? $_GET['sort'] : 'date_desc';
+$sort = 'date_desc';
+if (isset($_POST['sort'])) {
+    $sort = $_POST['sort'];
+} elseif (isset($_GET['sort'])) {
+    $sort = $_GET['sort'];
+}
 $orderBy = "ORDER BY b.date DESC"; // Default sorting
 
 // Set ORDER BY clause based on sort parameter
@@ -18,6 +23,7 @@ switch ($sort) {
         $orderBy = "ORDER BY b.date ASC";
         break;
     case 'date_desc':
+        default:
         $orderBy = "ORDER BY b.date DESC";
         break;
 }
@@ -105,6 +111,80 @@ if (isset($_POST['search'])) {
         body {
             background-color: #f8f9fa;
             font-family: 'DM Sans', sans-serif;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: var(--primary-color);
+            padding: 20px;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .toggle-sidebar:hover {
+            color: var(--accent-light);
+        }
+
+        .sidebar.collapsed .sidebar-header h3,
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .sidebar.collapsed .nav-link i {
+            margin-right: 0;
         }
 
         .main-content {
@@ -226,88 +306,41 @@ if (isset($_POST['search'])) {
             flex-wrap: wrap;
             gap: 15px;
         }
-          .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 250px;
-            background-color: var(--primary-color);
-            padding: 20px;
-            color: white;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
 
-        .sidebar.collapsed {
-            width: 70px;
-        }
-
-        .sidebar-header {
-            padding: 20px 0;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .sidebar-header .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .sidebar-header img {
-            width: 40px;
-            height: 40px;
-        }
-
-        .sidebar-header h3 {
-            margin: 0;
-            font-size: 1.2rem;
-        }
-
-        .toggle-sidebar {
-            background: none;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .nav-menu {
+            list-style: none;
             padding: 0;
+            margin-top: 30px;
         }
 
-        .toggle-sidebar:hover {
-            color: var(--accent-light);
+        .nav-item {
+            margin-bottom: 10px;
         }
 
-        .sidebar.collapsed .sidebar-header h3,
-        .sidebar.collapsed .nav-link span {
-            display: none;
-        }
-
-        .sidebar.collapsed .nav-link {
-            justify-content: center;
-            padding: 12px;
-        }
-
-        .sidebar.collapsed .nav-link i {
-            margin-right: 0;
-        }
-
-        .main-content {
-            margin-left: 250px;
-            padding: 20px;
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
 
-        .main-content.expanded {
-            margin-left: 70px;
+        .nav-link:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-warm);
+            color: white;
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
         }
 
         @media (max-width: 768px) {
@@ -359,46 +392,133 @@ if (isset($_POST['search'])) {
                 width: 100%;
             }
         }
-
-        .nav-menu {
-            list-style: none;
-            padding: 0;
-            margin-top: 30px;
-        }
-
-        .nav-item {
-            margin-bottom: 10px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .nav-link.active {
-            background-color: var(--accent-warm);
-            color: white;
-        }
-
-        .nav-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
     </style>
 </head>
 
 <body>
+   <div class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo-container">
+            <img src="../img/logo.png" alt="Logo">
+            <?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
+                <h3>Workspace Owner</h3>
+            <?php else: ?>
+                <h3>WorkSphere Admin</h3>
+            <?php endif; ?>
+        </div>
+        <button class="toggle-sidebar" id="toggleSidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    <ul class="nav-menu">
+        <?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
+            <!-- Workspace Owner Sidebar -->
+            <li class="nav-item">
+                <a href="../workspace/workspaces_dashboard.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'workspaces_dashboard.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../workspace/booking_overview.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'booking_overview.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Booking Overview</span>
+                </a>
+            </li>
+         <li class="nav-item">
+                <a href="../workspace/rooms_table.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'rooms_table.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Rooms Management</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../workspace/workspace-calendar.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'workspace-calendar.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-calendar"></i>
+                    <span>Workspace Calendar</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../workspace/chat.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'chat.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-user profile-icon"></i>
+                    <span>My Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <form action="../workspace/connection.php" method="POST" style="margin:0;">
+                    <button type="submit" name="logout" class="nav-link" style="width:100%;background:none;border:none;padding:0;text-align:left;display:flex;align-items:center;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </li>
+        <?php elseif (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 4): ?>
+            <!-- Admin Sidebar -->
+            <li class="nav-item">
+                <a href="admin_dashboard.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'admin_dashboard.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="bookings_list.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'bookings_list.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Bookings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="workspaces_list.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'workspaces_list.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-building"></i>
+                    <span>Workspaces</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="users_list.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'users_list.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="admins_list.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'admins_list.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admins</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="homee.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'homee.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="workspace_approval.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'workspace_approval.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Workspace Approval</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="profile.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-user profile-icon"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <form action="connection.php" method="POST" style="margin:0;">
+                    <button type="submit" name="logout" class="nav-link" style="width:100%;background:none;border:none;padding:0;text-align:left;display:flex;align-items:center;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </li>
+        <?php endif; ?>
+    </ul>
+</div>
+    <!-- Main Content -->
     <div class="main-content" id="mainContent">
         <div class="container-fluid">
             <h2><i class="fas fa-calendar-check"></i> Bookings List</h2>
@@ -410,10 +530,10 @@ if (isset($_POST['search'])) {
                     </div>
                     <div class="sort-dropdown">
                         <select class="form-select" id="sortSelect">
-                            <option value="date_desc">Date (Newest First)</option>
-                            <option value="date_asc">Date (Oldest First)</option>
-                            <option value="price_desc">Price (High to Low)</option>
-                            <option value="price_asc">Price (Low to High)</option>
+                            <option value="date_desc" <?php echo $sort === 'date_desc' ? 'selected' : ''; ?>>Date (Newest First)</option>
+                            <option value="date_asc" <?php echo $sort === 'date_asc' ? 'selected' : ''; ?>>Date (Oldest First)</option>
+                            <option value="price_desc" <?php echo $sort === 'price_desc' ? 'selected' : ''; ?>>Price (High to Low)</option>
+                            <option value="price_asc" <?php echo $sort === 'price_asc' ? 'selected' : ''; ?>>Price (Low to High)</option>
                         </select>
                     </div>
                 </div>
@@ -428,13 +548,21 @@ if (isset($_POST['search'])) {
                                 <th>Status</th>
                                 <th>Date</th>
                                 <th>Total Price</th>
-                                <th>Admin Profit (20%)</th>
+                                <th>Admin Profit (15%)</th>
                             </tr>
                         </thead>
                         <tbody id="bookingsTableBody">
                             <?php
                             if (mysqli_num_rows($run_select) > 0) {
                                 foreach ($run_select as $row) {
+                                    $status_class = '';
+                                    switch (strtolower($row['status'])) {
+                                        case 'upcoming': $status_class = 'status-upcoming'; break;
+                                        case 'ongoing': $status_class = 'status-ongoing'; break;
+                                        case 'completed': $status_class = 'status-completed'; break;
+                                        case 'canceled': $status_class = 'status-canceled'; break;
+                                        default: $status_class = 'status-upcoming'; break;
+                                    }
                                     ?>
                                     <tr>
                                         <td><?php echo htmlspecialchars($row['booking_id']); ?></td>
@@ -444,7 +572,7 @@ if (isset($_POST['search'])) {
                                         <td><a href="../workspace_details.php?ws_id=<?php echo $row['workspace_id']; ?>">
                                                 <?php echo htmlspecialchars($row['workspace_name']); ?>
                                             </a></td>
-                                        <td><span class="status-badge <?php echo strtolower(htmlspecialchars($row['status'])); ?>">
+                                        <td><span class="status-badge <?php echo $status_class; ?>">
                                                 <?php echo htmlspecialchars($row['status']); ?>
                                             </span></td>
                                         <td><?php echo htmlspecialchars($row['booking_date']); ?></td>
@@ -465,8 +593,60 @@ if (isset($_POST['search'])) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/sidebar.js"></script>
     <script>
+    // Sidebar Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            
+            // Check for saved state
+            const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isSidebarCollapsed) {
+                sidebar.classList.add('collapsed');
+                mainContent.classList.add('expanded');
+                toggleBtn.classList.add('collapsed');
+            }
+
+            // Check if we're on mobile
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                sidebar.classList.remove('collapsed');
+                mainContent.classList.remove('expanded');
+            }
+
+            toggleBtn.addEventListener('click', function() {
+                if (isMobile) {
+                    sidebar.classList.toggle('active');
+                } else {
+                    sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                    toggleBtn.classList.toggle('collapsed');
+                    
+                    // Save state only for desktop
+                    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('expanded');
+                } else {
+                    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+                    if (isCollapsed) {
+                        sidebar.classList.add('collapsed');
+                        mainContent.classList.add('expanded');
+                        toggleBtn.classList.add('collapsed');
+                    }
+                }
+            });
+        });
+    
+
+        // Search and sort functionality
         $(document).ready(function() {
             // Search functionality
             $("#searchText").on("keyup", function() {
@@ -506,7 +686,8 @@ if (isset($_POST['search'])) {
                 });
             });
         });
-    </script>
+  </script>
+    <script src="js/sidebar.js"></script>
 </body>
 
 </html>
