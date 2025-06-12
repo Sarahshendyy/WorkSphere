@@ -388,7 +388,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete_post') {
 <body>
  <div class="top-header">
   <div class="contact d-flex align-items-center">
-    <i class="fas fa-phone me-2"></i>012-201-77444
+    <i class="fas fa-phone me-2"></i>010-967-74388
   </div>
   <div class="top-actions">
     <a href="about_us.php" class="angled-section get-touch">
@@ -403,11 +403,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'delete_post') {
 
 
   </div>
-  <div class="social-icons">
+<!--   <div class="social-icons">
     <a href="#"><i class="fab fa-facebook-f"></i></a>
     <a href="#"><i class="fab fa-instagram"></i></a>
     <a href="#"><i class="fab fa-linkedin-in"></i></a>
-  </div>
+  </div> -->
 </div>
 
 <!-- Logo & Navigation bottom-->
