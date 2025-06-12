@@ -118,7 +118,7 @@ if (isset($_SESSION['user_id'])) {
                                         <?=$chat['created_at']?>
                                     </small>
                                     
-                                    <a href="/files/<?= htmlspecialchars($chat['file']) ?>" target="_blank" class="file-link">
+                                    <a href="../files/<?= htmlspecialchars($chat['file']) ?>" target="_blank" class="file-link">
                                         <i class="fas fa-paperclip"></i> View File
                                     </a>
 
@@ -175,7 +175,7 @@ if (isset($_SESSION['user_id'])) {
                             <?=$chat['message']?> 
                             <?php if(!empty($chat['file'])) { ?>
                                 <br>
-                                <a href="/files/<?= htmlspecialchars($chat['file']) ?>" target="_blank" class="file-link">
+                                <a href="../files/<?= htmlspecialchars($chat['file']) ?>" target="_blank" class="file-link">
                                     <i class="fas fa-paperclip"></i> View File
                                 </a>
                             <?php } ?>
