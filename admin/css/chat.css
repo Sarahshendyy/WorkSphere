@@ -11,7 +11,8 @@
 	width: 6%;
 }
 a {
-	text-decoration: none;
+    text-decoration: none;
+    color: #c3cbd5 /* Muted Blue */
 }
 .fs-big {
 	font-size: 5rem !important;
