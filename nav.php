@@ -60,23 +60,16 @@
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 bottom-nav">
        <?php
-    if (isset($_SESSION['role_id'])) {
-        if ($_SESSION['role_id'] == 3) {
-            // Workspace Owner
-            echo '<li class="nav-item">
-                    <a class="nav-link" href="./workspace/workspaces_dashboard.php">
-                        Return to My Interface
-                    </a>
-                  </li>';
-        } elseif ($_SESSION['role_id'] == 4) {
-            // Admin
-            echo '<li class="nav-item">
-                    <a class="nav-link" href="./admin/admin_dashboard.php">
-                        Return to My Interface
-                    </a>
-                  </li>';
-        }
+if (isset($_SESSION['role_id'])) {
+    if ($_SESSION['role_id'] == 3 || $_SESSION['role_id'] == 4) {
+        $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : './indexx.php';
+        echo '<li class="nav-item">
+                <a class="nav-link" href="' . htmlspecialchars($referer) . '">
+                    Return to My Interface
+                </a>
+              </li>';
     }
+}
     ?>
         <li class="nav-item"><a class="nav-link" href="indexx.php">Home</a></li>
 
