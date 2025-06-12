@@ -112,7 +112,7 @@ if (isset($_POST['decline'])) {
                     <div style='padding: 20px; background-color: #fffffa; color: #00000a;'>
                         <p>Dear <strong>$user_name</strong>,</p>
                         <p>We regret to inform you that your workspace listing request has been declined.</p>
-                        <p>If you have any questions or need further clarification, please <a href='mailto:worksphere04@gmail.com' style='color: #dc3545;'>contact us</a>.</p>
+                        <p>If you have any questions or need further clarification, please <a href='mailto:worksphere50@gmail.com' style='color: #dc3545;'>contact us</a>.</p>
                         <p>Best regards,<br>The WorkSphere Team</p>
                     </div>
                 </body>
@@ -128,7 +128,7 @@ if (isset($_POST['decline'])) {
 
 function sendEmail($to, $subject, $body) {
     global $mail;
-    $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+    $mail->setFrom('worksphere50@gmail.com', 'WorkSphere');
     $mail->addAddress($to);
     $mail->isHTML(true);
     $mail->Subject = $subject;
