@@ -149,27 +149,42 @@ if (isset($_POST['search'])) {
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            gap: 15px;
+            position: relative;
+            margin-bottom: 20px;
         }
 
-        .sidebar-header .logo-container {
+        .logo-container {
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 10px;
+            width: 100%;
+            padding-top: 10px;
+            transition: all 0.3s ease;
         }
 
         .sidebar-header img {
-            width: 40px;
-            height: 40px;
+            width: 115px;
+            height: 51px;
+            transition: all 0.3s ease;
         }
 
         .sidebar-header h3 {
             margin: 0;
             font-size: 1.2rem;
+            color: white;
+            text-align: center;
+            width: 100%;
+            transition: all 0.3s ease;
         }
 
         .toggle-sidebar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
             background: none;
             color: white;
             border: none;
@@ -181,10 +196,32 @@ if (isset($_POST['search'])) {
             cursor: pointer;
             transition: all 0.3s ease;
             padding: 0;
+            z-index: 1;
         }
 
         .toggle-sidebar:hover {
             color: var(--accent-light);
+        }
+
+        /* Collapsed state styles */
+        .sidebar.collapsed .sidebar-header {
+            padding: 15px 0;
+        }
+
+        .sidebar.collapsed .logo-container {
+            padding-top: 0;
+        }
+
+        .sidebar.collapsed .sidebar-header img {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+        }
+
+        .sidebar.collapsed .toggle-sidebar {
+            position: static;
+            margin: 5px auto 0;
+            display: block;
         }
 
         .sidebar.collapsed .sidebar-header h3,
@@ -413,7 +450,7 @@ if (isset($_POST['search'])) {
    <div class="sidebar">
     <div class="sidebar-header">
         <div class="logo-container">
-            <img src="../img/logo.png" alt="Logo">
+            <img src="../img/white_logo.png" alt="Logo">
             <?php if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3): ?>
                 <h3>Workspace Owner</h3>
             <?php else: ?>
