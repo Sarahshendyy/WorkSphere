@@ -1,6 +1,6 @@
 <?php
 // include "connection.php";
-include "mail.php";
+include "../mail.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
