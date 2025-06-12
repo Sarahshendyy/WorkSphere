@@ -65,12 +65,11 @@ if (isset($_SESSION['user_id'])) {
         }
 
         // Insert message into the chats table using prepared statement
-        $sql = "INSERT INTO chat (from_user, to_user, message, opened, created_at,star, edited, file) 
-                VALUES (?, ?, ?, 0, ?, 0,0, ?)";
+         $sql = "INSERT INTO chat (from_user, to_user, message, opened, created_at, star, edited, file) 
+                VALUES (?, ?, ?, 0, ?, 0, 0, ?)";
         
         $stmt = mysqli_prepare($connect, $sql);
-        $null = NULL;
-        $file_param = $upload_success ? $message_file : $null;
+        $file_param = $upload_success ? $message_file : NULL;
         mysqli_stmt_bind_param($stmt, "iisss", $from_id, $to_id, $message, $date, $file_param);
         $res = mysqli_stmt_execute($stmt);
         
