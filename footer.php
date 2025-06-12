@@ -29,17 +29,17 @@
           <div class="detail-item">
             <i class="fas fa-phone"></i>
             <span class="detail-label">PHONE NO.</span>
-            <span class="detail-value">[YOUR PHONE NUMBER]</span>
+            <span class="detail-value">[+201096774388]</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-envelope"></i>
             <span class="detail-label">CONTACT</span>
-            <span class="detail-value">worksphere04@gmail.com</span>
+            <span class="detail-value">worksphere50@gmail.com</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-life-ring"></i>
             <span class="detail-label">SUPPORT</span>
-            <span class="detail-value">worksphere04@gmail.com</span>
+            <span class="detail-value">worksphere50@gmail.com</span>
           </div>
           <div class="detail-item">
             <i class="fas fa-server"></i>
