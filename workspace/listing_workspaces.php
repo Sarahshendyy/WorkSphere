@@ -4,7 +4,7 @@ include "../admin/sidebar.php";
 $successMessage = null;
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php'); // Use header redirect instead of die()
+    header('Location: login.php');
     exit();
 }
 
@@ -19,7 +19,6 @@ while ($type = mysqli_fetch_assoc($room_type_result)) {
 }
 
 if (isset($_POST['submit'])) {
-    // Use prepared statement for inserting workspace to prevent SQL injection
     $stmt = $connect->prepare("INSERT INTO workspaces (user_id, name, location, description, `price/hr`, zone_id, latitude, longitude, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
     $stmt->bind_param("isssdiid", $user_id, $_POST['name'], $_POST['location'], $_POST['description'], $_POST['price_hr'], $_POST['zone_id'], $_POST['latitude'], $_POST['longitude']);
 
@@ -29,7 +28,6 @@ if (isset($_POST['submit'])) {
     $workspace_id = $stmt->insert_id;
     $stmt->close();
 
-    // Prepare statement for inserting rooms
     $room_stmt = $connect->prepare("INSERT INTO rooms (workspace_id, room_name, seats, type_id, images, `p/hr`) VALUES (?, ?, ?, ?, ?, ?)");
 
     if (!empty($_POST['rooms']) && is_array($_POST['rooms'])) {
@@ -40,17 +38,15 @@ if (isset($_POST['submit'])) {
             $price_hr_room = floatval($room['price_hr']);
             
             $image_paths = [];
-            
-            // Check if files were uploaded for this room index
+
             if (isset($_FILES['room_images']['name'][$index])) {
                 $target_dir = "img/";
                 if (!is_dir($target_dir)) {
-                    mkdir($target_dir, 0755, true); // Ensure the directory exists
+                    mkdir($target_dir, 0755, true);
                 }
 
                 $file_count = count($_FILES['room_images']['name'][$index]);
                 for ($i = 0; $i < $file_count; $i++) {
-                    // Check for upload errors
                     if ($_FILES['room_images']['error'][$index][$i] === UPLOAD_ERR_OK) {
                         $image_name = $_FILES['room_images']['name'][$index][$i];
                         $tmp_name = $_FILES['room_images']['tmp_name'][$index][$i];
@@ -60,20 +56,17 @@ if (isset($_POST['submit'])) {
                         $target_file = $target_dir . $new_filename;
 
                         if (move_uploaded_file($tmp_name, $target_file)) {
-                            // Store the relative path for the database
-                            $image_paths[] = $target_file; 
+                            // ✅ Only save file name in DB
+                            $image_paths[] = $new_filename;
                         } else {
-                            // Handle file move error
                             error_log("Failed to move uploaded file: " . $image_name);
                         }
                     }
                 }
             }
-            
-            // Implode the array of paths into a single string
+
             $images_string = implode(",", $image_paths);
 
-            // Bind params and execute for the room
             $room_stmt->bind_param("isiisd", $workspace_id, $room_name, $seats, $type_id, $images_string, $price_hr_room);
             if (!$room_stmt->execute()) {
                 die("Room Insert Error for room '$room_name': " . $room_stmt->error);
@@ -85,6 +78,7 @@ if (isset($_POST['submit'])) {
     $successMessage = "Your workspace is waiting for admin approval. You will receive an email once it's approved or rejected.";
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
