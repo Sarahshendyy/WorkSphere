@@ -43,7 +43,9 @@ $select_bookings = "SELECT
     w.name AS workspace_name,
     b.status AS status,
     b.total_price,
-    DATE_FORMAT(b.date, '%Y-%m-%d') AS booking_date
+    DATE_FORMAT(b.date, '%Y-%m-%d') AS booking_date,
+    p.payment_method,
+    p.transaction_id
 FROM 
     grad_proj.bookings b
 JOIN 
@@ -52,6 +54,8 @@ JOIN
     grad_proj.rooms r ON b.room_id = r.room_id
 JOIN 
     grad_proj.workspaces w ON r.workspace_id = w.workspace_id
+LEFT JOIN 
+    grad_proj.payments p ON b.booking_id = p.booking_id
 $searchCondition
 $orderBy";
 
@@ -75,12 +79,22 @@ if (isset($_POST['search'])) {
             echo '<td><a href="../workspace_details.php?ws_id=' . htmlspecialchars($row['workspace_id']) . '">' . htmlspecialchars($row['workspace_name']) . '</a></td>';
             echo '<td><span class="status-badge ' . $status_class . '">' . htmlspecialchars($row['status']) . '</span></td>';
             echo '<td>' . htmlspecialchars($row['booking_date']) . '</td>';
+            echo '<td>';
+            if ($row['payment_method']) {
+                echo htmlspecialchars($row['payment_method']);
+                if ($row['transaction_id']) {
+                    echo ' (' . htmlspecialchars($row['transaction_id']) . ')';
+                }
+            } else {
+                echo 'Pending';
+            }
+            echo '</td>';
             echo '<td>' . number_format($row['total_price'], 2) . ' EGP</td>';
             echo '<td>' . number_format($row['total_price'] * 0.15, 2) . ' EGP</td>';
             echo '</tr>';
         }
     } else {
-        echo '<tr><td colspan="7" class="text-center">No bookings found</td></tr>';
+        echo '<tr><td colspan="8" class="text-center">No bookings found</td></tr>';
     }
     exit();
 }
@@ -547,6 +561,7 @@ if (isset($_POST['search'])) {
                                 <th>Workspace</th>
                                 <th>Status</th>
                                 <th>Date</th>
+                                <th>Payment Method</th>
                                 <th>Total Price</th>
                                 <th>Admin Profit (15%)</th>
                             </tr>
@@ -576,13 +591,23 @@ if (isset($_POST['search'])) {
                                                 <?php echo htmlspecialchars($row['status']); ?>
                                             </span></td>
                                         <td><?php echo htmlspecialchars($row['booking_date']); ?></td>
+                                        <td>
+                                            <?php if ($row['payment_method']): ?>
+                                                <?php echo htmlspecialchars($row['payment_method']); ?>
+                                                <?php if ($row['transaction_id']): ?>
+                                                    (<?php echo htmlspecialchars($row['transaction_id']); ?>)
+                                                <?php endif; ?>
+                                            <?php else: ?>
+                                                Pending
+                                            <?php endif; ?>
+                                        </td>
                                         <td><?php echo number_format($row['total_price'], 2); ?> EGP</td>
                                         <td><?php echo number_format($row['total_price'] * 0.15, 2); ?> EGP</td>
                                     </tr>
                                     <?php
                                 }
                             } else {
-                                echo '<tr><td colspan="7" class="text-center">No bookings found</td></tr>';
+                                echo '<tr><td colspan="8" class="text-center">No bookings found</td></tr>';
                             }
                             ?>
                         </tbody>
