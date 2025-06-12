@@ -67,11 +67,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'hold' && isset($_GET['id'])) {
             </div>
             <div style='background-color: #4B6382; padding: 10px; text-align: center; color: #fff;'>
                 <p>For support or questions, please contact:</p>
-                <p>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #A68868;'>admin-support@worksphere04@gmail.com</a></p>
+                <p>Email: <a href='mailto:admin-support@worksphere50@gmail.com' style='color: #A68868;'>admin-support@worksphere50@gmail.com</a></p>
             </div>
         </body>";
 
-        $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+        $mail->setFrom('worksphere50@gmail.com', 'WorkSphere');
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = 'Your WorkSphere Workspace Has Been Placed On Hold';
@@ -124,11 +124,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'unhold' && isset($_GET['id']))
             </div>
             <div style='background-color: #4B6382; padding: 10px; text-align: center; color: #fff;'>
                 <p>For any questions, please contact:</p>
-                <p>Email: <a href='mailto:admin-support@worksphere04@gmail.com' style='color: #A68868;'>admin-support@worksphere04@gmail.com</a></p>
+                <p>Email: <a href='mailto:admin-support@worksphere50@gmail.com' style='color: #A68868;'>admin-support@worksphere50@gmail.com</a></p>
             </div>
         </body>";
 
-        $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+        $mail->setFrom('worksphere50@gmail.com', 'WorkSphere');
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = 'Your WorkSphere Workspace Has Been Reactivated';
