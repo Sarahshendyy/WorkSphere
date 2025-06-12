@@ -108,12 +108,12 @@ if (isset($_POST['booking_id'])) {
                         </div>
                         <div style='background-color: #0a7273; padding: 10px; text-align: center; color: #fffffa;'>
                             <p style='color: #fffffa;'>For support and updates, please visit our website or contact us via email.</p>
-                            <p style='color: #fffffa;'>Email: <a href='mailto:worksphere04@gmail.com' style='color: #fda521;'>worksphere04@gmail.com</a></p>
+                            <p style='color: #fffffa;'>Email: <a href='mailto:worksphere50@gmail.com' style='color: #fda521;'>worksphere50@gmail.com</a></p>
                         </div>
                     </body>
                 ";
 
-                $mail->setFrom('worksphere04@gmail.com', 'WorkSphere');
+                $mail->setFrom('worksphere50@gmail.com', 'WorkSphere');
                 $mail->addAddress($email);
                 $mail->isHTML(true);
                 $mail->Subject = $subject;
