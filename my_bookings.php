@@ -22,12 +22,14 @@ function displayStatus($status)
 // Function to fetch bookings
 function fetchBookings($connect, $user_id, $statusFilter)
 {
-    $select_booking = "SELECT `bookings`.*, `rooms`.`room_name`, `rooms`.`workspace_id`, 
-    `workspaces`.`name` AS `workspace_name`, `workspaces`.`location`
+   $select_booking = "SELECT `bookings`.*, `rooms`.`room_name`, `rooms`.`workspace_id`, 
+    `workspaces`.`name` AS `workspace_name`, `workspaces`.`location`, 
+    `payments`.`amount`
             FROM `bookings`
             JOIN `users` ON `bookings`.`user_id` = `users`.`user_id` 
             JOIN `rooms` ON `bookings`.`room_id` = `rooms`.`room_id`
             JOIN `workspaces` ON `rooms`.`workspace_id` = `workspaces`.`workspace_id`
+            LEFT JOIN `payments` ON `bookings`.`booking_id` = `payments`.`booking_id`
             WHERE `bookings`.`user_id` = $user_id AND $statusFilter";
     $result_booking = mysqli_query($connect, $select_booking);
     return mysqli_fetch_all($result_booking, MYSQLI_ASSOC);

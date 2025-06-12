@@ -1,7 +1,6 @@
 <?php
 include "mail.php";
 
-
 $error = "";
 
 // Check if booking_id is provided in the URL
@@ -40,6 +39,7 @@ $date = $bookingData['date'];
 $startTime = $bookingData['start_time'];
 $endTime = $bookingData['end_time'];
 $pricePerHour = $bookingData['p/hr'];
+$userEmail = $bookingData['user_email'];
 
 // Calculate the number of hours booked
 $startDateTime = new DateTime($startTime);
@@ -54,18 +54,80 @@ $totalAmount = $pricePerHour * $hoursBooked;
 if (isset($_POST['pay'])) {
     $transactionId = rand(10000, 99999);
     $amount = $totalAmount; // Use the calculated total amount
-
-    // Insert payment into the payments table
     $workspaceId = $bookingData['workspace_id'];
 
-    $insert = "INSERT INTO payments (booking_id, workspace_id, amount, payment_method, transaction_id, created_at) 
-    VALUES ('$bookingId', '$workspaceId', '$totalAmount', 'online', '$transactionId', NOW())";
-$run_insert = mysqli_query($connect, $insert);
-    if ($run_insert) {
-        header("Location: my_bookings.php"); // Redirect to success page
+    // Start transaction
+    mysqli_begin_transaction($connect);
+    
+    try {
+        // Update the bookings table with payment info
+        $updateBooking = "UPDATE bookings 
+                         SET total_price = '$totalAmount', 
+                             pay_method = 'Online',
+                             status = 'upcoming'
+                         WHERE booking_id = '$bookingId'";
+        $runUpdate = mysqli_query($connect, $updateBooking);
+        
+        if (!$runUpdate) {
+            throw new Exception("Failed to update booking record.");
+        }
+        
+        // Insert into payments table
+        $insert = "INSERT INTO payments (booking_id, workspace_id, amount, payment_method, transaction_id, created_at) 
+                   VALUES ('$bookingId', '$workspaceId', '$totalAmount', 'Online', '$transactionId', NOW())";
+        $run_insert = mysqli_query($connect, $insert);
+        
+        if (!$run_insert) {
+            throw new Exception("Failed to insert payment record.");
+        }
+        
+        // Commit transaction
+        mysqli_commit($connect);
+        
+        // Send email confirmation
+        $subject = "Your Payment Confirmation";
+        $message = "
+        <body style='font-family: DM Sans, Arial, sans-serif; margin: 0; padding: 0; background-color: #fff; color: #071739;'>
+            <div style='background-color: #071739; padding: 28px 0 18px 0; text-align: left; color: #E3C39D;'>
+                <h1 style='margin: 0 0 0 40px; font-size: 2.2rem; font-weight: bold; letter-spacing: 1px;'>Payment Confirmation</h1>
+            </div>
+            <div style='padding: 32px 40px 24px 40px; background-color: #fff; color: #071739; text-align: left;'>
+                <p>Dear <span style='color: #A68868;'>Customer</span>,</p>
+                <p>Thank you for your payment with <b>WorkSphere</b>! Your booking has been confirmed. Here are your details:</p>
+                <ul style='list-style: none; padding-left: 0; margin-bottom: 18px;'>
+                    <li style='margin-bottom: 8px;'><strong>Workspace:</strong> <span style='color: #A68868;'>$workspaceName</span></li>
+                    <li style='margin-bottom: 8px;'><strong>Room:</strong> <span style='color: #A68868;'>$roomName</span></li>
+                    <li style='margin-bottom: 8px;'><strong>Date:</strong> <span style='color: #A68868;'>$date</span></li>
+                    <li style='margin-bottom: 8px;'><strong>Time:</strong> <span style='color: #A68868;'>$startTime to $endTime</span></li>
+                    <li style='margin-bottom: 8px;'><strong>Total Amount Paid:</strong> <span style='color: #A68868;'>$" . number_format($totalAmount, 2) . "</span></li>
+                    <li style='margin-bottom: 8px;'><strong>Transaction ID:</strong> <span style='color: #A68868;'>$transactionId</span></li>
+                    <li style='margin-bottom: 8px;'><strong>Payment Method:</strong> <span style='color: #A68868;'>Online</span></li>
+                </ul>
+                <p style='color: #A68868; margin-bottom: 18px;'>Your booking is now confirmed. Please present this confirmation at the reception.</p>
+                <p>If you have any questions, feel free to contact us.</p>
+                <p style='margin-top: 32px;'>Best regards,<br>The WorkSphere Team</p>
+            </div>
+            <div style='background-color: #4B6382; padding: 18px 40px; text-align: left; color: #E3C39D;'>
+                <p style='margin: 0 0 6px 0;'>For any questions, please contact:</p>
+                <p style='margin: 0;'>Email: <a href='mailto:worksphere50@gmail.com' style='color: #A68868; text-decoration: underline;'>worksphere50@gmail.com</a></p>
+            </div>
+        </body>";
+
+        // Send the email
+        $mail->setFrom('worksphere50@gmail.com', 'WorkSphere');
+        $mail->addAddress($userEmail);
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $message;
+        $mail->send();
+
+        // Redirect to success page
+        header("Location: my_bookings.php");
         exit;
-    } else {
-        $error = "Payment failed. Please try again.";
+    } catch (Exception $e) {
+        // Rollback transaction on error
+        mysqli_rollback($connect);
+        $error = "Payment failed: " . $e->getMessage();
     }
 }
 ?>
