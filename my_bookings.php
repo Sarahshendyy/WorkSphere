@@ -231,18 +231,7 @@ $bookings = fetchBookings($connect, $user_id, $statusFilter);
 
                     <!-- Room Image and Details -->
                     <div class="booking-details">
-                        <?php
-                        // Fix image path logic
-                        $imagePathRaw = $fetch_image['images'];
-                        $imageList = explode(',', $imagePathRaw);
-                        $firstImage = trim($imageList[0]);
-                        if (preg_match('/^(img\/|\/|http)/', $firstImage)) {
-                            $imgSrc = $firstImage;
-                        } else {
-                            $imgSrc = 'img/' . $firstImage;
-                        }
-                        ?>
-                        <img src="<?php echo $imgSrc; ?>" alt="Room Image" class="room-image">
+                       
                         <div class="room-info">
                             <a href="workspace_details.php?ws_id=<?php echo $data['workspace_id']; ?>">
                                 <h1 class="cssanimation typing " id="spicialstyle"><?php echo $data['workspace_name']; ?> </h1>
