@@ -1,6 +1,7 @@
 <?php
 include 'connection.php';
 
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
@@ -8,13 +9,13 @@ if (!isset($_SESSION['user_id'])) {
 
 $room_id = isset($_GET['id']) && is_numeric($_GET['id']) ? $_GET['id'] : 0;
 $owner_id = $_SESSION['user_id'];
-$room_name = "";
-$seats = "";
-$type_id = "";
-$price_per_hour = "";
+$image_dir = "img/";
+
+$room_name = $seats = $type_id = $price_per_hour = "";
 $images = "";
 $image_array = [];
 $selected_amenities = [];
+
 $room_types_query = "SELECT * FROM room_types";
 $room_types_result = mysqli_query($connect, $room_types_query);
 
@@ -28,7 +29,7 @@ if ($room_id > 0) {
         $room_name = $fetch['room_name'];
         $seats = $fetch['seats'];
         $type_id = $fetch['type_id'];
-        $price_per_hour = $fetch['p/hr']; 
+        $price_per_hour = $fetch['p/hr'];
         $images = $fetch['images'];
         $image_array = !empty($images) ? explode(',', $images) : [];
     }
@@ -47,13 +48,14 @@ if (isset($_POST['delete_image'])) {
     $image_to_delete = $_POST['image_to_delete'];
     $image_array = array_diff($image_array, [$image_to_delete]);
 
-    if (file_exists($image_to_delete)) {
-        unlink($image_to_delete);
+    $filepath = $image_dir . $image_to_delete;
+    if (file_exists($filepath)) {
+        unlink($filepath);
     }
 
+
     $updated_images = implode(',', $image_array);
-    $update_images = "UPDATE rooms SET images='$updated_images' WHERE room_id='$room_id'";
-    mysqli_query($connect, $update_images);
+    mysqli_query($connect, "UPDATE rooms SET images='$updated_images' WHERE room_id='$room_id'");
 
     header("Location: edit_room.php?id=$room_id");
     exit();
@@ -66,16 +68,20 @@ if (isset($_POST['update'])) {
     $price_per_hour = floatval($_POST['price_per_hour']);
     $amenities = isset($_POST['amenities']) ? $_POST['amenities'] : [];
 
-    if (!empty($_FILES['room_images']['name'][0])) {
-        foreach ($_FILES['room_images']['tmp_name'] as $key => $tmp_name) {
-            $image_name = basename($_FILES['room_images']['name'][$key]);
-            $target_file = "img/" . $image_name;
+    // Upload new images
+   if (!empty($_FILES['room_images']['name'][0])) {
+    foreach ($_FILES['room_images']['tmp_name'] as $key => $tmp_name) {
+        $original_name = basename($_FILES['room_images']['name'][$key]);
+        $ext = pathinfo($original_name, PATHINFO_EXTENSION);
+        $new_name = uniqid('room_', true) . "." . $ext;
+        $target_path = $image_dir . $new_name;
 
-            if (move_uploaded_file($tmp_name, $target_file)) {
-                $image_array[] = $target_file;
-            }
+        if (move_uploaded_file($tmp_name, $target_path)) {
+            $image_array[] = $new_name; // Save only filename to DB
         }
     }
+}
+
 
     $updated_images = implode(',', $image_array);
 
@@ -86,9 +92,8 @@ if (isset($_POST['update'])) {
                `p/hr`='$price_per_hour',
                images='$updated_images' 
                WHERE room_id='$room_id'";
-    $run_update = mysqli_query($connect, $update);
-
-    if ($run_update) {
+    
+    if (mysqli_query($connect, $update)) {
         mysqli_query($connect, "DELETE FROM amenities WHERE room_id = '$room_id'");
 
         foreach ($amenities as $amenity_name) {
@@ -109,11 +114,12 @@ if (isset($_POST['update'])) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="X-UA-compatible" content="IE=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edit Room</title>
 <link rel="stylesheet" type="text/css" href="./css/Edit-room.css">
@@ -134,7 +140,7 @@ if (isset($_POST['update'])) {
 
             <div class="input-group">
                 <label for="seats"><h3>Seats</h3></label>
-                <input type="number" id="seats" name="seats" value="<?php echo $seats; ?>" required>
+                <input type="number" id="seats" name="seats" value="<?php echo htmlspecialchars($seats); ?>" required>
             </div>
 
             <div class="input-group">
@@ -150,7 +156,7 @@ if (isset($_POST['update'])) {
 
             <div class="input-group">
                 <label for="price_per_hour"><h3>Price Per Hour (EGP)</h3></label>
-                <input type="number" id="price_per_hour" step="0.01" name="price_per_hour" value="<?php echo $price_per_hour; ?>" required>
+                <input type="number" id="price_per_hour" step="0.01" name="price_per_hour" value="<?php echo htmlspecialchars($price_per_hour); ?>" required>
             </div>
 
             <div class="input-group">
@@ -158,8 +164,8 @@ if (isset($_POST['update'])) {
                 <div class="image-preview">
                     <?php foreach ($image_array as $image): ?>
                         <div class="image-container">
-                            <img src="<?php echo $image; ?>" width="100">
-                            <span class="delete-image" onclick="showDeletePopup('<?php echo $image; ?>')">
+                            <img src="img/<?php echo htmlspecialchars($image); ?>" width="100">
+                            <span class="delete-image" onclick="showDeletePopup('<?php echo htmlspecialchars($image); ?>')">
                                 <i class="fas fa-times"></i>
                             </span>
                         </div>
@@ -167,22 +173,23 @@ if (isset($_POST['update'])) {
                 </div>
             </div>
 
+
             <div class="input-group">
                 <label for="room_images"><h3>Add New Images</h3></label>
                 <input type="file" id="room_images" name="room_images[]" multiple>
             </div>
 
             <div class="input-group">
-            <label><h3>Existing Amenities</h3></label>
-            <div class="amenities-container">
-                <?php mysqli_data_seek($all_amenities_result, 0); ?>
-                <?php while ($amenity = mysqli_fetch_assoc($all_amenities_result)): ?>
-                <div class="amenity-item">
-                    <input type="checkbox" name="amenities[]" value="<?php echo htmlspecialchars($amenity['amenity']); ?>"
-                    <?php echo in_array($amenity['amenity'], $selected_amenities) ? 'checked' : ''; ?>>
-                    <label><?php echo htmlspecialchars($amenity['amenity']); ?></label>
-                </div>
-                <?php endwhile; ?>
+                <label><h3>Existing Amenities</h3></label>
+                <div class="amenities-container">
+                    <?php mysqli_data_seek($all_amenities_result, 0); ?>
+                    <?php while ($amenity = mysqli_fetch_assoc($all_amenities_result)): ?>
+                        <div class="amenity-item">
+                            <input type="checkbox" name="amenities[]" value="<?php echo htmlspecialchars($amenity['amenity']); ?>"
+                            <?php echo in_array($amenity['amenity'], $selected_amenities) ? 'checked' : ''; ?>>
+                            <label><?php echo htmlspecialchars($amenity['amenity']); ?></label>
+                        </div>
+                    <?php endwhile; ?>
                 </div>
             </div>
 
@@ -190,8 +197,6 @@ if (isset($_POST['update'])) {
                 <label><h3>Add New Amenity</h3></label>
                 <input type="text" name="new_amenity" placeholder="e.g., Whiteboard">
             </div>
-
-
 
             <button type="submit" name="update">Update Room</button>
             <div class="back-link">
@@ -201,8 +206,7 @@ if (isset($_POST['update'])) {
     </div>
 </div>
 
-
-<div id="deleteShow" class="deletepopup">
+<div id="deleteShow" class="deletepopup" style="display:none;">
     <div class="deletecard">
         <form method="POST">
             <h2>Delete Image?</h2>
@@ -220,12 +224,10 @@ if (isset($_POST['update'])) {
         document.getElementById('deleteShow').style.display = 'flex';
         document.getElementById('image_to_delete').value = imagePath;
     }
-    
+
     function hideDeletePopup() {
         document.getElementById('deleteShow').style.display = 'none';
     }
-    
-    document.getElementById('closeee').addEventListener('click', hideDeletePopup);
 </script>
 </body>
 </html>
