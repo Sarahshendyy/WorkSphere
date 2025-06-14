@@ -21,68 +21,95 @@ $run_zones = mysqli_query($connect, $select_zones);
 $zones = mysqli_fetch_all($run_zones, MYSQLI_ASSOC);
 
 if (isset($_POST['update'])) {
-    $name = mysqli_real_escape_string($connect, $_POST['name']);
-    $email = mysqli_real_escape_string($connect, $_POST['email']);
-    $age = mysqli_real_escape_string($connect, $_POST['age']);
-    $address = mysqli_real_escape_string($connect, $_POST['address']);
-    $job_title = mysqli_real_escape_string($connect, $_POST['job_title']);
-    $zone_id = mysqli_real_escape_string($connect, $_POST['zone_id']);
-
-    $company_name = isset($_POST['company_name']) ? mysqli_real_escape_string($connect, $_POST['company_name']) : $fetch['company_name'];
-    $contact_info = isset($_POST['contact_info']) ? mysqli_real_escape_string($connect, $_POST['contact_info']) : $fetch['contact_info'];
-    $company_type = isset($_POST['company_type']) ? mysqli_real_escape_string($connect, $_POST['company_type']) : $fetch['company_type'];
-
-    $portfolio = $fetch['portfolio'];
-    if (isset($_FILES['portfolio']) && $_FILES['portfolio']['name']) {
-        $portfolio_name = $_FILES['portfolio']['name'];
-        $portfolio_tmp = $_FILES['portfolio']['tmp_name'];
-        $portfolio_path = "./files/" . basename($portfolio_name);
-        if (move_uploaded_file($portfolio_tmp, $portfolio_path)) {
-            $portfolio = $portfolio_name;
+    // Initialize update fields array
+    $update_fields = [];
+    
+    // Process each field only if it was submitted
+    if (isset($_POST['name'])) {
+        $name = mysqli_real_escape_string($connect, $_POST['name']);
+        $update_fields[] = "`name`='$name'";
+    }
+    
+    if (isset($_POST['email'])) {
+        $email = mysqli_real_escape_string($connect, $_POST['email']);
+        $update_fields[] = "`email`='$email'";
+    }
+    
+    if (isset($_POST['age'])) {
+        $age = mysqli_real_escape_string($connect, $_POST['age']);
+        $update_fields[] = "`age`='$age'";
+    }
+    
+    if (isset($_POST['address'])) {
+        $address = mysqli_real_escape_string($connect, $_POST['address']);
+        $update_fields[] = "`location`='$address'";
+    }
+    
+    if (isset($_POST['job_title'])) {
+        $job_title = mysqli_real_escape_string($connect, $_POST['job_title']);
+        $update_fields[] = "`job_title`='$job_title'";
+    }
+    
+    if (isset($_POST['zone_id'])) {
+        $zone_id = mysqli_real_escape_string($connect, $_POST['zone_id']);
+        $update_fields[] = "`zone_id`='$zone_id'";
+    }
+    
+    // Handle company-specific fields if user is a company (role_id == 2)
+    if ($fetch['role_id'] == 2) {
+        if (isset($_POST['company_name'])) {
+            $company_name = mysqli_real_escape_string($connect, $_POST['company_name']);
+            $update_fields[] = "`company_name`='$company_name'";
+        }
+        
+        if (isset($_POST['contact_info'])) {
+            $contact_info = mysqli_real_escape_string($connect, $_POST['contact_info']);
+            $update_fields[] = "`contact_info`='$contact_info'";
+        }
+        
+        if (isset($_POST['company_type'])) {
+            $company_type = mysqli_real_escape_string($connect, $_POST['company_type']);
+            $update_fields[] = "`company_type`='$company_type'";
+        }
+        
+        // Handle portfolio file upload
+        if (isset($_FILES['portfolio']) && $_FILES['portfolio']['name']) {
+            $portfolio_name = $_FILES['portfolio']['name'];
+            $portfolio_tmp = $_FILES['portfolio']['tmp_name'];
+            $portfolio_path = "./files/" . basename($portfolio_name);
+            if (move_uploaded_file($portfolio_tmp, $portfolio_path)) {
+                $update_fields[] = "`portfolio`='$portfolio_name'";
+            }
         }
     }
-
-    if ($_FILES['image']['name']) {
+    
+    // Handle profile image upload
+    if (isset($_FILES['image']) && $_FILES['image']['name']) {
         $image_name = $_FILES['image']['name'];
         $image_tmp = $_FILES['image']['tmp_name'];
         $image_path = "./img/" . basename($image_name);
-
         if (move_uploaded_file($image_tmp, $image_path)) {
-            $image_sql = "`image`='$image_name',";
+            $update_fields[] = "`image`='$image_name'";
         } else {
             echo "Failed to upload image.";
-            $image_sql = "";
+        }
+    }
+    
+    // Only proceed with update if there are fields to update
+    if (!empty($update_fields)) {
+        $update_profile = "UPDATE `users` SET " . implode(', ', $update_fields) . " WHERE `user_id`='$user_id'";
+        $run_update = mysqli_query($connect, $update_profile);
+        
+        if ($run_update) {
+            header("Location: profile.php");
+            exit();
+        } else {
+            echo "Failed to update profile: " . mysqli_error($connect);
         }
     } else {
-        $image_sql = "";
-    }
-
-    $update_profile = "UPDATE `users` SET 
-        `name`='$name', 
-        `email`='$email', 
-        `age`='$age', 
-        `location`='$address', 
-        `job_title`='$job_title', 
-        `zone_id`='$zone_id', 
-        $image_sql";
-
-    if ($fetch['role_id'] == 2) {
-        $update_profile .= "
-        `company_name`='$company_name',
-        `contact_info`='$contact_info',
-        `company_type`='$company_type',
-        `portfolio`='$portfolio',";
-    }
-
-    $update_profile = rtrim($update_profile, ',') . " WHERE `user_id`='$user_id'";
-
-    $run_update = mysqli_query($connect, $update_profile);
-
-    if ($run_update) {
+        // No fields were updated, redirect back
         header("Location: profile.php");
         exit();
-    } else {
-        echo "Failed to update profile.";
     }
 }
 ?>
@@ -98,6 +125,19 @@ if (isset($_POST['update'])) {
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
 />
+<script>
+// Preview image before upload
+document.getElementById('profile-image-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profile-pic-preview').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+</script>
 </head>
 <body>
 
@@ -127,11 +167,11 @@ if (isset($_POST['update'])) {
         <div class="input-row">
           <div class="input-group">
             <label for="name">Name:</label>
-            <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($fetch['name']); ?>" required />
+            <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($fetch['name']); ?>" />
           </div>
           <div class="input-group">
             <label for="email">Email:</label>
-            <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($fetch['email']); ?>" required />
+            <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($fetch['email']); ?>" />
           </div>
         </div>
 
@@ -149,7 +189,7 @@ if (isset($_POST['update'])) {
         <div class="input-row">
           <div class="input-group">
             <label for="zone_id">Zone:</label>
-            <select name="zone_id" id="zone_id" required>
+            <select name="zone_id" id="zone_id">
               <?php foreach ($zones as $zone) { ?>
                 <option value="<?php echo $zone['zone_id']; ?>" <?php echo ($zone['zone_id'] == $fetch['zone_id']) ? 'selected' : ''; ?>>
                   <?php echo htmlspecialchars($zone['zone_name']); ?>
