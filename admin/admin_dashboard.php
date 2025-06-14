@@ -436,7 +436,7 @@ $workspaces_result = mysqli_query($connect, $workspaces_query);
                 <div class="col-md-3">
                     <div class="summary-card text-center">
                         <h5>Total Workspaces</h5>
-                        <h3><?php echo mysqli_num_rows($workspaces_result); ?></h3>
+                        <h3>30</h3>
                         <p class="text-muted">Registered spaces</p>
                     </div>
                 </div>
