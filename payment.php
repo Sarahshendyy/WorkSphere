@@ -226,8 +226,9 @@ if (isset($_POST['pay'])) {
             </div>
             <div class="btns">
                 <div class="buttons">
+                    <a href="#">
                     <button class="cssbuttons-io-button addto" type="submit" name="pay">
-                        <a href="#">Pay</a>
+                        Pay
                         <div class="icon">
                             <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0z" fill="none"></path>
@@ -235,6 +236,7 @@ if (isset($_POST['pay'])) {
                             </svg>
                         </div>
                     </button>
+                    </a>
                 </div>
             </div>
         </form>
