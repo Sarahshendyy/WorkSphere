@@ -1,5 +1,5 @@
 <?php
-include "../admin/sidebar.php";
+include "connection.php";
 
 $successMessage = null;
 
